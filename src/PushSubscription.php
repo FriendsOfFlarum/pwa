@@ -9,7 +9,7 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA;
+namespace FoF\PWA;
 
 use Carbon\Carbon;
 use Flarum\Database\AbstractModel;

@@ -1,3 +1,4 @@
+import app from 'flarum/admin/app';
 import ExtensionPage from 'flarum/admin/components/ExtensionPage';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
@@ -6,8 +7,10 @@ import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import PWALogoUploadButton from './PWALogoUploadButton';
 import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
+import type Mithril from 'mithril';
+
 export default class PWAPage extends ExtensionPage {
-  oninit(vnode) {
+  oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
 
     this.saving = false;
@@ -24,7 +27,7 @@ export default class PWAPage extends ExtensionPage {
     app
       .request({
         method: 'GET',
-        url: app.forum.attribute('apiUrl') + '/pwa/settings',
+        url: app.forum.attribute<string>('apiUrl') + '/pwa/settings',
       })
       .then((response) => {
         this.manifest = response['data']['attributes']['manifest'];

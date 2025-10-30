@@ -9,7 +9,7 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA;
+namespace FoF\PWA;
 
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -79,6 +79,7 @@ class FirebasePushSender
         $message = $this->notifications->build($blueprint);
 
         return CloudMessage::new()
+            // @phpstan-ignore-next-line
             ->withTarget('token', $subscription->token)
             ->withNotification(
                 Notification::fromArray([

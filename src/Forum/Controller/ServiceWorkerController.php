@@ -9,9 +9,9 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Forum\Controller;
+namespace FoF\PWA\Forum\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
+use FoF\PWA\PWATrait;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -36,6 +36,6 @@ class ServiceWorkerController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new TextResponse($this->assetDir->get('extensions/askvortsov-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
+        return new TextResponse($this->assetDir->get('extensions/fof-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
     }
 }

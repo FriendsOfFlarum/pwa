@@ -1,29 +1,30 @@
 {
-    "name": "@askvortsov/flarum-pwa",
+    "name": "@fof/pwa",
     "version": "0.0.0",
     "private": true,
     "dependencies": {
         "idb": "^5.0.4"
     },
+    "prettier": "@flarum/prettier-config",
     "devDependencies": {
-        "husky": "^4.2.5",
-        "prettier": "^2.5.1",
+        "@flarum/prettier-config": "^1.0.0",
+        "flarum-tsconfig": "^2.0.0",
         "flarum-webpack-config": "^2.0.0",
         "webpack": "^5.65.0",
-        "webpack-cli": "^4.9.1",
-        "@flarum/prettier-config": "^1.0.0"
+        "webpack-cli": "^5.0",
+        "prettier": "^3.3.3",
+        "typescript-coverage-report": "^0.6.1"
     },
     "scripts": {
         "dev": "webpack --mode development --watch",
         "build": "webpack --mode production",
+        "analyze": "cross-env ANALYZER=true npm run build",
         "format": "prettier --write src",
         "format-check": "prettier --check src",
-        "analyze": "cross-env ANALYZER=true npm run build"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run format"
-        }
-    },
-    "prettier": "@flarum/prettier-config"
+        "clean-typings": "npx rimraf dist-typings && mkdir dist-typings",
+        "build-typings": "npm run clean-typings && ([ -e src/@types ] && cp -r src/@types dist-typings/@types || true) && tsc && npm run post-build-typings",
+        "post-build-typings": "find dist-typings -type f -name '*.d.ts' -print0 | xargs -0 sed -i 's,../src/@types,@types,g'",
+        "check-typings": "tsc --noEmit --emitDeclarationOnly false",
+        "check-typings-coverage": "typescript-coverage-report"
+    }
 }

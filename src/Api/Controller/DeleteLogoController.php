@@ -9,10 +9,10 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
-use Askvortsov\FlarumPWA\Util;
+use FoF\PWA\PWATrait;
+use FoF\PWA\Util;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;

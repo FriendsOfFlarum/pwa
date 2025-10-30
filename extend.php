@@ -9,10 +9,10 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA;
+namespace FoF\PWA;
 
-use Askvortsov\FlarumPWA\Api\Controller as ApiController;
-use Askvortsov\FlarumPWA\Forum\Controller as ForumController;
+use FoF\PWA\Api\Controller as ApiController;
+use FoF\PWA\Forum\Controller as ForumController;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
 use Flarum\Frontend\Document;

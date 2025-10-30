@@ -9,9 +9,9 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Forum\Controller;
+namespace FoF\PWA\Forum\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
+use FoF\PWA\PWATrait;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

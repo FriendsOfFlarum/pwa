@@ -9,9 +9,9 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Forum\Controller;
+namespace FoF\PWA\Forum\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
+use FoF\PWA\PWATrait;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\View\Factory as ViewFactory;

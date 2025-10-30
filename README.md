@@ -24,19 +24,16 @@ His original Discuss thread has been linked here: <https://discuss.flarum.org/d/
 
 ### Installation
 
-Use [Bazaar](https://discuss.flarum.org/d/5151-flagrow-bazaar-the-extension-marketplace) or install manually with composer:
-
 ```sh
-composer require askvortsov/flarum-pwa
+composer require fof/pwa
 ```
 
 ### Updating
 
 ```sh
-composer update askvortsov/flarum-pwa
+composer update fof/pwa
 ```
 
 ### Links
 
-- [Packagist](https://packagist.org/packages/askvortsov/flarum-pwa)
-- [Github](https://github.com/askvortsov1/flarum-pwa)
+- [Github](https://github.com/FriendsOfFlarum/pwa)

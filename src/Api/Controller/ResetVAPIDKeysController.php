@@ -9,9 +9,9 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PushSubscription;
+use FoF\PWA\PushSubscription;
 use ErrorException;
 use Exception;
 use Flarum\Http\RequestUtil;

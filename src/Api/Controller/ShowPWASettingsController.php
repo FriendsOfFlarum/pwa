@@ -9,11 +9,11 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\Api\Serializer\PWASettingsSerializer;
-use Askvortsov\FlarumPWA\PWATrait;
-use Askvortsov\FlarumPWA\Util;
+use FoF\PWA\Api\Serializer\PWASettingsSerializer;
+use FoF\PWA\PWATrait;
+use FoF\PWA\Util;
 use Flarum\Api\Controller\AbstractShowController;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;

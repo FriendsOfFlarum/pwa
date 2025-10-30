@@ -9,9 +9,9 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA;
+namespace FoF\PWA;
 
-use Askvortsov\FlarumPWA\Job\SendPushNotificationsJob;
+use FoF\PWA\Job\SendPushNotificationsJob;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\Settings\SettingsRepositoryInterface;

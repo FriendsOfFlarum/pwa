@@ -12,7 +12,7 @@
 use Flarum\Database\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-return Migration::createTable(
+return Migration::createTableIfNotExists(
     'push_subscriptions',
     function (Blueprint $table) {
         $table->increments('id');

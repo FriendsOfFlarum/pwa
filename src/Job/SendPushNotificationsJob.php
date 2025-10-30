@@ -9,10 +9,10 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Job;
+namespace FoF\PWA\Job;
 
-use Askvortsov\FlarumPWA\FirebasePushSender;
-use Askvortsov\FlarumPWA\PushSender;
+use FoF\PWA\FirebasePushSender;
+use FoF\PWA\PushSender;
 use ErrorException;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Queue\AbstractJob;

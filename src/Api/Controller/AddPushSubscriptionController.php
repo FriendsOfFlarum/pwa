@@ -9,10 +9,10 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\Api\Serializer\PushSubscriptionSerializer;
-use Askvortsov\FlarumPWA\PushSubscription;
+use FoF\PWA\Api\Serializer\PushSubscriptionSerializer;
+use FoF\PWA\PushSubscription;
 use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;

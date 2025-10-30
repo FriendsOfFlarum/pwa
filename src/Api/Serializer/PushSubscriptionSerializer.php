@@ -9,9 +9,9 @@
  *  LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Serializer;
+namespace FoF\PWA\Api\Serializer;
 
-use Askvortsov\FlarumPWA\PushSubscription;
+use FoF\PWA\PushSubscription;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
 use InvalidArgumentException;
