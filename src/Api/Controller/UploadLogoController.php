@@ -1,22 +1,23 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA\Api\Controller;
 
-use FoF\PWA\PWATrait;
-use FoF\PWA\Util;
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\PWATrait;
+use FoF\PWA\Util;
 use Illuminate\Support\Arr;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -32,6 +33,7 @@ class UploadLogoController extends UploadImageController
 
     /**
      * {@inheritdoc}
+     *
      * @throws PermissionDeniedException|RouteNotFoundException
      */
     public function data(ServerRequestInterface $request, Document $document)
@@ -41,7 +43,7 @@ class UploadLogoController extends UploadImageController
         $size = intval(Arr::get($request->getQueryParams(), 'size'));
         $this->size = $size;
 
-        if (! in_array($size, Util::$ICON_SIZES)) {
+        if (!in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 

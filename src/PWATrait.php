@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA;
@@ -43,9 +44,9 @@ trait PWATrait
         foreach (Util::$ICON_SIZES as $size) {
             if ($path = $settings->get("askvortsov-pwa.icon_{$size}_path")) {
                 $icons[] = [
-                    'src' => $assetsFilesystem->url($path),
+                    'src'   => $assetsFilesystem->url($path),
                     'sizes' => "{$size}x{$size}",
-                    'type' => 'image/png',
+                    'type'  => 'image/png',
                 ];
             }
         }
@@ -60,15 +61,15 @@ trait PWATrait
 
         $basePath = $this->getBasePath();
         $manifest = [
-            'name' => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
+            'name'        => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
             'description' => $settings->get('forum_description', ''),
             //"categories" => $settings->get('askvortsov-pwa.categories', []),
-            'start_url' => $basePath,
-            'scope' => $basePath,
-            'dir' => 'auto',
+            'start_url'   => $basePath,
+            'scope'       => $basePath,
+            'dir'         => 'auto',
             'theme_color' => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
-            'display' => 'standalone',
-            'icons' => $this->getIcons(),
+            'display'     => 'standalone',
+            'icons'       => $this->getIcons(),
         ];
 
         if ($backgroundColor = $settings->get('askvortsov-pwa.backgroundColor')) {

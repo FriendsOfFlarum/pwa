@@ -1,24 +1,25 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA\Api\Controller;
 
-use FoF\PWA\Api\Serializer\PushSubscriptionSerializer;
-use FoF\PWA\PushSubscription;
 use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\NotAuthenticatedException;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\Api\Serializer\PushSubscriptionSerializer;
+use FoF\PWA\PushSubscription;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,6 +49,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
     /**
      * {@inheritdoc}
+     *
      * @throws NotAuthenticatedException
      * @throws InvalidParameterException|PermissionDeniedException
      */
@@ -58,7 +60,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
         $data = Arr::get($request->getParsedBody(), 'subscription', []);
 
-        if (! ($endpoint = Arr::get($data, 'endpoint'))) {
+        if (!($endpoint = Arr::get($data, 'endpoint'))) {
             throw new InvalidParameterException('Endpoint must be provided');
         }
 
@@ -78,7 +80,7 @@ class AddPushSubscriptionController extends AbstractCreateController
         $host = parse_url($endpoint, PHP_URL_HOST);
         $allowed = Str::endsWith($host, static::$push_host_allowlist);
 
-        if (! $allowed) {
+        if (!$allowed) {
             throw new PermissionDeniedException();
         }
 

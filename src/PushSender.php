@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA;
@@ -79,7 +80,7 @@ class PushSender
                 $notifications[] = [
                     'subscription' => Subscription::create([
                         'endpoint' => $subscription->endpoint,
-                        'keys' => json_decode($subscription->keys, true),
+                        'keys'     => json_decode($subscription->keys, true),
                     ]),
                     'payload' => $payload,
                 ];
@@ -88,8 +89,8 @@ class PushSender
 
         $auth = [
             'VAPID' => [
-                'subject' => $this->url->to('forum')->base(),
-                'publicKey' => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public')),
+                'subject'    => $this->url->to('forum')->base(),
+                'publicKey'  => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public')),
                 'privateKey' => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.private')),
             ],
         ];
@@ -102,7 +103,7 @@ class PushSender
         $topic = substr(str_pad(Base64Url::encode($typeAndId), $safariTopicLen, '0'), 0, $safariTopicLen);
 
         $options = [
-            'topic' => $topic
+            'topic' => $topic,
         ];
 
         $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");
@@ -127,9 +128,9 @@ class PushSender
          * @var MessageSentReport $report
          */
         foreach ($webPush->flush() as $report) {
-            if (! $report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [401, 403, 404, 410])) {
+            if (!$report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [401, 403, 404, 410])) {
                 PushSubscription::where('endpoint', $report->getEndpoint())->delete();
-            } elseif (! $report->isSuccess()) {
+            } elseif (!$report->isSuccess()) {
                 $this->log("[PWA PUSH] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}");
             } else {
                 $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
@@ -147,9 +148,9 @@ class PushSender
         $message = $this->notifications->build($blueprint);
 
         $payload = [
-            'title' => $message->title(),
+            'title'   => $message->title(),
             'content' => $message->body(),
-            'link' => $message->url(),
+            'link'    => $message->url(),
         ];
 
         if ($faviconPath = $this->settings->get('favicon_path')) {
@@ -158,7 +159,7 @@ class PushSender
 
         $pwaIcons = array_reverse($this->getIcons());
 
-        if (! empty($pwaIcons)) {
+        if (!empty($pwaIcons)) {
             $payload['icon'] = $pwaIcons[0]['src'];
         } elseif ($logoPath = $this->settings->get('logo_path')) {
             $payload['icon'] = $this->assetsFilesystem->url($logoPath);

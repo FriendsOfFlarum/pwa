@@ -1,19 +1,20 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA\Api\Serializer;
 
-use FoF\PWA\FirebasePushSubscription;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
+use FoF\PWA\FirebasePushSubscription;
 use InvalidArgumentException;
 use Tobscure\JsonApi\Relationship;
 
@@ -29,7 +30,7 @@ class FirebasePushSubscriptionSerializer extends AbstractSerializer
      */
     protected function getDefaultAttributes($subscription): array
     {
-        if (! ($subscription instanceof FirebasePushSubscription)) {
+        if (!($subscription instanceof FirebasePushSubscription)) {
             throw new InvalidArgumentException(
                 get_class($this).' can only serialize instances of '.FirebasePushSubscription::class
             );

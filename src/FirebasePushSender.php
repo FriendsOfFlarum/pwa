@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA;
@@ -45,7 +46,7 @@ class FirebasePushSender
 
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        if (! $this->hasValidFirebaseSettings()) {
+        if (!$this->hasValidFirebaseSettings()) {
             return;
         }
 
@@ -84,7 +85,7 @@ class FirebasePushSender
             ->withNotification(
                 Notification::fromArray([
                     'title' => $message->title(),
-                    'body' => strip_tags($message->body()),
+                    'body'  => strip_tags($message->body()),
                 ])
             );
     }
@@ -93,7 +94,7 @@ class FirebasePushSender
     {
         $config = $this->settings->get('askvortsov-pwa.firebaseConfig');
 
-        if (! $config) {
+        if (!$config) {
             return false;
         }
 

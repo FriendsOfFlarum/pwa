@@ -1,22 +1,23 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA\Api\Controller;
 
-use FoF\PWA\PushSubscription;
 use ErrorException;
 use Exception;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\PushSubscription;
 use Laminas\Diactoros\Response\JsonResponse;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ResponseInterface;
@@ -34,6 +35,7 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws PermissionDeniedException|ErrorException
      * @throws Exception
      */

@@ -1,21 +1,22 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA;
 
-use FoF\PWA\Job\SendPushNotificationsJob;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\Driver\NotificationDriverInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use FoF\PWA\Job\SendPushNotificationsJob;
 use Illuminate\Contracts\Queue\Queue;
 use Illuminate\Support\Arr;
 use ReflectionException;
@@ -38,6 +39,7 @@ class PushNotificationDriver implements NotificationDriverInterface
 
     /**
      * {@inheritDoc}
+     *
      * @throws ReflectionException
      */
     public function registerType(string $blueprintClass, array $enabled): void
@@ -55,11 +57,12 @@ class PushNotificationDriver implements NotificationDriverInterface
 
     /**
      * {@inheritDoc}
+     *
      * @throws ReflectionException
      */
     public function send(BlueprintInterface $blueprint, array $users): void
     {
-        if (! $this->notifications->supports(get_class($blueprint))) {
+        if (!$this->notifications->supports(get_class($blueprint))) {
             return;
         }
 

@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA\Api\Serializer;
@@ -31,8 +32,8 @@ class PWASettingsSerializer extends AbstractSerializer
     protected function getDefaultAttributes($settings): array
     {
         return [
-            'manifest' => $settings['manifest'],
-            'sizes' => $settings['sizes'],
+            'manifest'        => $settings['manifest'],
+            'sizes'           => $settings['sizes'],
             'status_messages' => $settings['status_messages'],
         ];
     }

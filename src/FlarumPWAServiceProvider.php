@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
 namespace FoF\PWA;
@@ -25,16 +26,16 @@ class FlarumPWAServiceProvider extends AbstractServiceProvider
 
             $config = $settings->get('askvortsov-pwa.firebaseConfig');
 
-            if (! $config) {
-                throw new FirebaseConfigInvalid;
+            if (!$config) {
+                throw new FirebaseConfigInvalid();
             }
 
             try {
-                return (new FirebaseFactory)
+                return (new FirebaseFactory())
                     ->withServiceAccount(json_decode($config, true))
                     ->createMessaging();
             } catch (\Throwable) {
-                throw new FirebaseConfigInvalid;
+                throw new FirebaseConfigInvalid();
             }
         });
     }
