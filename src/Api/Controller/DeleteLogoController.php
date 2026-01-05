@@ -48,13 +48,14 @@ class DeleteLogoController extends AbstractDeleteController
     {
         RequestUtil::getActor($request)->assertAdmin();
 
-        $size = Arr::get($request->getQueryParams(), 'size');
+        $routeParams = $request->getAttribute('routeParameters', []);
+        $size = Arr::get($routeParams, 'size');
 
         if (!in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 
-        $pathKey = "askvortsov-pwa.icon_{$size}_path";
+        $pathKey = "fof-pwa.icon_{$size}_path";
         $path = $this->settings->get($pathKey);
 
         $this->uploadDir->delete($path);

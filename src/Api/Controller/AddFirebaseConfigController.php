@@ -55,7 +55,7 @@ class AddFirebaseConfigController extends AbstractCreateController
         $config = $files['file'];
 
         $this->settings->set(
-            'askvortsov-pwa.firebaseConfig',
+            'fof-pwa.firebaseConfig',
             $config->getStream()->getContents(),
         );
     }

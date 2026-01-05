@@ -24,7 +24,7 @@ class FlarumPWAServiceProvider extends AbstractServiceProvider
         $this->container->bind(FirebaseMessagingContract::class, function ($container) {
             $settings = $container[SettingsRepositoryInterface::class];
 
-            $config = $settings->get('askvortsov-pwa.firebaseConfig');
+            $config = $settings->get('fof-pwa.firebaseConfig');
 
             if (!$config) {
                 throw new FirebaseConfigInvalid();

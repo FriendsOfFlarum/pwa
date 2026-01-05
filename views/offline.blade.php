@@ -112,10 +112,10 @@
 <body>
     <div class="container">
         <p>
-            <strong>{{ $translator->trans('askvortsov-pwa.views.offline.header') }}</strong>
+            <strong>{{ $translator->trans('fof-pwa.views.offline.header') }}</strong>
         </p>
         <p>
-            {{ $translator->trans('askvortsov-pwa.views.offline.text') }}
+            {{ $translator->trans('fof-pwa.views.offline.text') }}
         </p>
     </div>
     <script>

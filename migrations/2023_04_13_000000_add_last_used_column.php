@@ -10,6 +10,22 @@
  * LICENSE file that was distributed with this source code.
  */
 
-use Flarum\Database\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Schema\Builder;
 
-return Migration::addColumns('push_subscriptions', ['last_used' => ['dateTime', 'nullable' => true]]);
+return [
+    'up' => function (Builder $schema) {
+        if ($schema->hasTable('push_subscriptions') && !$schema->hasColumn('push_subscriptions', 'last_used')) {
+            $schema->table('push_subscriptions', function (Blueprint $table) {
+                $table->dateTime('last_used')->nullable();
+            });
+        }
+    },
+    'down' => function (Builder $schema) {
+        if ($schema->hasTable('push_subscriptions') && $schema->hasColumn('push_subscriptions', 'last_used')) {
+            $schema->table('push_subscriptions', function (Blueprint $table) {
+                $table->dropColumn('last_used');
+            });
+        }
+    },
+];

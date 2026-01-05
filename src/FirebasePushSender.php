@@ -92,7 +92,7 @@ class FirebasePushSender
 
     private function hasValidFirebaseSettings(): bool
     {
-        $config = $this->settings->get('askvortsov-pwa.firebaseConfig');
+        $config = $this->settings->get('fof-pwa.firebaseConfig');
 
         if (!$config) {
             return false;

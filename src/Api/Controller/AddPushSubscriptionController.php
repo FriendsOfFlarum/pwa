@@ -71,7 +71,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
         $subscriptions = $actor->pushSubscriptions();
         $subscriptionCount = $subscriptions->count() + 1;
-        $maxSubscriptionCount = $this->settings->get('askvortsov-pwa.userMaxSubscriptions');
+        $maxSubscriptionCount = $this->settings->get('fof-pwa.userMaxSubscriptions');
 
         if ($subscriptionCount > $maxSubscriptionCount) {
             $subscriptions->orderBy('last_used')->take($subscriptionCount - $maxSubscriptionCount)->delete();
@@ -89,7 +89,7 @@ class AddPushSubscriptionController extends AbstractCreateController
         $subscription->user_id = $actor->id;
         $subscription->endpoint = $endpoint;
         $subscription->expires_at = isset($data['expirationTime']) ? Carbon::parse($data['expirationTime']) : null;
-        $subscription->vapid_public_key = $this->settings->get('askvortsov-pwa.vapid.public');
+        $subscription->vapid_public_key = $this->settings->get('fof-pwa.vapid.public');
         $subscription->keys = isset($data['keys']) ? json_encode($data['keys']) : null;
 
         $subscription->save();

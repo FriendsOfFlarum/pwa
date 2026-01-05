@@ -40,7 +40,8 @@ class UploadLogoController extends UploadImageController
     {
         RequestUtil::getActor($request)->assertAdmin();
 
-        $size = intval(Arr::get($request->getQueryParams(), 'size'));
+        $routeParams = $request->getAttribute('routeParameters', []);
+        $size = intval(Arr::get($routeParams, 'size'));
         $this->size = $size;
 
         if (!in_array($size, Util::$ICON_SIZES)) {
@@ -48,7 +49,15 @@ class UploadLogoController extends UploadImageController
         }
 
         $this->filenamePrefix = "pwa-icon-{$size}x{$size}";
-        $this->filePathSettingKey = "askvortsov-pwa.icon_{$size}_path";
+        $this->filePathSettingKey = "fof-pwa.icon_{$size}_path";
+
+        // Debug logging
+        $uploadedFiles = $request->getUploadedFiles();
+        resolve('log')->debug('PWA Upload', [
+            'uploaded_keys' => array_keys($uploadedFiles),
+            'looking_for' => $this->filenamePrefix,
+            'size' => $size
+        ]);
 
         return parent::data($request, $document);
     }

@@ -44,7 +44,7 @@ class PushNotificationDriver implements NotificationDriverInterface
      */
     public function registerType(string $blueprintClass, array $enabled): void
     {
-        $defaultPrefToEmail = $this->settings->get('askvortsov-pwa.pushNotifPreferenceDefaultToEmail');
+        $defaultPrefToEmail = $this->settings->get('fof-pwa.pushNotifPreferenceDefaultToEmail');
 
         if ($this->notifications->supports($blueprintClass)) {
             User::registerPreference(

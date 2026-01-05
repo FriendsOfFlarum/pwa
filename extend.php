@@ -28,7 +28,7 @@ $metaClosure = function (Document $document) {
     $basePath = rtrim(Arr::get($forumApiDocument, 'data.attributes.basePath'), '/');
 
     $settings = resolve(SettingsRepositoryInterface::class);
-    $appName = $settings->get('askvortsov-pwa.shortName', $settings->get('askvortsov-pwa.longName', $settings->get('forum_title')));
+    $appName = $settings->get('fof-pwa.shortName', $settings->get('fof-pwa.longName', $settings->get('forum_title')));
 
     $document->head[] = "<link rel='manifest' href='$basePath/webmanifest'>";
     $document->head[] = "<meta name='apple-mobile-web-app-capable' content='yes'>";
@@ -39,7 +39,7 @@ $metaClosure = function (Document $document) {
     $assets = resolve(Factory::class)->disk('flarum-assets');
 
     foreach (Util::$ICON_SIZES as $size) {
-        if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
+        if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
             $assetUrl = $assets->url($sizePath);
             $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='{$size}x$size'")." href='$assetUrl'>";
         }
@@ -48,18 +48,18 @@ $metaClosure = function (Document $document) {
 
 return [
     (new Extend\Routes('api'))
-        ->get('/pwa/settings', 'askvortsov-pwa.settings', ApiController\ShowPWASettingsController::class)
-        ->delete('/pwa/logo/{size}', 'askvortsov-pwa.size_delete', ApiController\DeleteLogoController::class)
-        ->post('/pwa/logo/{size}', 'askvortsov-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/push', 'askvortsov-pwa.push.create', ApiController\AddPushSubscriptionController::class)
-        ->post('/pwa/firebase-push-subscriptions', 'askvortsov-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
-        ->post('/pwa/firebase-config', 'askvortsov-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
-        ->post('/reset_vapid', 'askvortsov-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
+        ->get('/pwa/settings', 'fof-pwa.settings', ApiController\ShowPWASettingsController::class)
+        ->delete('/pwa/logo/{size}', 'fof-pwa.size_delete', ApiController\DeleteLogoController::class)
+        ->post('/pwa/logo/{size}', 'fof-pwa.size_upload', ApiController\UploadLogoController::class)
+        ->post('/pwa/push', 'fof-pwa.push.create', ApiController\AddPushSubscriptionController::class)
+        ->post('/pwa/firebase-push-subscriptions', 'fof-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
+        ->post('/pwa/firebase-config', 'fof-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
+        ->post('/reset_vapid', 'fof-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
-        ->get('/webmanifest', 'askvortsov-pwa.webmanifest', ForumController\WebManifestController::class)
-        ->get('/sw', 'askvortsov-pwa.sw', ForumController\ServiceWorkerController::class)
-        ->get('/offline', 'askvortsov-pwa.offline', ForumController\OfflineController::class),
+        ->get('/webmanifest', 'fof-pwa.webmanifest', ForumController\WebManifestController::class)
+        ->get('/sw', 'fof-pwa.sw', ForumController\ServiceWorkerController::class)
+        ->get('/offline', 'fof-pwa.offline', ForumController\OfflineController::class),
 
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
@@ -78,7 +78,7 @@ return [
             $assets = resolve(Factory::class)->disk('flarum-assets');
 
             foreach (Util::$ICON_SIZES as $size) {
-                if ($sizePath = $settings->get('askvortsov-pwa.icon_'.strval($size).'_path')) {
+                if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
                     $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
                 }
             }
@@ -92,15 +92,15 @@ return [
         ->hasMany('pushSubscriptions', PushSubscription::class, 'user_id'),
 
     (new Extend\Settings())
-        ->serializeToForum('vapidPublicKey', 'askvortsov-pwa.vapid.public', [Util::class, 'url_encode'])
-        ->default('askvortsov-pwa.pushNotifPreferenceDefaultToEmail', true)
-        ->default('askvortsov-pwa.userMaxSubscriptions', 20),
+        ->serializeToForum('vapidPublicKey', 'fof-pwa.vapid.public', [Util::class, 'url_encode'])
+        ->default('fof-pwa.pushNotifPreferenceDefaultToEmail', true)
+        ->default('fof-pwa.userMaxSubscriptions', 20),
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),
 
     (new Extend\View())
-        ->namespace('askvortsov-pwa', __DIR__.'/views'),
+        ->namespace('fof-pwa', __DIR__.'/views'),
 
     (new Extend\ServiceProvider())
         ->register(FlarumPWAServiceProvider::class),

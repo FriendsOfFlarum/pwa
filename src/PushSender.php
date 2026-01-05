@@ -90,8 +90,8 @@ class PushSender
         $auth = [
             'VAPID' => [
                 'subject'    => $this->url->to('forum')->base(),
-                'publicKey'  => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.public')),
-                'privateKey' => Util::url_encode($this->settings->get('askvortsov-pwa.vapid.private')),
+                'publicKey'  => Util::url_encode($this->settings->get('fof-pwa.vapid.public')),
+                'privateKey' => Util::url_encode($this->settings->get('fof-pwa.vapid.private')),
             ],
         ];
 
@@ -170,7 +170,7 @@ class PushSender
 
     protected function log(string $message): void
     {
-        if ($this->settings->get('askvortsov-pwa.debug', false)) {
+        if ($this->settings->get('fof-pwa.debug', false)) {
             $this->logger->info($message);
         }
     }

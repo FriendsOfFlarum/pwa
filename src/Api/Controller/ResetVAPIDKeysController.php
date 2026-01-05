@@ -46,15 +46,15 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
         try {
             $keys = VAPID::createVapidKeys();
         } catch (ErrorException $e) {
-            $this->settings->set('askvortsov-pwa.vapid.success', false);
-            $this->settings->set('askvortsov-pwa.vapid.error', $e->getMessage());
+            $this->settings->set('fof-pwa.vapid.success', false);
+            $this->settings->set('fof-pwa.vapid.error', $e->getMessage());
 
             throw new Exception($e->getMessage());
         }
 
-        $this->settings->set('askvortsov-pwa.vapid.success', true);
-        $this->settings->set('askvortsov-pwa.vapid.private', $keys['privateKey']);
-        $this->settings->set('askvortsov-pwa.vapid.public', $keys['publicKey']);
+        $this->settings->set('fof-pwa.vapid.success', true);
+        $this->settings->set('fof-pwa.vapid.private', $keys['privateKey']);
+        $this->settings->set('fof-pwa.vapid.public', $keys['publicKey']);
 
         $query = PushSubscription::where('vapid_public_key', $keys['publicKey']);
 

@@ -37,7 +37,7 @@ class OfflineController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->viewFactory->make('askvortsov-pwa::offline')->render();
+        $html = $this->viewFactory->make('fof-pwa::offline')->render();
 
         return new HtmlResponse($html);
     }

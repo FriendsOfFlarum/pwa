@@ -8,8 +8,35 @@ import PWALogoUploadButton from './PWALogoUploadButton';
 import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
 import type Mithril from 'mithril';
+import extractText from 'flarum/common/utils/extractText';
+
+interface StatusMessage {
+  type: 'success' | 'error' | 'warning' | 'info';
+  message: string;
+}
+
+interface PWAManifest {
+  description?: string;
+  [key: string]: any;
+}
+
+interface PWASettingsResponse {
+  data: {
+    attributes: {
+      manifest: PWAManifest;
+      sizes: number[];
+      status_messages: StatusMessage[];
+    };
+  };
+}
 
 export default class PWAPage extends ExtensionPage {
+  loading: boolean = false;
+  saving: boolean = false;
+  status_messages: StatusMessage[] = [];
+  manifest: PWAManifest = {};
+  sizes: number[] = [];
+
   oninit(vnode: Mithril.Vnode) {
     super.oninit(vnode);
 
@@ -17,7 +44,7 @@ export default class PWAPage extends ExtensionPage {
     this.refresh();
   }
 
-  refresh() {
+  refresh(): void {
     this.loading = true;
 
     this.status_messages = [];
@@ -25,30 +52,30 @@ export default class PWAPage extends ExtensionPage {
     this.sizes = [];
 
     app
-      .request({
+      .request<PWASettingsResponse>({
         method: 'GET',
         url: app.forum.attribute<string>('apiUrl') + '/pwa/settings',
       })
       .then((response) => {
-        this.manifest = response['data']['attributes']['manifest'];
-        this.sizes = response['data']['attributes']['sizes'];
-        this.status_messages = response['data']['attributes']['status_messages'];
+        this.manifest = response.data.attributes.manifest;
+        this.sizes = response.data.attributes.sizes;
+        this.status_messages = response.data.attributes.status_messages;
 
         this.loading = false;
         m.redraw();
       });
   }
 
-  checkExistence(url) {
+  checkExistence(url: string): boolean {
     let http = new XMLHttpRequest();
 
     http.open('HEAD', url, false);
     http.send();
 
-    return http.status != 404;
+    return http.status !== 404;
   }
 
-  content() {
+  content(): JSX.Element {
     if (this.loading || this.saving) {
       return (
         <div className="PWAPage">
@@ -63,11 +90,11 @@ export default class PWAPage extends ExtensionPage {
       <div className="PWAPage">
         <div className="container">
           <form>
-            <h2>{app.translator.trans('askvortsov-pwa.admin.pwa.heading')}</h2>
-            <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.text')}</div>
+            <h2>{app.translator.trans('fof-pwa.admin.pwa.heading')}</h2>
+            <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.text')}</div>
 
-            <div class="statusCheck">
-              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.status_check_heading')}</legend>
+            <div className="statusCheck">
+              <legend>{app.translator.trans('fof-pwa.admin.pwa.status_check_heading')}</legend>
               {this.status_messages.map((message) => (
                 <Alert type={message.type} dismissible={false}>
                   {[message.message]}
@@ -75,12 +102,12 @@ export default class PWAPage extends ExtensionPage {
               ))}
             </div>
 
-            <fieldset class="parent">
-              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.heading')}</legend>
+            <fieldset className="parent">
+              <legend>{app.translator.trans('fof-pwa.admin.pwa.maintenance.heading')}</legend>
               {this.buildSettingComponent({
-                setting: 'askvortsov-pwa.debug',
-                label: app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.debug_label'),
-                help: app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.debug_text'),
+                setting: 'fof-pwa.debug',
+                label: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_text'),
                 type: 'boolean',
               })}
               {this.buildSettingComponent(() => {
@@ -89,92 +116,92 @@ export default class PWAPage extends ExtensionPage {
                     <Button className="Button" onclick={this.resetVapid.bind(this)}>
                       Reset VAPID keys
                     </Button>
-                    <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.reset_vapid_text')}</div>
+                    <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.maintenance.reset_vapid_text')}</div>
                   </div>
                 );
               })}
             </fieldset>
 
-            <fieldset class="parent">
+            <fieldset className="parent">
               <fieldset>
-                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.about.heading')}</legend>
+                <legend>{app.translator.trans('fof-pwa.admin.pwa.about.heading')}</legend>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.shortName',
+                  setting: 'fof-pwa.shortName',
                   placeholder: this.setting('forum_title')(),
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.about.short_name_text'),
+                  label: app.translator.trans('fof-pwa.admin.pwa.about.short_name_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.about.short_name_text'),
                   type: 'text',
                 })}
               </fieldset>
               <fieldset>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.longName',
+                  setting: 'fof-pwa.longName',
                   placeholder: this.setting('forum_title')(),
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.about.long_name_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.about.long_name_text'),
+                  label: app.translator.trans('fof-pwa.admin.pwa.about.long_name_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.about.long_name_text'),
                   type: 'text',
                 })}
               </fieldset>
               <fieldset>
-                <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.about.description_text')}</div>
+                <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.about.description_text')}</div>
                 <textarea className="FormControl" value={this.manifest.description} disabled={true}>
                   {this.manifest.description}
                 </textarea>
               </fieldset>
             </fieldset>
 
-            <fieldset class="parent">
+            <fieldset className="parent">
               <fieldset>
-                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.colors.heading')}</legend>
+                <legend>{app.translator.trans('fof-pwa.admin.pwa.colors.heading')}</legend>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.themeColor',
+                  setting: 'fof-pwa.themeColor',
                   placeholder: this.setting('theme_primary_color')(),
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.theme_color_text'),
+                  label: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_text'),
                   type: 'color-preview',
                 })}
               </fieldset>
               <fieldset>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.backgroundColor',
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.colors.background_color_text'),
+                  setting: 'fof-pwa.backgroundColor',
+                  label: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_text'),
                   type: 'color-preview',
                 })}
               </fieldset>
             </fieldset>
 
-            <fieldset class="parent">
+            <fieldset className="parent">
               <fieldset>
-                <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.other.heading')}</legend>
+                <legend>{app.translator.trans('fof-pwa.admin.pwa.other.heading')}</legend>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.forcePortrait',
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.force_portrait_text'),
+                  setting: 'fof-pwa.forcePortrait',
+                  label: app.translator.trans('fof-pwa.admin.pwa.other.force_portrait_text'),
                   type: 'boolean',
                 })}
               </fieldset>
               <fieldset>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.userMaxSubscriptions',
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.user_max_subscriptions_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.other.user_max_subscriptions_text'),
+                  setting: 'fof-pwa.userMaxSubscriptions',
+                  label: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_text'),
                   type: 'number',
                   placeholder: 20,
                 })}
               </fieldset>
               <fieldset>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.pushNotifPreferenceDefaultToEmail',
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.push_notif_preference_default_to_email_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.other.push_notif_preference_default_to_email_text'),
+                  setting: 'fof-pwa.pushNotifPreferenceDefaultToEmail',
+                  label: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_text'),
                   type: 'bool',
                 })}
               </fieldset>
               <fieldset>
                 {this.buildSettingComponent({
-                  setting: 'askvortsov-pwa.windowControlsOverlay',
-                  label: app.translator.trans('askvortsov-pwa.admin.pwa.other.window_controls_overlay_label'),
-                  help: app.translator.trans('askvortsov-pwa.admin.pwa.other.window_controls_overlay_text', {
+                  setting: 'fof-pwa.windowControlsOverlay',
+                  label: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_text', {
                     compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1" />,
                     learnlink: (
                       <a
@@ -191,13 +218,13 @@ export default class PWAPage extends ExtensionPage {
             {this.submitButton()}
 
             <fieldset>
-              <legend>{app.translator.trans('askvortsov-pwa.admin.pwa.logo_heading')}</legend>
-              <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_text')}</div>
+              <legend>{app.translator.trans('fof-pwa.admin.pwa.logo_heading')}</legend>
+              <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.logo_text')}</div>
               {this.sizes.map((size) => {
                 return (
-                  <fieldset class="logoFieldset">
+                  <fieldset className="logoFieldset">
                     <PWALogoUploadButton size={size} />
-                    <div className="helpText">{app.translator.trans('askvortsov-pwa.admin.pwa.logo_size_text', { size })}</div>
+                    <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.logo_size_text', { size })}</div>
                   </fieldset>
                 );
               })}
@@ -210,30 +237,30 @@ export default class PWAPage extends ExtensionPage {
     );
   }
 
-  resetVapid() {
-    if (confirm(app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.reset_vapid_confirm'))) {
+  resetVapid(): void {
+    if (confirm(extractText(app.translator.trans('fof-pwa.admin.pwa.maintenance.reset_vapid_confirm')))) {
       app
-        .request({
+        .request<{ deleted: number }>({
           method: 'POST',
-          url: app.forum.attribute('apiUrl') + '/reset_vapid',
+          url: app.forum.attribute<string>('apiUrl') + '/reset_vapid',
         })
         .then((response) => {
           app.alerts.show(
             {
               type: 'success',
             },
-            app.translator.trans('askvortsov-pwa.admin.pwa.maintenance.reset_vapid_success', { count: response.deleted })
+            app.translator.trans('fof-pwa.admin.pwa.maintenance.reset_vapid_success', { count: response.deleted })
           );
         });
     }
   }
 
-  saveSettings(e) {
+  saveSettings(e: SubmitEvent): Promise<void> {
     const hex = /^(#[0-9a-f]{3}([0-9a-f]{3})?)?$/i;
 
-    if (!hex.test(this.setting('askvortsov-pwa.backgroundColor')())) {
+    if (!hex.test(this.setting('fof-pwa.backgroundColor')())) {
       alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
-      return;
+      return Promise.resolve();
     }
 
     return super.saveSettings(e);
