@@ -1,19 +1,20 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Serializer;
+namespace FoF\PWA\Api\Serializer;
 
-use Askvortsov\FlarumPWA\PushSubscription;
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
+use FoF\PWA\PushSubscription;
 use InvalidArgumentException;
 use Tobscure\JsonApi\Relationship;
 
@@ -29,16 +30,16 @@ class PushSubscriptionSerializer extends AbstractSerializer
      */
     protected function getDefaultAttributes($subscription): array
     {
-        if (! ($subscription instanceof PushSubscription)) {
+        if (!($subscription instanceof PushSubscription)) {
             throw new InvalidArgumentException(
                 get_class($this).' can only serialize instances of '.PushSubscription::class
             );
         }
 
         return [
-            'endpoint' => $subscription->endpoint,
+            'endpoint'       => $subscription->endpoint,
             'vapidPublicKey' => $subscription->vapid_public_key,
-            'expiresAt' => $this->formatDate($subscription->expires_at),
+            'expiresAt'      => $this->formatDate($subscription->expires_at),
         ];
     }
 

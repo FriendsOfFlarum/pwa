@@ -1,21 +1,22 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Job;
+namespace FoF\PWA\Job;
 
-use Askvortsov\FlarumPWA\FirebasePushSender;
-use Askvortsov\FlarumPWA\PushSender;
 use ErrorException;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Queue\AbstractJob;
+use FoF\PWA\FirebasePushSender;
+use FoF\PWA\PushSender;
 
 class SendPushNotificationsJob extends AbstractJob
 {

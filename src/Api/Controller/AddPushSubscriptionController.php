@@ -1,24 +1,25 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\Api\Serializer\PushSubscriptionSerializer;
-use Askvortsov\FlarumPWA\PushSubscription;
 use Carbon\Carbon;
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\NotAuthenticatedException;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\Api\Serializer\PushSubscriptionSerializer;
+use FoF\PWA\PushSubscription;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,6 +49,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
     /**
      * {@inheritdoc}
+     *
      * @throws NotAuthenticatedException
      * @throws InvalidParameterException|PermissionDeniedException
      */
@@ -58,7 +60,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
         $data = Arr::get($request->getParsedBody(), 'subscription', []);
 
-        if (! ($endpoint = Arr::get($data, 'endpoint'))) {
+        if (!($endpoint = Arr::get($data, 'endpoint'))) {
             throw new InvalidParameterException('Endpoint must be provided');
         }
 
@@ -69,7 +71,7 @@ class AddPushSubscriptionController extends AbstractCreateController
 
         $subscriptions = $actor->pushSubscriptions();
         $subscriptionCount = $subscriptions->count() + 1;
-        $maxSubscriptionCount = $this->settings->get('askvortsov-pwa.userMaxSubscriptions');
+        $maxSubscriptionCount = $this->settings->get('fof-pwa.userMaxSubscriptions');
 
         if ($subscriptionCount > $maxSubscriptionCount) {
             $subscriptions->orderBy('last_used')->take($subscriptionCount - $maxSubscriptionCount)->delete();
@@ -78,7 +80,7 @@ class AddPushSubscriptionController extends AbstractCreateController
         $host = parse_url($endpoint, PHP_URL_HOST);
         $allowed = Str::endsWith($host, static::$push_host_allowlist);
 
-        if (! $allowed) {
+        if (!$allowed) {
             throw new PermissionDeniedException();
         }
 
@@ -87,7 +89,7 @@ class AddPushSubscriptionController extends AbstractCreateController
         $subscription->user_id = $actor->id;
         $subscription->endpoint = $endpoint;
         $subscription->expires_at = isset($data['expirationTime']) ? Carbon::parse($data['expirationTime']) : null;
-        $subscription->vapid_public_key = $this->settings->get('askvortsov-pwa.vapid.public');
+        $subscription->vapid_public_key = $this->settings->get('fof-pwa.vapid.public');
         $subscription->keys = isset($data['keys']) ? json_encode($data['keys']) : null;
 
         $subscription->save();

@@ -1,15 +1,16 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA;
+namespace FoF\PWA;
 
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -41,11 +42,11 @@ trait PWATrait
 
         $icons = [];
         foreach (Util::$ICON_SIZES as $size) {
-            if ($path = $settings->get("askvortsov-pwa.icon_{$size}_path")) {
+            if ($path = $settings->get("fof-pwa.icon_{$size}_path")) {
                 $icons[] = [
-                    'src' => $assetsFilesystem->url($path),
+                    'src'   => $assetsFilesystem->url($path),
                     'sizes' => "{$size}x{$size}",
-                    'type' => 'image/png',
+                    'type'  => 'image/png',
                 ];
             }
         }
@@ -60,31 +61,31 @@ trait PWATrait
 
         $basePath = $this->getBasePath();
         $manifest = [
-            'name' => $settings->get('askvortsov-pwa.longName') ?: $settings->get('forum_title'),
+            'name'        => $settings->get('fof-pwa.longName') ?: $settings->get('forum_title'),
             'description' => $settings->get('forum_description', ''),
-            //"categories" => $settings->get('askvortsov-pwa.categories', []),
-            'start_url' => $basePath,
-            'scope' => $basePath,
-            'dir' => 'auto',
-            'theme_color' => $settings->get('askvortsov-pwa.themeColor') ?: $settings->get('theme_primary_color'),
-            'display' => 'standalone',
-            'icons' => $this->getIcons(),
+            //"categories" => $settings->get('fof-pwa.categories', []),
+            'start_url'   => $basePath,
+            'scope'       => $basePath,
+            'dir'         => 'auto',
+            'theme_color' => $settings->get('fof-pwa.themeColor') ?: $settings->get('theme_primary_color'),
+            'display'     => 'standalone',
+            'icons'       => $this->getIcons(),
         ];
 
-        if ($backgroundColor = $settings->get('askvortsov-pwa.backgroundColor')) {
+        if ($backgroundColor = $settings->get('fof-pwa.backgroundColor')) {
             $manifest['background_color'] = $backgroundColor;
         }
 
-        if ($settings->get('askvortsov-pwa.forcePortrait')) {
+        if ($settings->get('fof-pwa.forcePortrait')) {
             $manifest['orientation'] = 'portrait';
         }
 
-        $shortName = $settings->get('askvortsov-pwa.shortName');
+        $shortName = $settings->get('fof-pwa.shortName');
         if ($shortName) {
             $manifest['short_name'] = $shortName;
         }
 
-        $displayOverride = $settings->get('askvortsov-pwa.windowControlsOverlay');
+        $displayOverride = $settings->get('fof-pwa.windowControlsOverlay');
         if ($displayOverride) {
             $manifest['display_override'] = ['window-controls-overlay'];
         }

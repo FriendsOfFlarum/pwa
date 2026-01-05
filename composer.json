@@ -1,5 +1,5 @@
 {
-    "name": "askvortsov/flarum-pwa",
+    "name": "fof/pwa",
     "description": "Turn your flarum site into a progressive web app!",
     "keywords": [
         "flarum"
@@ -7,15 +7,17 @@
     "type": "flarum-extension",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/askvortsov1/flarum-pwa/issues",
-        "source": "https://github.com/askvortsov1/flarum-pwa",
+        "issues": "https://github.com/FriendsOfFlarum/pwa/issues",
+        "source": "https://github.com/FriendsOfFlarum/pwa",
         "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
     },
     "require": {
-        "flarum/core": "^1.7",
-        "minishlink/web-push": "^7.0",
-        "spomky-labs/base64url" : "^2.0",
-        "kreait/firebase-php": "^5.0"
+        "php": "^8.1",
+        "ext-gmp": "*",
+        "flarum/core": "^1.8",
+        "minishlink/web-push": "^9.0.2",
+        "spomky-labs/base64url" : "^2.0.4",
+        "kreait/firebase-php": "^7.16"
     },
     "suggest": {
         "ext-gmp": "This can improve push notification performance."
@@ -25,20 +27,24 @@
             "name": "Alexander Skvortsov",
             "email": "askvortsov@flarum.org",
             "role": "Developer"
+        },
+        {
+            "name": "IanM",
+            "role": "Developer"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Askvortsov\\FlarumPWA\\": "src/"
+            "FoF\\PWA\\": "src/"
         }
     },
     "extra": {
         "flarum-extension": {
-            "title": "Progressive Web App",
+            "title": "FoF PWA",
             "category": "feature",
             "icon": {
                 "name": "fas fa-mobile-alt",
-                "backgroundColor": "#6932D1",
+                "backgroundColor": "#e74c3c",
                 "color": "#fff"
             }
         },
@@ -62,6 +68,9 @@
     },
     "require-dev": {
         "flarum/phpstan": "^1.0"
+    },
+    "replace": {
+        "askvortsov/flarum-pwa": "*"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",

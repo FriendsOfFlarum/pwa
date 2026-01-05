@@ -1,22 +1,23 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PushSubscription;
 use ErrorException;
 use Exception;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\PushSubscription;
 use Laminas\Diactoros\Response\JsonResponse;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ResponseInterface;
@@ -34,6 +35,7 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws PermissionDeniedException|ErrorException
      * @throws Exception
      */
@@ -44,15 +46,15 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
         try {
             $keys = VAPID::createVapidKeys();
         } catch (ErrorException $e) {
-            $this->settings->set('askvortsov-pwa.vapid.success', false);
-            $this->settings->set('askvortsov-pwa.vapid.error', $e->getMessage());
+            $this->settings->set('fof-pwa.vapid.success', false);
+            $this->settings->set('fof-pwa.vapid.error', $e->getMessage());
 
             throw new Exception($e->getMessage());
         }
 
-        $this->settings->set('askvortsov-pwa.vapid.success', true);
-        $this->settings->set('askvortsov-pwa.vapid.private', $keys['privateKey']);
-        $this->settings->set('askvortsov-pwa.vapid.public', $keys['publicKey']);
+        $this->settings->set('fof-pwa.vapid.success', true);
+        $this->settings->set('fof-pwa.vapid.private', $keys['privateKey']);
+        $this->settings->set('fof-pwa.vapid.public', $keys['publicKey']);
 
         $query = PushSubscription::where('vapid_public_key', $keys['publicKey']);
 

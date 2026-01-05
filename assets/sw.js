@@ -1,4 +1,4 @@
-importScripts('assets/extensions/askvortsov-pwa/idb.js');
+importScripts('assets/extensions/fof-pwa/idb.js');
 
 const dbPromise = idb.openDB('keyval-store', 1, {
   upgrade(db) {

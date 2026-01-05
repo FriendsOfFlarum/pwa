@@ -1,15 +1,16 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA;
+namespace FoF\PWA;
 
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
@@ -17,9 +18,8 @@ use Flarum\User\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int $id
- * @property string $token
- *
+ * @property int       $id
+ * @property string    $token
  * @property User|null $user
  */
 class FirebasePushSubscription extends AbstractModel

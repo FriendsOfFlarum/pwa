@@ -1,22 +1,23 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
-use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\PWATrait;
+use FoF\PWA\Util;
 use Illuminate\Support\Arr;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManager;
@@ -32,21 +33,31 @@ class UploadLogoController extends UploadImageController
 
     /**
      * {@inheritdoc}
+     *
      * @throws PermissionDeniedException|RouteNotFoundException
      */
     public function data(ServerRequestInterface $request, Document $document)
     {
         RequestUtil::getActor($request)->assertAdmin();
 
-        $size = intval(Arr::get($request->getQueryParams(), 'size'));
+        $routeParams = $request->getAttribute('routeParameters', []);
+        $size = intval(Arr::get($routeParams, 'size'));
         $this->size = $size;
 
-        if (! in_array($size, Util::$ICON_SIZES)) {
+        if (!in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 
         $this->filenamePrefix = "pwa-icon-{$size}x{$size}";
-        $this->filePathSettingKey = "askvortsov-pwa.icon_{$size}_path";
+        $this->filePathSettingKey = "fof-pwa.icon_{$size}_path";
+
+        // Debug logging
+        $uploadedFiles = $request->getUploadedFiles();
+        resolve('log')->debug('PWA Upload', [
+            'uploaded_keys' => array_keys($uploadedFiles),
+            'looking_for'   => $this->filenamePrefix,
+            'size'          => $size,
+        ]);
 
         return parent::data($request, $document);
     }

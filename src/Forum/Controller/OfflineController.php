@@ -1,17 +1,18 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Forum\Controller;
+namespace FoF\PWA\Forum\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
+use FoF\PWA\PWATrait;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\View\Factory as ViewFactory;
@@ -36,7 +37,7 @@ class OfflineController implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->viewFactory->make('askvortsov-pwa::offline')->render();
+        $html = $this->viewFactory->make('fof-pwa::offline')->render();
 
         return new HtmlResponse($html);
     }

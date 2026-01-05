@@ -1,23 +1,24 @@
 <?php
 
 /*
- * This file is part of askvortsov/flarum-pwa
+ * This file is part of fof/pwa
  *
- *  Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
  *
- *  For detailed copyright and license information, please view the
- *  LICENSE file that was distributed with this source code.
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
  */
 
-namespace Askvortsov\FlarumPWA\Api\Controller;
+namespace FoF\PWA\Api\Controller;
 
-use Askvortsov\FlarumPWA\PWATrait;
-use Askvortsov\FlarumPWA\Util;
 use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\PWATrait;
+use FoF\PWA\Util;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -40,19 +41,21 @@ class DeleteLogoController extends AbstractDeleteController
 
     /**
      * {@inheritdoc}
+     *
      * @throws PermissionDeniedException|RouteNotFoundException
      */
     protected function delete(ServerRequestInterface $request): EmptyResponse
     {
         RequestUtil::getActor($request)->assertAdmin();
 
-        $size = Arr::get($request->getQueryParams(), 'size');
+        $routeParams = $request->getAttribute('routeParameters', []);
+        $size = Arr::get($routeParams, 'size');
 
-        if (! in_array($size, Util::$ICON_SIZES)) {
+        if (!in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 
-        $pathKey = "askvortsov-pwa.icon_{$size}_path";
+        $pathKey = "fof-pwa.icon_{$size}_path";
         $path = $this->settings->get($pathKey);
 
         $this->uploadDir->delete($path);
