@@ -21,7 +21,7 @@ return [
 
         $connection = $schema->getConnection();
         $prefix = $connection->getTablePrefix();
-        $tableName = $prefix . 'push_subscriptions';
+        $tableName = $prefix.'push_subscriptions';
 
         // Check current collation of the endpoint column
         $columns = $connection->select("SHOW FULL COLUMNS FROM `{$tableName}` WHERE Field = 'endpoint'");

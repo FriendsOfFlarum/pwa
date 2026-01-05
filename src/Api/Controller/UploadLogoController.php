@@ -55,8 +55,8 @@ class UploadLogoController extends UploadImageController
         $uploadedFiles = $request->getUploadedFiles();
         resolve('log')->debug('PWA Upload', [
             'uploaded_keys' => array_keys($uploadedFiles),
-            'looking_for' => $this->filenamePrefix,
-            'size' => $size
+            'looking_for'   => $this->filenamePrefix,
+            'size'          => $size,
         ]);
 
         return parent::data($request, $document);

@@ -22,7 +22,7 @@ return [
         $connection = $schema->getConnection();
         $prefix = $connection->getTablePrefix();
         $tableName = 'push_subscriptions';
-        $fullTableName = $prefix . $tableName;
+        $fullTableName = $prefix.$tableName;
 
         // Check if the unique constraint exists before dropping it
         // The unique index would have been created by the first migration
