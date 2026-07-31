@@ -81,7 +81,16 @@ class NotificationBuilder
         switch ($blueprint::getSubjectModel()) {
             case Discussion::class:
                 /** @var Discussion $subject */
-                $content = $this->getRelevantPostContent($subject);
+                // If the blueprint provides the post that triggered the notification
+                // (e.g. DiscussionRepliedBlueprint), use its content instead of
+                // falling back to the first post of the discussion.
+                $triggerPost = get_object_vars($blueprint)['post'] ?? null;
+
+                if ($triggerPost instanceof CommentPost) {
+                    $content = $triggerPost->formatContent();
+                } else {
+                    $content = $this->getRelevantPostContent($subject);
+                }
                 break;
             case Post::class:
                 /** @var Post $subject */
