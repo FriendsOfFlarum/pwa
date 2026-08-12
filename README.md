@@ -28,6 +28,18 @@ His original Discuss thread has been linked here: <https://discuss.flarum.org/d/
 composer require fof/pwa
 ```
 
+> [!NOTE]
+> Flarum 1.x depends on older versions of Monolog and `psr/log`. As a result, the latest compatible version of `kreait/firebase-php` depends on `firebase/php-jwt`, which Composer blocks due to the disputed advisory `PKSA-y2cr-5h3j-g3ys`.
+>
+> To install this extension on Flarum 1.x, add a targeted exception for this advisory and ignore the PHP platform requirement:
+>
+> ```sh
+> composer config policy.advisories.ignore-id '["PKSA-y2cr-5h3j-g3ys"]'
+> composer require fof/pwa --ignore-platform-req=php
+> ```
+>
+> The PHP platform requirement is ignored because newer `kreait/firebase-php` releases cannot be installed alongside Flarum 1.x dependencies, and the compatible releases do not declare support for PHP 8.5.
+
 ### Updating
 
 ```sh
