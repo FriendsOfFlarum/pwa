@@ -34,7 +34,7 @@ composer require fof/pwa
 > To install this extension on Flarum 1.x, add a targeted exception for this advisory and ignore the PHP platform requirement:
 >
 > ```sh
-> composer config policy.advisories.ignore-id '["PKSA-y2cr-5h3j-g3ys"]'
+> composer config policy.advisories.ignore-id PKSA-y2cr-5h3j-g3ys
 > composer require fof/pwa --ignore-platform-req=php
 > ```
 >
