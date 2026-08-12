@@ -66,6 +66,15 @@
             }
         }
     },
+    "config": {
+        "policy": {
+            "advisories": {
+                "ignore-id": [
+                    "PKSA-y2cr-5h3j-g3ys"
+                ]
+            }
+        }
+    },
     "require-dev": {
         "flarum/phpstan": "^1.0"
     },
