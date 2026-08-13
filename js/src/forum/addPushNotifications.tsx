@@ -158,8 +158,9 @@ export default function addPushNotifications(): void {
       items.add(
         'push-optin-default',
         <Alert
+          type="warning"
           dismissible={false}
-          attrs={{ className: 'pwa-setting-alert' }}
+          className="pwa-setting-alert"
           controls={[
             <Button
               className="Button Button--link"
