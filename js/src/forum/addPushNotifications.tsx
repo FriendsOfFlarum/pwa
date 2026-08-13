@@ -8,7 +8,7 @@ import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
 import icon from 'flarum/common/helpers/icon';
 import ItemList from 'flarum/common/utils/ItemList';
-import { usingAppleWebview, requestPushPermissions, requestPushPermissionState, requestPushToken, usePWABuilder } from './use-pwa-builder';
+import { usingAppleWebview, requestPushPermissions, usePWABuilder } from './use-pwa-builder';
 import type Mithril from 'mithril';
 import type { ServiceWorkerWithPush } from './types';
 
@@ -105,11 +105,12 @@ export default function addPushNotifications(): void {
       app.cache.pwaNotifsAlert = app.alerts.show(
         {
           controls: [
-            <Link className="Button Button--link" href={app.route('settings')} onclick={() => dismissAlert()}>
+            <Link className="Button Button--link" href={app.route('settings')} onclick={dismissAlert}>
               {app.translator.trans('fof-pwa.forum.alerts.optin_button')}
             </Link>,
           ],
-          ondismiss: dismissAlert,
+          // @ts-ignore - `ondismiss` is not working here because of bug in Flarum core
+          onremove: dismissAlert,
         },
         app.translator.trans('fof-pwa.forum.alerts.optin')
       );
