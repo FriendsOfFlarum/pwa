@@ -101,7 +101,9 @@ class NotificationBuilder
             ?: $discussion->firstPost
             ?: $discussion->comments()->first();
 
-        return $relevantPost?->formatContent() ?? '';
+        return $relevantPost instanceof CommentPost
+            ? $relevantPost->formatContent()
+            : '';
     }
 
     protected function getUrl(BlueprintInterface $blueprint): string
