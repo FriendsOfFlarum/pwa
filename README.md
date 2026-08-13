@@ -1,6 +1,6 @@
 # Flarum Progressive Web App
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/flarum-pwa.svg)](https://packagist.org/packages/fof/flarum-pwa)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/pwa.svg)](https://packagist.org/packages/fof/pwa)
 
 A [Flarum](http://flarum.org) extension. Progressive Web App support for Flarum. Configure a progressive web app for your flarum installation, all from your admin dashboard! Also now supports push notifications!
 
