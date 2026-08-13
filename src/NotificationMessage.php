@@ -18,16 +18,17 @@ class NotificationMessage
         protected string $title,
         protected string $body,
         protected ?string $url = null,
-    ) {}
+    ) {
+    }
 
     public function title(): string
     {
-        return $this->excerpt($this->title, 30 );
+        return $this->excerpt($this->title, 30);
     }
 
     public function body(): string
     {
-        return $this->excerpt($this->body, 200 );
+        return $this->excerpt($this->body, 200);
     }
 
     private function excerpt(string $text, int $max): string
