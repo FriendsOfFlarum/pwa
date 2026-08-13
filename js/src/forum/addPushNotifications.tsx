@@ -91,13 +91,13 @@ export default function addPushNotifications(): void {
     if (!pushConfigured()) return;
 
     const dismissAlert = (): void => {
-      localStorage.setItem('askvortsov-pwa.notif-alert.dismissed', JSON.stringify({ timestamp: new Date().getTime() }));
+      localStorage.setItem('fof-pwa.notif-alert.dismissed', JSON.stringify({ timestamp: new Date().getTime() }));
     };
 
     app.alerts.dismiss(app.cache.pwaNotifsAlert as number);
 
     if (
-      !localStorage.getItem('askvortsov-pwa.notif-alert.dismissed') &&
+      !localStorage.getItem('fof-pwa.notif-alert.dismissed') &&
       supportsBrowserNotifications() &&
       window.Notification.permission === 'default' &&
       pushEnabled()
