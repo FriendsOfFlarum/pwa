@@ -74,9 +74,10 @@ class NotificationBuilder
 
     protected function getBody(BlueprintInterface $blueprint): string
     {
-        // If the blueprint provides the post that triggered the notification,
-        // use its content instead of falling back to the discussion content.
-        $triggerPost = get_object_vars($blueprint)['post'] ?? null;
+        // If the blueprint provides the post that triggered the notification, use its content instead of falling back to the discussion content.
+        $properties = get_object_vars($blueprint);
+        // `reply` is the new reply, while `post` may be the referenced post.
+        $triggerPost = $properties['reply'] ?? $properties['post'] ?? null;
         if ($triggerPost instanceof CommentPost) {
             return $triggerPost->formatContent();
         }
