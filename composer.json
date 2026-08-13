@@ -9,7 +9,7 @@
     "support": {
         "issues": "https://github.com/FriendsOfFlarum/pwa/issues",
         "source": "https://github.com/FriendsOfFlarum/pwa",
-        "forum": "https://discuss.flarum.org/d/23219-progressive-web-app-and-push-notifications"
+        "forum": "https://discuss.flarum.org/d/39678-friendsofflarum-progressive-web-app"
     },
     "require": {
         "php": "^8.1",
