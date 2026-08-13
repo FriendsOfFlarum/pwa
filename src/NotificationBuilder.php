@@ -85,7 +85,7 @@ class NotificationBuilder
 
         return match ($blueprint::getSubjectModel()) {
             Discussion::class => $this->getRelevantPostContent($subject),
-            Post::class => $subject instanceof CommentPost
+            Post::class       => $subject instanceof CommentPost
                 ? $subject->formatContent()
                 : '',
             default => '',
