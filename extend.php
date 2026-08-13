@@ -27,23 +27,7 @@ $metaClosure = function (Document $document) {
     $forumApiDocument = $document->getForumApiDocument();
     $basePath = rtrim(Arr::get($forumApiDocument, 'data.attributes.basePath'), '/');
 
-    $settings = resolve(SettingsRepositoryInterface::class);
-    $appName = $settings->get('fof-pwa.shortName', $settings->get('fof-pwa.longName', $settings->get('forum_title')));
-
     $document->head[] = "<link rel='manifest' href='$basePath/webmanifest'>";
-    $document->head[] = "<meta name='apple-mobile-web-app-capable' content='yes'>";
-    $document->head[] = "<meta id='apple-style' name='apple-mobile-web-app-status-bar-style' content='default'>";
-    $document->head[] = "<meta id='apple-title' name='apple-mobile-web-app-title' content='$appName'>";
-
-    /** @var Cloud $assets */
-    $assets = resolve(Factory::class)->disk('flarum-assets');
-
-    foreach (Util::$ICON_SIZES as $size) {
-        if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
-            $assetUrl = $assets->url($sizePath);
-            $document->head[] = "<link id='apple-icon-$size' rel='apple-touch-icon' ".($size === 48 ? '' : "sizes='{$size}x$size'")." href='$assetUrl'>";
-        }
-    }
 };
 
 return [
