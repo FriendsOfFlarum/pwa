@@ -83,24 +83,24 @@ class NotificationBuilder
 
         $subject = $blueprint->getSubject();
 
-        return match ($blueprint::getSubjectModel()) {
-            Discussion::class => $this->getRelevantPostContent($subject),
-            Post::class       => $subject instanceof CommentPost
-                ? $subject->formatContent()
-                : '',
-            default => '',
-        };
-    }
-
-    protected function getRelevantPostContent($discussion): string
-    {
-        $relevantPost = $discussion->mostRelevantPost ?: $discussion->firstPost ?: $discussion->comments->first();
-
-        if ($relevantPost === null) {
-            return '';
+        if ($subject instanceof Discussion) {
+            return $this->getRelevantPostContent($subject);
         }
 
-        return $relevantPost->formatContent();
+        if ($subject instanceof CommentPost) {
+            return $subject->formatContent();
+        }
+
+        return '';
+    }
+
+    protected function getRelevantPostContent(Discussion $discussion): string
+    {
+        $relevantPost = $discussion->mostRelevantPost
+            ?: $discussion->firstPost
+            ?: $discussion->comments()->first();
+
+        return $relevantPost?->formatContent() ?? '';
     }
 
     protected function getUrl(BlueprintInterface $blueprint): string
