@@ -72,35 +72,24 @@ class NotificationBuilder
         return '';
     }
 
-    protected function getBody(BlueprintInterface $blueprint)
+    protected function getBody(BlueprintInterface $blueprint): string
     {
-        $content = '';
+        // If the blueprint provides the post that triggered the notification,
+        // use its content instead of falling back to the discussion content.
+        $triggerPost = get_object_vars($blueprint)['post'] ?? null;
+        if ($triggerPost instanceof CommentPost) {
+            return $triggerPost->formatContent();
+        }
 
         $subject = $blueprint->getSubject();
 
-        switch ($blueprint::getSubjectModel()) {
-            case Discussion::class:
-                /** @var Discussion $subject */
-                // If the blueprint provides the post that triggered the notification
-                // (e.g. DiscussionRepliedBlueprint), use its content instead of
-                // falling back to the first post of the discussion.
-                $triggerPost = get_object_vars($blueprint)['post'] ?? null;
-
-                if ($triggerPost instanceof CommentPost) {
-                    $content = $triggerPost->formatContent();
-                } else {
-                    $content = $this->getRelevantPostContent($subject);
-                }
-                break;
-            case Post::class:
-                /** @var Post $subject */
-                if ($subject instanceof CommentPost) {
-                    $content = $subject->formatContent();
-                }
-                break;
-        }
-
-        return $content;
+        return match ($blueprint::getSubjectModel()) {
+            Discussion::class => $this->getRelevantPostContent($subject),
+            Post::class => $subject instanceof CommentPost
+                ? $subject->formatContent()
+                : '',
+            default => '',
+        };
     }
 
     protected function getRelevantPostContent($discussion): string
