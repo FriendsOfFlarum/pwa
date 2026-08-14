@@ -14,10 +14,11 @@ namespace FoF\PWA\Api\Controller;
 
 use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
-use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\NotAuthenticatedException;
 use Flarum\User\Exception\PermissionDeniedException;
 use FoF\PWA\Api\Serializer\FirebasePushSubscriptionSerializer;
+use FoF\PWA\FirebasePushSubscription;
+use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
 use Tobscure\JsonApi\Exception\InvalidParameterException;
@@ -28,16 +29,19 @@ use Tobscure\JsonApi\Exception\InvalidParameterException;
  *      Or use a vanilla RequestHandlerInterface controller.
  *      @link https://docs.flarum.org/2.x/extend/api#endpoints
  */
-class AddFirebaseConfigController extends AbstractCreateController
+class AddFirebasePushSubscriptionController extends AbstractCreateController
 {
     /**
      * {@inheritdoc}
      */
     public $serializer = FirebasePushSubscriptionSerializer::class;
 
-    public function __construct(private SettingsRepositoryInterface $settings)
-    {
-    }
+    /**
+     * {@inheritdoc}
+     */
+    public $include = [
+        'user',
+    ];
 
     /**
      * {@inheritdoc}
@@ -47,16 +51,12 @@ class AddFirebaseConfigController extends AbstractCreateController
      */
     protected function data(ServerRequestInterface $request, Document $document)
     {
-        RequestUtil::getActor($request)->assertAdmin();
+        $actor = RequestUtil::getActor($request);
+        $actor->assertRegistered();
 
-        $files = $request->getUploadedFiles();
-
-        /** @var \Laminas\Diactoros\UploadedFile $config */
-        $config = $files['file'];
-
-        $this->settings->set(
-            'fof-pwa.firebaseConfig',
-            $config->getStream()->getContents(),
-        );
+        return FirebasePushSubscription::updateOrCreate([
+            'user_id' => $actor->id,
+            'token'   => Arr::get($request->getParsedBody(), 'token', []),
+        ]);
     }
 }

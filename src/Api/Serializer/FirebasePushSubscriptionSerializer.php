@@ -13,7 +13,10 @@
 namespace FoF\PWA\Api\Serializer;
 
 use Flarum\Api\Serializer\AbstractSerializer;
+use Flarum\Api\Serializer\BasicUserSerializer;
+use FoF\PWA\FirebasePushSubscription;
 use InvalidArgumentException;
+use Tobscure\JsonApi\Relationship;
 
 /**
  * @TODO: Remove this in favor of one of the API resource classes that were added.
@@ -21,31 +24,31 @@ use InvalidArgumentException;
  *      Or use a vanilla RequestHandlerInterface controller.
  *      @link https://docs.flarum.org/2.x/extend/api#endpoints
  */
-class PWASettingsSerializer extends AbstractSerializer
+class FirebasePushSubscriptionSerializer extends AbstractSerializer
 {
     /**
      * {@inheritdoc}
      */
-    protected $type = 'pwa-settings';
+    protected $type = 'firebase_push_subscriptions';
 
     /**
      * {@inheritdoc}
-     *
-     * @param array $settings
-     *
-     * @throws InvalidArgumentException
      */
-    protected function getDefaultAttributes($settings): array
+    protected function getDefaultAttributes($subscription): array
     {
+        if (!($subscription instanceof FirebasePushSubscription)) {
+            throw new InvalidArgumentException(
+                get_class($this).' can only serialize instances of '.FirebasePushSubscription::class
+            );
+        }
+
         return [
-            'manifest'        => $settings['manifest'],
-            'sizes'           => $settings['sizes'],
-            'status_messages' => $settings['status_messages'],
+            'token' => $subscription->token,
         ];
     }
 
-    public function getId(mixed $model): string
+    protected function user($subscription): Relationship
     {
-        return 'global';
+        return $this->hasOne($subscription, BasicUserSerializer::class);
     }
 }
