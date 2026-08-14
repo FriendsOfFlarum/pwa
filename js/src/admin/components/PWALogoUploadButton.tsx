@@ -1,5 +1,5 @@
 import app from 'flarum/admin/app';
-import UploadImageButton from 'flarum/admin/components/UploadImageButton';
+import UploadImageButton from 'flarum/common/components/UploadImageButton';
 import Button from 'flarum/common/components/Button';
 import classList from 'flarum/common/utils/classList';
 import type Mithril from 'mithril';

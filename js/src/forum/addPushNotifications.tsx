@@ -4,7 +4,7 @@ import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import { usingAppleWebview, requestPushPermissions, usePWABuilder } from './use-pwa-builder';
 import type Mithril from 'mithril';
@@ -144,7 +144,7 @@ export default function addPushNotifications(): void {
             </a>,
           ]}
         >
-          {icon('fas fa-exclamation-triangle')}
+          <Icon name="fas fa-exclamation-triangle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.no_browser_support')}
         </Alert>,
         10
@@ -187,7 +187,7 @@ export default function addPushNotifications(): void {
             </Button>,
           ]}
         >
-          {icon('fas fa-exclamation-circle')}
+          <Icon name="fas fa-exclamation-circle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default')}
         </Alert>,
         10
@@ -210,7 +210,7 @@ export default function addPushNotifications(): void {
             </a>,
           ]}
         >
-          {icon('fas fa-exclamation-triangle')}
+          <Icon name="fas fa-exclamation-triangle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_denied')}
         </Alert>,
         10
@@ -233,7 +233,7 @@ export default function addPushNotifications(): void {
             </Button>,
           ]}
         >
-          {icon('fas fa-exclamation-circle')}
+          <Icon name="fas fa-exclamation-circle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default')}
         </Alert>,
         10
