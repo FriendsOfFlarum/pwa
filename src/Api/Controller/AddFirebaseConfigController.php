@@ -29,14 +29,8 @@ class AddFirebaseConfigController extends AbstractCreateController
      */
     public $serializer = FirebasePushSubscriptionSerializer::class;
 
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    private $settings;
-
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct(private SettingsRepositoryInterface $settings)
     {
-        $this->settings = $settings;
     }
 
     /**

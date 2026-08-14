@@ -29,13 +29,10 @@ class DeleteLogoController extends AbstractDeleteController
 {
     use PWATrait;
 
-    protected SettingsRepositoryInterface $settings;
-
     protected Filesystem $uploadDir;
 
-    public function __construct(SettingsRepositoryInterface $settings, Factory $filesystemFactory)
+    public function __construct(protected SettingsRepositoryInterface $settings, Factory $filesystemFactory)
     {
-        $this->settings = $settings;
         $this->uploadDir = $filesystemFactory->disk('flarum-assets');
     }
 
@@ -44,7 +41,7 @@ class DeleteLogoController extends AbstractDeleteController
      *
      * @throws PermissionDeniedException|RouteNotFoundException
      */
-    protected function delete(ServerRequestInterface $request): EmptyResponse
+    protected function delete(ServerRequestInterface $request): void
     {
         RequestUtil::getActor($request)->assertAdmin();
 

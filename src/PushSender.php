@@ -34,26 +34,14 @@ class PushSender
 
     protected Cloud $assetsFilesystem;
 
-    protected LoggerInterface $logger;
-
-    protected SettingsRepositoryInterface $settings;
-
-    protected UrlGenerator $url;
-
-    protected NotificationBuilder $notifications;
-
     public function __construct(
         Factory $filesystemFactory,
-        LoggerInterface $logger,
-        SettingsRepositoryInterface $settings,
-        UrlGenerator $url,
-        NotificationBuilder $notifications,
+        protected LoggerInterface $logger,
+        protected SettingsRepositoryInterface $settings,
+        protected UrlGenerator $url,
+        protected NotificationBuilder $notifications,
     ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
-        $this->logger = $logger;
-        $this->settings = $settings;
-        $this->url = $url;
-        $this->notifications = $notifications;
     }
 
     /**

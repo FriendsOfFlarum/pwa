@@ -33,20 +33,8 @@ class ShowPWASettingsController extends AbstractShowController
      */
     public $serializer = PWASettingsSerializer::class;
 
-    protected SettingsRepositoryInterface $settings;
-
-    protected TranslatorInterface $translator;
-
-    protected UrlGenerator $url;
-
-    public function __construct(
-        SettingsRepositoryInterface $settings,
-        TranslatorInterface $translator,
-        UrlGenerator $url
-    ) {
-        $this->settings = $settings;
-        $this->translator = $translator;
-        $this->url = $url;
+    public function __construct(protected SettingsRepositoryInterface $settings, protected TranslatorInterface $translator, protected UrlGenerator $url)
+    {
     }
 
     /**
