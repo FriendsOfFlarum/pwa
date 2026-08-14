@@ -11,14 +11,25 @@
         "source": "https://github.com/FriendsOfFlarum/pwa",
         "forum": "https://discuss.flarum.org/d/39678-friendsofflarum-progressive-web-app"
     },
-    "require": {
-        "php": "^8.2",
-        "ext-gmp": "*",
-        "flarum/core": "^2.0.0-beta",
-        "minishlink/web-push": "^9.0.2",
-        "spomky-labs/base64url": "^2.0.4",
-        "kreait/firebase-php": "^7.16"
+    "scripts": {
+        "analyse:phpstan": "phpstan analyse",
+        "clear-cache:phpstan": "phpstan clear-result-cache"
     },
+    "scripts-descriptions": {
+        "analyse:phpstan": "Run static analysis"
+    },
+    "require": {
+        "php": "^8.3",
+        "ext-gmp": "*",
+        "flarum/core": "^2.0.0-rc.5",
+        "minishlink/web-push": "^11.0.0",
+        "spomky-labs/base64url": "^2.0.4",
+        "kreait/firebase-php": "^8.4.0"
+    },
+    "require-dev": {
+        "flarum/phpstan": "^2.0.0-rc.5"
+    },
+    "minimum-stability": "RC",
     "suggest": {
         "ext-gmp": "This can improve push notification performance."
     },
@@ -67,25 +78,11 @@
         }
     },
     "config": {
-        "policy": {
-            "advisories": {
-                "ignore-id": [
-                    "PKSA-y2cr-5h3j-g3ys"
-                ]
-            }
+        "allow-plugins": {
+            "php-http/discovery": true
         }
-    },
-    "require-dev": {
-        "flarum/phpstan": "^2.0.0-beta"
     },
     "replace": {
         "askvortsov/flarum-pwa": "*"
-    },
-    "scripts": {
-        "analyse:phpstan": "phpstan analyse",
-        "clear-cache:phpstan": "phpstan clear-result-cache"
-    },
-    "scripts-descriptions": {
-        "analyse:phpstan": "Run static analysis"
     }
 }
