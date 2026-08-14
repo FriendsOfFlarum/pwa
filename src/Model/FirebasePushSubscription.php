@@ -15,22 +15,21 @@ namespace FoF\PWA\Model;
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int       $id
  * @property string    $token
+ * @property int       $user_id
  * @property User|null $user
  */
+#[Fillable(['token', 'user_id'])]
 class FirebasePushSubscription extends AbstractModel
 {
     use ScopeVisibilityTrait;
 
     protected $table = 'firebase_push_subscriptions';
-
-    protected $fillable = [
-        'token', 'user_id',
-    ];
 
     public function user(): BelongsTo
     {

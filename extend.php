@@ -36,8 +36,6 @@ return [
         ->get('/pwa/settings', 'fof-pwa.settings', ApiController\ShowPWASettingsController::class)
         ->delete('/pwa/logo/{size}', 'fof-pwa.size_delete', ApiController\DeleteLogoController::class)
         ->post('/pwa/logo/{size}', 'fof-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/push', 'fof-pwa.push.create', ApiController\AddPushSubscriptionController::class)
-        ->post('/pwa/firebase-push-subscriptions', 'fof-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
         ->post('/pwa/firebase-config', 'fof-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
         ->post('/reset_vapid', 'fof-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
