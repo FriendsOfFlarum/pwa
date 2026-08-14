@@ -1,7 +1,5 @@
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
-import NotificationGrid from 'flarum/forum/components/NotificationGrid';
-import SettingsPage from 'flarum/forum/components/SettingsPage';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
@@ -117,7 +115,7 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend(NotificationGrid.prototype, 'notificationMethods', function (items: ItemList<any>) {
+  extend('flarum/forum/components/NotificationGrid', 'notificationMethods', function (items: ItemList<any>) {
     if (!pushConfigured()) return;
 
     items.add('push', {
@@ -127,7 +125,7 @@ export default function addPushNotifications(): void {
     });
   });
 
-  extend(SettingsPage.prototype, 'notificationsItems', function (items: ItemList<Mithril.Children>) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items: ItemList<Mithril.Children>) {
     if (usingAppleWebview() || !pushConfigured()) return;
 
     if (!supportsBrowserNotifications()) {
@@ -220,7 +218,7 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend(SettingsPage.prototype, 'notificationsItems', function (items: ItemList<Mithril.Children>) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items: ItemList<Mithril.Children>) {
     if (!usingAppleWebview()) return;
 
     if (!hasFirebasePushState('authorized')) {
@@ -243,11 +241,11 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend(SettingsPage.prototype, 'oncreate', function () {
+  extend('flarum/forum/components/SettingsPage', 'oncreate', function () {
     registerFirebasePushNotificationListeners();
   });
 
-  extend(SettingsPage.prototype, 'onremove', function () {
+  extend('flarum/forum/components/SettingsPage', 'onremove', function () {
     removeFirebasePushNotificationListeners();
   });
 }
