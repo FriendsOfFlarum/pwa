@@ -92,8 +92,8 @@ return [
         ->register(FlarumPWAServiceProvider::class),
 
     (new Extend\Conditional())
-        ->whenExtensionEnabled('flarum-gdpr', fn() => [
+        ->whenExtensionEnabled('flarum-gdpr', fn () => [
             (new UserData())
-                ->addType(PushSubscriptions::class)
+                ->addType(PushSubscriptions::class),
         ]),
 ];

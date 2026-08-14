@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of fof/pwa
+ *
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\PWA\Data;
 
 use Flarum\Gdpr\Data\Type;
@@ -13,12 +23,12 @@ class PushSubscriptions extends Type
     {
         $webPush = PushSubscription::where('user_id', $this->user->id)
             ->get()
-            ->map(fn($sub) => Arr::except($sub->toArray(), ['id', 'user_id']))
+            ->map(fn ($sub) => Arr::except($sub->toArray(), ['id', 'user_id']))
             ->toArray();
 
         $firebase = FirebasePushSubscription::where('user_id', $this->user->id)
             ->get()
-            ->map(fn($sub) => Arr::except($sub->toArray(), ['id', 'user_id']))
+            ->map(fn ($sub) => Arr::except($sub->toArray(), ['id', 'user_id']))
             ->toArray();
 
         if (empty($webPush) && empty($firebase)) {
@@ -29,10 +39,9 @@ class PushSubscriptions extends Type
             'pwa/subscriptions.json' => $this->encodeForExport([
                 'web_push' => $webPush,
                 'firebase' => $firebase,
-            ])
+            ]),
         ];
     }
-
 
     public static function anonymizeDescription(): string
     {
