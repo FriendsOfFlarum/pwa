@@ -27,7 +27,8 @@
         "kreait/firebase-php": "^8.4.0"
     },
     "require-dev": {
-        "flarum/phpstan": "^2.0.0-rc.5"
+        "flarum/phpstan": "^2.0.0-rc.5",
+        "flarum/gdpr": "^2.0@RC"
     },
     "minimum-stability": "RC",
     "suggest": {
