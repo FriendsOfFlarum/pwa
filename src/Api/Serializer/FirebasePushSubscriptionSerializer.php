@@ -14,7 +14,7 @@ namespace FoF\PWA\Api\Serializer;
 
 use Flarum\Api\Serializer\AbstractSerializer;
 use Flarum\Api\Serializer\BasicUserSerializer;
-use FoF\PWA\FirebasePushSubscription;
+use FoF\PWA\Model\FirebasePushSubscription;
 use InvalidArgumentException;
 use Tobscure\JsonApi\Relationship;
 

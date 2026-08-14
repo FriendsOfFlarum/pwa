@@ -17,7 +17,7 @@ use Flarum\Http\RequestUtil;
 use Flarum\User\Exception\NotAuthenticatedException;
 use Flarum\User\Exception\PermissionDeniedException;
 use FoF\PWA\Api\Serializer\FirebasePushSubscriptionSerializer;
-use FoF\PWA\FirebasePushSubscription;
+use FoF\PWA\Model\FirebasePushSubscription;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Tobscure\JsonApi\Document;
