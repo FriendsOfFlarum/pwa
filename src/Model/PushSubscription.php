@@ -36,7 +36,7 @@ class PushSubscription extends AbstractModel
 
     protected $casts = [
         'expires_at' => 'datetime',
-        'keys' => 'array',
+        'keys'       => 'array',
     ];
 
     public function user(): BelongsTo
