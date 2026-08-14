@@ -3,8 +3,7 @@
 /*
  * This file is part of fof/pwa
  *
- * Copyright (c) 2021 Alexander Skvortsov.
- * Copyright (c) 2025 FriendsOfFlarum
+ * Copyright (c) 2026 FriendsOfFlarum
  *
  * For detailed copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
@@ -36,6 +35,7 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
     public const array PUSH_HOST_ALLOWLIST = [
         'android.googleapis.com',
         'fcm.googleapis.com',
+        'jmt17.google.com',
         'updates.push.services.mozilla.com',
         'updates-autopush.stage.mozaws.net',
         'updates-autopush.dev.mozaws.net',
