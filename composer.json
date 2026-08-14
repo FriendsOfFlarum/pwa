@@ -76,7 +76,8 @@
         }
     },
     "require-dev": {
-        "flarum/phpstan": "^1.0"
+        "flarum/phpstan": "^1.0",
+        "flarum/gdpr": "^1.8"
     },
     "replace": {
         "askvortsov/flarum-pwa": "*"
