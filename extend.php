@@ -22,10 +22,6 @@ use FoF\PWA\Forum\Controller as ForumController;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
-use Flarum\Api\Context;
-use Flarum\Api\Endpoint;
-use Flarum\Api\Resource;
-use Flarum\Api\Schema;
 
 $metaClosure = function (Document $document) {
     $forumApiDocument = $document->getForumApiDocument();

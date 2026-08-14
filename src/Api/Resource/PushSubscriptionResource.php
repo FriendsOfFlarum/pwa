@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of fof/pwa
+ *
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\PWA\Api\Resource;
 
-use Flarum\Api\Context;
-use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
 use Flarum\Api\Schema;
 use Flarum\Api\Sort\SortColumn;
@@ -43,6 +51,7 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
 
             /**
              * @todo migrate logic from old serializer and controllers to this API Resource.
+             *
              * @see https://docs.flarum.org/2.x/extend/api#api-resources
              */
 
@@ -52,7 +61,6 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
                 ->minLength(3)
                 ->maxLength(255)
                 ->writable(),
-
 
             Schema\Relationship\ToOne::make('user')
                 ->includable()
