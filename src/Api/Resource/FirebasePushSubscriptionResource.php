@@ -14,8 +14,7 @@ namespace FoF\PWA\Api\Resource;
 
 use Flarum\Api\Resource;
 use Flarum\Api\Schema;
-use Flarum\Api\Sort\SortColumn;
-use FoF\PWA\FirebasePushSubscription;
+use FoF\PWA\Model\FirebasePushSubscription;
 use Illuminate\Database\Eloquent\Builder;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 

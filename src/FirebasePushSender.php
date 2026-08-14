@@ -14,6 +14,7 @@ namespace FoF\PWA;
 
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
+use FoF\PWA\Model\FirebasePushSubscription;
 use Illuminate\Container\Container;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Exception\Messaging\AuthenticationError;

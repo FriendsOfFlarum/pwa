@@ -17,7 +17,7 @@ use Exception;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\Exception\PermissionDeniedException;
-use FoF\PWA\PushSubscription;
+use FoF\PWA\Model\PushSubscription;
 use Laminas\Diactoros\Response\JsonResponse;
 use Minishlink\WebPush\VAPID;
 use Psr\Http\Message\ResponseInterface;

@@ -19,6 +19,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
 use FoF\PWA\Forum\Controller as ForumController;
+use FoF\PWA\Model\PushSubscription;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
