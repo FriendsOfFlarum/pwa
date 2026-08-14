@@ -71,7 +71,7 @@ class FirebasePushSubscriptionResource extends Resource\AbstractDatabaseResource
             if ($token) {
                 return FirebasePushSubscription::query()->firstOrNew([
                     'user_id' => $actor->id,
-                    'token' => $token,
+                    'token'   => $token,
                 ]);
             }
         }
