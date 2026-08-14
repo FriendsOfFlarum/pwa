@@ -15,9 +15,11 @@ namespace FoF\PWA;
 use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
+use Flarum\Gdpr\Extend\UserData;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
+use FoF\PWA\Data\PushSubscriptions;
 use FoF\PWA\Forum\Controller as ForumController;
 use FoF\PWA\Model\PushSubscription;
 use Illuminate\Contracts\Filesystem\Cloud;
@@ -91,4 +93,10 @@ return [
     new Extend\ApiResource(Api\Resource\FirebasePushSubscriptionResource::class),
     new Extend\ApiResource(Api\Resource\PWASettingsResource::class),
     new Extend\ApiResource(Api\Resource\PushSubscriptionResource::class),
+
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-gdpr', fn () => [
+            (new UserData())
+                ->addType(PushSubscriptions::class),
+        ]),
 ];
