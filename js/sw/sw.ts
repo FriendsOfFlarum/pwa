@@ -3,8 +3,6 @@ import { openDB } from 'idb';
 export {};
 declare const self: ServiceWorkerGlobalScope;
 
-importScripts('assets/extensions/fof-pwa/idb.js');
-
 const dbPromise = openDB('keyval-store', 1, {
   upgrade(db) {
     db.createObjectStore('keyval');
@@ -12,13 +10,13 @@ const dbPromise = openDB('keyval-store', 1, {
 });
 
 const idbKeyval = {
-  async get(key) {
+  async get(key: IDBValidKey) {
     return (await dbPromise).get('keyval', key);
   },
-  async set(key, val) {
+  async set(key: IDBValidKey, val: unknown) {
     return (await dbPromise).put('keyval', val, key);
   },
-  async delete(key) {
+  async delete(key: IDBValidKey) {
     return (await dbPromise).delete('keyval', key);
   },
   async clear() {
@@ -31,7 +29,10 @@ const idbKeyval = {
 
 const CACHE = 'pwa-page';
 
-const forumPayload = {};
+const forumPayload: {
+  debug?: boolean;
+  clockworkEnabled?: boolean;
+} = {};
 
 // Replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline";
 const offlineFallbackPage = 'offline';
@@ -50,7 +51,9 @@ self.addEventListener('install', function (event) {
 
   const receiveInfo = async () => {
     const payload = await idbKeyval.get('flarum.forumPayload');
-    Object.assign(forumPayload, payload);
+    if (payload && typeof payload === 'object') {
+      Object.assign(forumPayload, payload);
+    }
   };
 
   receiveInfo();
@@ -75,7 +78,13 @@ self.addEventListener('fetch', function (event) {
         }
 
         return caches.open(CACHE).then(function (cache) {
-          return cache.match(offlineFallbackPage);
+          return cache.match(offlineFallbackPage).then(function (response) {
+            if (!response) {
+              throw error;
+            }
+
+            return response;
+          });
         });
       })
   );
@@ -94,26 +103,31 @@ self.addEventListener('refreshOffline', function () {
 });
 
 self.addEventListener('push', function (event) {
-  function isJSON(str) {
+  function isJSON(str: string): boolean {
     try {
-      return JSON.parse(str) && !!str;
-    } catch (e) {
+      return Boolean(JSON.parse(str) && str);
+    } catch {
       return false;
     }
   }
 
-  if (isJSON(event.data.text())) {
-    console.log(event.data.json());
+  const data = event.data;
+
+  if (data && isJSON(data.text())) {
+    const payload = data.json();
+
+    console.log(payload);
+
     const options = {
-      body: event.data.json().content,
-      icon: event.data.json().icon,
-      badge: event.data.json().badge,
+      body: payload.content,
+      icon: payload.icon,
+      badge: payload.badge,
       data: {
-        link: event.data.json().link,
+        link: payload.link,
       },
     };
 
-    const promiseChain = self.registration.showNotification(event.data.json().title, options);
+    const promiseChain = self.registration.showNotification(payload.title, options);
 
     event.waitUntil(promiseChain);
   } else {
@@ -125,7 +139,6 @@ self.addEventListener('notificationclick', function (event) {
   event.notification.close();
 
   if (event.notification.data && event.notification.data.link) {
-    const promiseChain = self.clients.openWindow(event.notification.data.link);
-    event.waitUntil(promiseChain);
+    event.waitUntil(self.clients.openWindow(event.notification.data.link));
   }
 });
