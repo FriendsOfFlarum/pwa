@@ -13,20 +13,22 @@
 namespace FoF\PWA\Data;
 
 use Flarum\Gdpr\Data\Type;
-use FoF\PWA\FirebasePushSubscription;
-use FoF\PWA\PushSubscription;
+use FoF\PWA\Model\FirebasePushSubscription;
+use FoF\PWA\Model\PushSubscription;
 use Illuminate\Support\Arr;
 
 class PushSubscriptions extends Type
 {
     public function export(): ?array
     {
-        $webPush = PushSubscription::where('user_id', $this->user->id)
+        $webPush = PushSubscription::query()
+            ->where('user_id', $this->user->id)
             ->get()
             ->map(fn ($sub) => Arr::except($sub->toArray(), ['id', 'user_id']))
             ->toArray();
 
-        $firebase = FirebasePushSubscription::where('user_id', $this->user->id)
+        $firebase = FirebasePushSubscription::query()
+            ->where('user_id', $this->user->id)
             ->get()
             ->map(fn ($sub) => Arr::except($sub->toArray(), ['id', 'user_id']))
             ->toArray();

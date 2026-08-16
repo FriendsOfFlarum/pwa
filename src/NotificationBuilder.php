@@ -14,17 +14,17 @@ namespace FoF\PWA;
 
 use Flarum\Discussion\Discussion;
 use Flarum\Http\UrlGenerator;
+use Flarum\Locale\TranslatorInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\MailableInterface;
 use Flarum\Post\CommentPost;
 use Flarum\Post\Post;
 use Flarum\User\User;
 use ReflectionClass;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NotificationBuilder
 {
-    const SUPPORTED_NON_EMAIL_BLUEPRINTS = [
+    const array SUPPORTED_NON_EMAIL_BLUEPRINTS = [
         "Flarum\Likes\Notification\PostLikedBlueprint",
         "Flarum\Notification\DiscussionRenamedBlueprint",
     ];
