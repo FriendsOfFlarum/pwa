@@ -27,6 +27,7 @@ class WebManifestController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new JsonResponse($this->buildManifest());
+        return (new JsonResponse($this->buildManifest()))
+            ->withHeader('Content-Type', 'application/manifest+json');
     }
 }
