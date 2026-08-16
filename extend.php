@@ -13,7 +13,7 @@
 namespace FoF\PWA;
 
 use Flarum\Api\Resource\ForumResource;
-use Flarum\Api\Schema\Str;
+use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Gdpr\Extend\UserData;
@@ -65,18 +65,14 @@ return [
             $settings = resolve(SettingsRepositoryInterface::class);
             $assets = resolve(Factory::class)->disk('flarum-assets');
 
-            $fields = [];
-
-            foreach (Util::$ICON_SIZES as $size) {
-                $fields[] = Str::make("pwa-icon-{$size}x{$size}Url")
-                    ->get(function (object $model) use ($settings, $assets, $size) {
-                        $sizePath = $settings->get("fof-pwa.icon_{$size}_path");
-
-                        return $sizePath ? $assets->url($sizePath) : null;
-                    });
-            }
-
-            return $fields;
+            return array_map(
+                fn ($size) => Schema\Str::make("pwa-icon-{$size}x{$size}Url")
+                    ->get(fn (object $model) => ($path = $settings->get("fof-pwa.icon_{$size}_path"))
+                        ? $assets->url($path)
+                        : null
+                    ),
+                Util::$ICON_SIZES
+            );
         }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
