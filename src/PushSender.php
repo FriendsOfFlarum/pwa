@@ -69,7 +69,7 @@ class PushSender
                 $notifications[] = [
                     'subscription' => Subscription::create([
                         'endpoint' => $subscription->endpoint,
-                        'keys'     => $subscription->keys
+                        'keys'     => $subscription->keys,
                     ]),
                     'payload' => $payload,
                 ];
