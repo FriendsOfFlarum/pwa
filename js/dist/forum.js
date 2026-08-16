@@ -1,3 +1,1015 @@
-/*! For license information please see forum.js.LICENSE.txt */
-(()=>{var t={715(t){t.exports=function(t,e){this.v=t,this.k=e},t.exports.__esModule=!0,t.exports.default=t.exports},262(t,e,r){var n=r(621);function o(){var e,r,a="function"==typeof Symbol?Symbol:{},s=a.iterator||"@@iterator",i=a.toStringTag||"@@toStringTag";function u(t,o,a,s){var i=o&&o.prototype instanceof f?o:f,u=Object.create(i.prototype);return n(u,"_invoke",function(t,n,o){var a,s,i,u=0,f=o||[],p=!1,l={p:0,n:0,v:e,a:d,f:d.bind(e,4),d:function(t,r){return a=t,s=0,i=e,l.n=r,c}};function d(t,n){for(s=t,i=n,r=0;!p&&u&&!o&&r<f.length;r++){var o,a=f[r],d=l.p,m=a[2];t>3?(o=m===n)&&(i=a[(s=a[4])?5:(s=3,3)],a[4]=a[5]=e):a[0]<=d&&((o=t<2&&d<a[1])?(s=0,l.v=n,l.n=a[1]):d<m&&(o=t<3||a[0]>n||n>m)&&(a[4]=t,a[5]=n,l.n=m,s=0))}if(o||t>1)return c;throw p=!0,n}return function(o,f,m){if(u>1)throw TypeError("Generator is already running");for(p&&1===f&&d(f,m),s=f,i=m;(r=s<2?e:i)||!p;){a||(s?s<3?(s>1&&(l.n=-1),d(s,i)):l.n=i:l.v=i);try{if(u=2,a){if(s||(o="next"),r=a[o]){if(!(r=r.call(a,i)))throw TypeError("iterator result is not an object");if(!r.done)return r;i=r.value,s<2&&(s=0)}else 1===s&&(r=a.return)&&r.call(a),s<2&&(i=TypeError("The iterator does not provide a '"+o+"' method"),s=1);a=e}else if((r=(p=l.n<0)?i:t.call(n,l))!==c)break}catch(t){a=e,s=1,i=t}finally{u=1}}return{value:r,done:p}}}(t,a,s),!0),u}var c={};function f(){}function p(){}function l(){}r=Object.getPrototypeOf;var d=[][s]?r(r([][s]())):(n(r={},s,function(){return this}),r),m=l.prototype=f.prototype=Object.create(d);function v(t){return Object.setPrototypeOf?Object.setPrototypeOf(t,l):(t.__proto__=l,n(t,i,"GeneratorFunction")),t.prototype=Object.create(m),t}return p.prototype=l,n(m,"constructor",l),n(l,"constructor",p),p.displayName="GeneratorFunction",n(l,i,"GeneratorFunction"),n(m),n(m,i,"Generator"),n(m,s,function(){return this}),n(m,"toString",function(){return"[object Generator]"}),(t.exports=o=function(){return{w:u,m:v}},t.exports.__esModule=!0,t.exports.default=t.exports)()}t.exports=o,t.exports.__esModule=!0,t.exports.default=t.exports},652(t,e,r){var n=r(752);t.exports=function(t,e,r,o,a){var s=n(t,e,r,o,a);return s.next().then(function(t){return t.done?t.value:s.next()})},t.exports.__esModule=!0,t.exports.default=t.exports},752(t,e,r){var n=r(262),o=r(102);t.exports=function(t,e,r,a,s){return new o(n().w(t,e,r,a),s||Promise)},t.exports.__esModule=!0,t.exports.default=t.exports},102(t,e,r){var n=r(715),o=r(621);t.exports=function t(e,r){function a(t,o,s,i){try{var u=e[t](o),c=u.value;return c instanceof n?r.resolve(c.v).then(function(t){a("next",t,s,i)},function(t){a("throw",t,s,i)}):r.resolve(c).then(function(t){u.value=t,s(u)},function(t){return a("throw",t,s,i)})}catch(t){i(t)}}var s;this.next||(o(t.prototype),o(t.prototype,"function"==typeof Symbol&&Symbol.asyncIterator||"@asyncIterator",function(){return this})),o(this,"_invoke",function(t,e,n){function o(){return new r(function(e,r){a(t,n,e,r)})}return s=s?s.then(o,o):o()},!0)},t.exports.__esModule=!0,t.exports.default=t.exports},621(t){function e(r,n,o,a){var s=Object.defineProperty;try{s({},"",{})}catch(r){s=0}t.exports=e=function(t,r,n,o){function a(r,n){e(t,r,function(t){return this._invoke(r,n,t)})}r?s?s(t,r,{value:n,enumerable:!o,configurable:!o,writable:!o}):t[r]=n:(a("next",0),a("throw",1),a("return",2))},t.exports.__esModule=!0,t.exports.default=t.exports,e(r,n,o,a)}t.exports=e,t.exports.__esModule=!0,t.exports.default=t.exports},390(t){t.exports=function(t){var e=Object(t),r=[];for(var n in e)r.unshift(n);return function t(){for(;r.length;)if((n=r.pop())in e)return t.value=n,t.done=!1,t;return t.done=!0,t}},t.exports.__esModule=!0,t.exports.default=t.exports},0(t,e,r){var n=r(715),o=r(262),a=r(652),s=r(752),i=r(102),u=r(390),c=r(776);function f(){"use strict";var e=o(),r=e.m(f),p=(Object.getPrototypeOf?Object.getPrototypeOf(r):r.__proto__).constructor;function l(t){var e="function"==typeof t&&t.constructor;return!!e&&(e===p||"GeneratorFunction"===(e.displayName||e.name))}var d={throw:1,return:2,break:3,continue:3};function m(t){var e,r;return function(n){e||(e={stop:function(){return r(n.a,2)},catch:function(){return n.v},abrupt:function(t,e){return r(n.a,d[t],e)},delegateYield:function(t,o,a){return e.resultName=o,r(n.d,c(t),a)},finish:function(t){return r(n.f,t)}},r=function(t,r,o){n.p=e.prev,n.n=e.next;try{return t(r,o)}finally{e.next=n.n}}),e.resultName&&(e[e.resultName]=n.v,e.resultName=void 0),e.sent=n.v,e.next=n.n;try{return t.call(this,e)}finally{n.p=e.prev,n.n=e.next}}}return(t.exports=f=function(){return{wrap:function(t,r,n,o){return e.w(m(t),r,n,o&&o.reverse())},isGeneratorFunction:l,mark:e.m,awrap:function(t,e){return new n(t,e)},AsyncIterator:i,async:function(t,e,r,n,o){return(l(e)?s:a)(m(t),e,r,n,o)},keys:u,values:c}},t.exports.__esModule=!0,t.exports.default=t.exports)()}t.exports=f,t.exports.__esModule=!0,t.exports.default=t.exports},776(t,e,r){var n=r(959).default;t.exports=function(t){if(null!=t){var e=t["function"==typeof Symbol&&Symbol.iterator||"@@iterator"],r=0;if(e)return e.call(t);if("function"==typeof t.next)return t;if(!isNaN(t.length))return{next:function(){return t&&r>=t.length&&(t=void 0),{value:t&&t[r++],done:!t}}}}throw new TypeError(n(t)+" is not iterable")},t.exports.__esModule=!0,t.exports.default=t.exports},959(t){function e(r){return t.exports=e="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},t.exports.__esModule=!0,t.exports.default=t.exports,e(r)}t.exports=e,t.exports.__esModule=!0,t.exports.default=t.exports},879(t,e,r){var n=r(0)();t.exports=n;try{regeneratorRuntime=n}catch(t){"object"==typeof globalThis?globalThis.regeneratorRuntime=n:Function("r","regeneratorRuntime = r")(n)}}};const e={};function r(n){const o=e[n];if(void 0!==o)return o.exports;const a=e[n]={exports:{}};return t[n](a,a.exports,r),a.exports}r.n=t=>{const e=t&&t.__esModule?()=>t.default:()=>t;return r.d(e,{a:e}),e},r.d=(t,e)=>{if(Array.isArray(e))for(var n=0;n<e.length;){var o=e[n++],a=e[n++];r.o(t,o)?0===a&&n++:0===a?Object.defineProperty(t,o,{enumerable:!0,value:e[n++]}):Object.defineProperty(t,o,{enumerable:!0,get:a})}else for(var o in e)r.o(e,o)&&!r.o(t,o)&&Object.defineProperty(t,o,{enumerable:!0,get:e[o]})},r.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),(()=>{"use strict";function t(t,e,r,n,o,a,s){try{var i=t[a](s),u=i.value}catch(t){return void r(t)}i.done?e(u):Promise.resolve(u).then(n,o)}function e(e){return function(){var r=this,n=arguments;return new Promise(function(o,a){var s=e.apply(r,n);function i(e){t(s,o,a,i,u,"next",e)}function u(e){t(s,o,a,i,u,"throw",e)}i(void 0)})}}var n=r(879),o=r.n(n);const a=flarum.core.compat["forum/app"];var s=r.n(a);const i=flarum.core.compat["common/extend"];function u(){return u=Object.assign?Object.assign.bind():function(t){for(var e=1;e<arguments.length;e++){var r=arguments[e];for(var n in r)({}).hasOwnProperty.call(r,n)&&(t[n]=r[n])}return t},u.apply(null,arguments)}var c,f,p=new WeakMap,l=new WeakMap,d=new WeakMap,v=new WeakMap,w=new WeakMap,h={get:function(t,e,r){if(t instanceof IDBTransaction){if("done"===e)return l.get(t);if("objectStoreNames"===e)return t.objectStoreNames||d.get(t);if("store"===e)return r.objectStoreNames[1]?void 0:r.objectStore(r.objectStoreNames[0])}return x(t[e])},set:function(t,e,r){return t[e]=r,!0},has:function(t,e){return t instanceof IDBTransaction&&("done"===e||"store"===e)||e in t}};function b(t){return"function"==typeof t?(e=t)!==IDBDatabase.prototype.transaction||"objectStoreNames"in IDBTransaction.prototype?(f||(f=[IDBCursor.prototype.advance,IDBCursor.prototype.continue,IDBCursor.prototype.continuePrimaryKey])).includes(e)?function(){for(var t=arguments.length,r=new Array(t),n=0;n<t;n++)r[n]=arguments[n];return e.apply(y(this),r),x(p.get(this))}:function(){for(var t=arguments.length,r=new Array(t),n=0;n<t;n++)r[n]=arguments[n];return x(e.apply(y(this),r))}:function(t){for(var r=arguments.length,n=new Array(r>1?r-1:0),o=1;o<r;o++)n[o-1]=arguments[o];var a=e.call.apply(e,[y(this),t].concat(n));return d.set(a,t.sort?t.sort():[t]),x(a)}:(t instanceof IDBTransaction&&function(t){if(!l.has(t)){var e=new Promise(function(e,r){var n=function(){t.removeEventListener("complete",o),t.removeEventListener("error",a),t.removeEventListener("abort",a)},o=function(){e(),n()},a=function(){r(t.error||new DOMException("AbortError","AbortError")),n()};t.addEventListener("complete",o),t.addEventListener("error",a),t.addEventListener("abort",a)});l.set(t,e)}}(t),r=t,(c||(c=[IDBDatabase,IDBObjectStore,IDBIndex,IDBCursor,IDBTransaction])).some(function(t){return r instanceof t})?new Proxy(t,h):t);var e,r}function x(t){if(t instanceof IDBRequest)return e=t,(r=new Promise(function(t,r){var n=function(){e.removeEventListener("success",o),e.removeEventListener("error",a)},o=function(){t(x(e.result)),n()},a=function(){r(e.error),n()};e.addEventListener("success",o),e.addEventListener("error",a)})).then(function(t){t instanceof IDBCursor&&p.set(t,e)}).catch(function(){}),w.set(r,e),r;var e,r;if(v.has(t))return v.get(t);var n=b(t);return n!==t&&(v.set(t,n),w.set(n,t)),n}var y=function(t){return w.get(t)};function g(t,e,r){var n=void 0===r?{}:r,o=n.blocked,a=n.upgrade,s=n.blocking,i=n.terminated,u=indexedDB.open(t,e),c=x(u);return a&&u.addEventListener("upgradeneeded",function(t){a(x(u.result),t.oldVersion,t.newVersion,x(u.transaction))}),o&&u.addEventListener("blocked",function(){return o()}),c.then(function(t){i&&t.addEventListener("close",function(){return i()}),s&&t.addEventListener("versionchange",function(){return s()})}).catch(function(){}),c}var _,k=["get","getKey","getAll","getAllKeys","count"],N=["put","add","delete","clear"],P=new Map;function S(t,r){if(t instanceof IDBDatabase&&!(r in t)&&"string"==typeof r){if(P.get(r))return P.get(r);var n=r.replace(/FromIndex$/,""),a=r!==n,s=N.includes(n);if(n in(a?IDBIndex:IDBObjectStore).prototype&&(s||k.includes(n))){var i=function(){var t=e(o().mark(function t(e){var r,i,u,c,f,p,l,d=arguments;return o().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:for(i=this.transaction(e,s?"readwrite":"readonly"),u=i.store,c=d.length,f=new Array(c>1?c-1:0),p=1;p<c;p++)f[p-1]=d[p];return a&&(u=u.index(f.shift())),t.next=1,(r=u)[n].apply(r,f);case 1:if(l=t.sent,!s){t.next=2;break}return t.next=2,i.done;case 2:return t.abrupt("return",l);case 3:case"end":return t.stop()}},t,this)}));return function(e){return t.apply(this,arguments)}}();return P.set(r,i),i}}}h=u({},_=h,{get:function(t,e,r){return S(t,e)||_.get(t,e,r)},has:function(t,e){return!!S(t,e)||_.has(t,e)}});const B=flarum.core.compat["common/components/Page"];var M=r.n(B);const O=flarum.core.compat["common/components/LinkButton"];var I=r.n(O);const j=flarum.core.compat["forum/components/SessionDropdown"];var E=r.n(j);const D=flarum.core.compat["common/utils/extractText"];var L=r.n(D);const T=flarum.core.compat["forum/utils/DiscussionControls"];var A=r.n(T);const F=flarum.core.compat["forum/utils/PostControls"];var C=r.n(F);const W=flarum.core.compat["forum/utils/UserControls"];var q=r.n(W);const G=flarum.core.compat["common/components/Button"];var R=r.n(G);function K(t){return U.apply(this,arguments)}function U(){return(U=e(o().mark(function t(e){var r,n;return o().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.prev=0,r=L()(e.title),t.next=1,navigator.share({title:r,url:e.url});case 1:t.next=3;break;case 2:t.prev=2,n=t.catch(0),console.error("Share error:",n);case 3:case"end":return t.stop()}},t,null,[[0,2]])}))).apply(this,arguments)}const H=flarum.core.compat["forum/components/NotificationGrid"];var V=r.n(H);const z=flarum.core.compat["forum/components/SettingsPage"];var $=r.n(z);const J=flarum.core.compat["common/components/Alert"];var Y=r.n(J);const Q=flarum.core.compat["common/components/Link"];var X=r.n(Q);const Z=flarum.core.compat["common/helpers/icon"];var tt,et,rt,nt,ot=r.n(Z),at="push-token",st="push-permission-request",it="push-permission-state",ut=function(){return!(!window.webkit||!window.webkit.messageHandlers)},ct=function(){var t=e(o().mark(function t(e){var r,n;return o().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(null!=(r=s().sw)&&r.pushManager){t.next=1;break}return t.abrupt("return");case 1:return t.next=2,s().sw.pushManager.subscribe({userVisibleOnly:!0,applicationServerKey:s().forum.attribute("vapidPublicKey")});case 2:if(n=t.sent,e){t.next=3;break}return t.abrupt("return");case 3:return t.next=4,s().request({method:"POST",url:s().forum.attribute("apiUrl")+"/pwa/push",body:{subscription:n}});case 4:case"end":return t.stop()}},t)}));return function(e){return t.apply(this,arguments)}}(),ft=function(){if(!s().session.user)return!1;var t=s().session.user.preferences();for(var e in t)if("string"==typeof e&&e.startsWith("notify_")&&e.endsWith("_push")&&t[e])return!0;return!1},pt=function(){return"Notification"in window},lt=function(){var t=e(o().mark(function t(e){var r;return o().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(!s().cache.pwaRefreshed&&pt()&&"granted"===window.Notification.permission&&ft()){t.next=1;break}return s().cache.pwaRefreshed=!0,t.abrupt("return");case 1:return t.prev=1,t.next=2,ct(!0);case 2:t.next=7;break;case 3:if(t.prev=3,t.catch(1),e.pushManager){t.next=4;break}return t.abrupt("return");case 4:return t.next=5,e.pushManager.getSubscription();case 5:if(!(r=t.sent)){t.next=7;break}return t.next=6,r.unsubscribe();case 6:return t.next=7,ct(!0);case 7:s().cache.pwaRefreshed=!0;case 8:case"end":return t.stop()}},t,null,[[1,3]])}));return function(e){return t.apply(this,arguments)}}(),dt=function(){return!!s().forum.attribute("vapidPublicKey")},mt=(tt="granted",et=function(t){"granted"===t.detail&&(tt="granted",ut()&&window.webkit.messageHandlers[at].postMessage(at))},rt=function(t){var e=t;s().request({method:"POST",url:s().forum.attribute("apiUrl")+"/pwa/firebase-push-subscriptions",body:{token:e.detail}})},nt=function(t){tt=t.detail,m.redraw()},{hasFirebasePushState:function(t){return t===tt},registerFirebasePushNotificationListeners:function(){ut()&&(ut()&&window.webkit.messageHandlers[it].postMessage(it),window.addEventListener(st,et),window.addEventListener(it,nt),window.addEventListener(at,rt))},removeFirebasePushNotificationListeners:function(){ut()&&(window.removeEventListener(st,et),window.removeEventListener(it,nt),window.removeEventListener(at,rt))}}),vt=mt.registerFirebasePushNotificationListeners,wt=mt.removeFirebasePushNotificationListeners,ht=mt.hasFirebasePushState;s().initializers.add("fof-pwa",function(){(0,i.extend)(M().prototype,"oninit",function(){var t=s().forum.attribute("basePath").replace(/\/$/,""),r=function(){var r=e(o().mark(function e(){var r,n,a;return o().wrap(function(e){for(;;)switch(e.prev=e.next){case 0:return r=g("keyval-store",1,{upgrade:function(t){t.createObjectStore("keyval")}}),e.next=1,r;case 1:return n=e.sent,e.next=2,n.put("keyval",s().forum.data.attributes,"flarum.forumPayload");case 2:if(!("serviceWorker"in navigator)){e.next=5;break}return e.next=3,navigator.serviceWorker.register(t+"/sw",{scope:t+"/"});case 3:return a=e.sent,e.next=4,navigator.serviceWorker.ready;case 4:return s().sw=a,e.next=5,lt(s().sw);case 5:case"end":return e.stop()}},e)}));return function(){return r.apply(this,arguments)}}();r()}),(0,i.extend)(E().prototype,"items",function(t){(window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone||document.referrer.includes("android-app://"))&&t.has("administration")&&t.setContent("administration",m(I(),{icon:"fas fa-wrench",href:s().forum.attribute("adminUrl"),target:"_self",external:!0},s().translator.trans("core.forum.header.admin_button")))}),(0,i.extend)(A(),"userControls",function(t,e){navigator.share&&t.add("share",m(R(),{icon:"fas fa-share-square",onclick:function(){return K({title:e.title(),url:window.location.protocol+"//"+window.location.hostname+s().route.discussion(e)})}},s().translator.trans("fof-pwa.forum.discussion_controls.share_button")),-1)}),(0,i.extend)(C(),"userControls",function(t,e){navigator.share&&e.user()&&e.discussion()&&t.add("share",m(R(),{icon:"fas fa-share-square",onclick:function(){return K({title:L()(s().translator.trans("fof-pwa.forum.post_controls.share_api.title",{username:e.user().displayName(),title:e.discussion().title()})),url:window.location.protocol+"//"+window.location.hostname+s().route.post(e)})}},s().translator.trans("fof-pwa.forum.post_controls.share_button")),100)}),(0,i.extend)(q(),"userControls",function(t,e){navigator.share&&e&&t.add("share",m(R(),{icon:"fas fa-share-square",onclick:function(){return K({title:e.displayName(),url:window.location.protocol+"//"+window.location.hostname+s().route.user(e)})}},s().translator.trans("fof-pwa.forum.user_controls.share_button")),100)}),(0,i.extend)(M().prototype,"oncreate",function(){if(dt()){var t=function(){localStorage.setItem("fof-pwa.notif-alert.dismissed",JSON.stringify({timestamp:(new Date).getTime()}))};s().alerts.dismiss(s().cache.pwaNotifsAlert),!localStorage.getItem("fof-pwa.notif-alert.dismissed")&&pt()&&"default"===window.Notification.permission&&ft()&&(s().cache.pwaNotifsAlert=s().alerts.show({controls:[m(X(),{className:"Button Button--link",href:s().route("settings"),onclick:t},s().translator.trans("fof-pwa.forum.alerts.optin_button"))],onremove:t},s().translator.trans("fof-pwa.forum.alerts.optin")))}}),(0,i.extend)(V().prototype,"notificationMethods",function(t){dt()&&t.add("push",{name:"push",icon:"fas fa-mobile",label:s().translator.trans("fof-pwa.forum.settings.push_header")})}),(0,i.extend)($().prototype,"notificationsItems",function(t){!ut()&&dt()&&(pt()?"default"===window.Notification.permission?t.add("push-optin-default",m(Y(),{type:"warning",dismissible:!1,className:"pwa-setting-alert",controls:[m(R(),{className:"Button Button--link",onclick:function(){var t=window.Notification.requestPermission();t instanceof Promise?t.then(function(t){m.redraw(),"granted"===t&&ct(!0)}):window.Notification.requestPermission(function(t){m.redraw(),"granted"===t&&ct(!0)})}},s().translator.trans("fof-pwa.forum.settings.pwa_notifications.access_default_button"))]},ot()("fas fa-exclamation-circle"),s().translator.trans("fof-pwa.forum.settings.pwa_notifications.access_default")),10):"denied"===window.Notification.permission&&t.add("push-optin-denied",m(Y(),{type:"error",dismissible:!1,attrs:{className:"pwa-setting-alert"},controls:[m("a",{className:"Button Button--link",href:"https://support.humblebundle.com/hc/en-US/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers",target:"_blank",rel:"noopener noreferrer"},s().translator.trans("fof-pwa.forum.settings.pwa_notifications.access_denied_button"))]},ot()("fas fa-exclamation-triangle"),s().translator.trans("fof-pwa.forum.settings.pwa_notifications.access_denied")),10):t.add("push-no-browser-support",m(Y(),{dismissible:!1,controls:[m("a",{className:"Button Button--link",href:"https://developer.mozilla.org/en-US/docs/Web/API/Push_API",target:"_blank",rel:"noopener noreferrer"},s().translator.trans("fof-pwa.forum.settings.pwa_notifications.no_browser_support_button"))]},ot()("fas fa-exclamation-triangle"),s().translator.trans("fof-pwa.forum.settings.pwa_notifications.no_browser_support")),10))}),(0,i.extend)($().prototype,"notificationsItems",function(t){ut()&&(ht("authorized")||t.add("firebase-push-optin-default",m(Y(),{dismissible:!1,attrs:{className:"pwa-setting-alert"},controls:[m(R(),{className:"Button Button--link",onclick:function(){ut()&&window.webkit.messageHandlers[st].postMessage(st)}},s().translator.trans("fof-pwa.forum.settings.pwa_notifications.access_default_button"))]},ot()("fas fa-exclamation-circle"),s().translator.trans("fof-pwa.forum.settings.pwa_notifications.access_default")),10))}),(0,i.extend)($().prototype,"oncreate",function(){vt()}),(0,i.extend)($().prototype,"onremove",function(){wt()})})})(),module.exports={}})();
+/******/ (() => { // webpackBootstrap
+/******/ 	// runtime can't be in strict mode because a global variable is assign and maybe created.
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/forum/addPushNotifications.tsx"
+/*!********************************************!*\
+  !*** ./src/forum/addPushNotifications.tsx ***!
+  \********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ addPushNotifications),
+/* harmony export */   refreshSubscription: () => (/* binding */ refreshSubscription)
+/* harmony export */ });
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/forum/app */ "flarum/forum/app");
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/common/extend */ "flarum/common/extend");
+/* harmony import */ var flarum_common_extend__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/common/components/Alert */ "flarum/common/components/Alert");
+/* harmony import */ var flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/common/components/Button */ "flarum/common/components/Button");
+/* harmony import */ var flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_common_components_Link__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/common/components/Link */ "flarum/common/components/Link");
+/* harmony import */ var flarum_common_components_Link__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Link__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/common/components/Page */ "flarum/common/components/Page");
+/* harmony import */ var flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/common/components/Icon */ "flarum/common/components/Icon");
+/* harmony import */ var flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _use_pwa_builder__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./use-pwa-builder */ "./src/forum/use-pwa-builder.ts");
+
+
+
+
+
+
+
+
+const subscribeUser = async save => {
+  if (!(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().sw)?.pushManager) return;
+  const subscription = await flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().sw.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum.attribute('vapidPublicKey')
+  });
+  if (!save) return;
+  await flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().request({
+    method: 'POST',
+    url: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum.attribute('apiUrl') + '/push_subscriptions',
+    body: {
+      data: {
+        attributes: subscription
+      }
+    }
+  });
+};
+const pushEnabled = () => {
+  if (!(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session).user) return false;
+  const preferences = flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().session.user.preferences();
+  for (const key in preferences) {
+    if (typeof key === 'string' && key.startsWith('notify_') && key.endsWith('_push') && preferences[key]) {
+      return true;
+    }
+  }
+  return false;
+};
+const supportsBrowserNotifications = () => 'Notification' in window;
+const refreshSubscription = async sw => {
+  if ((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().cache).pwaRefreshed || !supportsBrowserNotifications() || window.Notification.permission !== 'granted' || !pushEnabled()) {
+    (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().cache).pwaRefreshed = true;
+    return;
+  }
+  try {
+    await subscribeUser(true);
+  } catch (e) {
+    if (!sw.pushManager) {
+      return;
+    }
+    const subscription = await sw.pushManager.getSubscription();
+    if (subscription) {
+      await subscription.unsubscribe();
+      await subscribeUser(true);
+    }
+  }
+  ;(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().cache).pwaRefreshed = true;
+};
+const pushConfigured = () => {
+  return !!flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum.attribute('vapidPublicKey');
+};
+const {
+  registerFirebasePushNotificationListeners,
+  removeFirebasePushNotificationListeners,
+  hasFirebasePushState
+} = (0,_use_pwa_builder__WEBPACK_IMPORTED_MODULE_7__.usePWABuilder)();
+function addPushNotifications() {
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)((flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_5___default().prototype), 'oncreate', () => {
+    if (!pushConfigured()) return;
+    const dismissAlert = () => {
+      localStorage.setItem('fof-pwa.notif-alert.dismissed', JSON.stringify({
+        timestamp: new Date().getTime()
+      }));
+    };
+    flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().alerts.dismiss((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().cache).pwaNotifsAlert);
+    if (!localStorage.getItem('fof-pwa.notif-alert.dismissed') && supportsBrowserNotifications() && window.Notification.permission === 'default' && pushEnabled()) {
+      (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().cache).pwaNotifsAlert = flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().alerts.show({
+        controls: [m((flarum_common_components_Link__WEBPACK_IMPORTED_MODULE_4___default()), {
+          className: "Button Button--link",
+          href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route('settings'),
+          onclick: dismissAlert
+        }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.alerts.optin_button'))],
+        // @ts-ignore - `ondismiss` is not working here because of bug in Flarum core
+        onremove: dismissAlert
+      }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.alerts.optin'));
+    }
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)('flarum/forum/components/NotificationGrid', 'notificationMethods', function (items) {
+    if (!pushConfigured()) return;
+    items.add('push', {
+      name: 'push',
+      icon: 'fas fa-mobile',
+      label: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.push_header')
+    });
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)('flarum/forum/components/SettingsPage', 'notificationsItems', function (items) {
+    if ((0,_use_pwa_builder__WEBPACK_IMPORTED_MODULE_7__.usingAppleWebview)() || !pushConfigured()) return;
+    if (!supportsBrowserNotifications()) {
+      items.add('push-no-browser-support', m((flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2___default()), {
+        dismissible: false,
+        controls: [m("a", {
+          className: "Button Button--link",
+          href: "https://developer.mozilla.org/en-US/docs/Web/API/Push_API",
+          target: "_blank",
+          rel: "noopener noreferrer"
+        }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.no_browser_support_button'))]
+      }, m((flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6___default()), {
+        name: "fas fa-exclamation-triangle"
+      }), flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.no_browser_support')), 10);
+      return;
+    }
+    if (window.Notification.permission === 'default') {
+      items.add('push-optin-default', m((flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2___default()), {
+        dismissible: false,
+        className: "pwa-setting-alert",
+        controls: [m((flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+          className: "Button Button--link",
+          onclick: () => {
+            const requestPermission = window.Notification.requestPermission();
+            if (requestPermission instanceof Promise) {
+              requestPermission.then(res => {
+                m.redraw();
+                if (res === 'granted') {
+                  subscribeUser(true);
+                }
+              });
+            } else {
+              // Legacy callback API
+              window.Notification.requestPermission(res => {
+                m.redraw();
+                if (res === 'granted') {
+                  subscribeUser(true);
+                }
+              });
+            }
+          }
+        }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default_button'))]
+      }, m((flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6___default()), {
+        name: "fas fa-exclamation-circle"
+      }), flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default')), 10);
+    } else if (window.Notification.permission === 'denied') {
+      items.add('push-optin-denied', m((flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2___default()), {
+        type: "error",
+        dismissible: false,
+        className: "pwa-setting-alert",
+        controls: [m("a", {
+          className: "Button Button--link",
+          href: "https://support.humblebundle.com/hc/en-US/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers",
+          target: "_blank",
+          rel: "noopener noreferrer"
+        }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.access_denied_button'))]
+      }, m((flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6___default()), {
+        name: "fas fa-exclamation-triangle"
+      }), flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.access_denied')), 10);
+    }
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)('flarum/forum/components/SettingsPage', 'notifi cationsItems', function (items) {
+    if (!(0,_use_pwa_builder__WEBPACK_IMPORTED_MODULE_7__.usingAppleWebview)()) return;
+    if (!hasFirebasePushState('authorized')) {
+      items.add('firebase-push-optin-default', m((flarum_common_components_Alert__WEBPACK_IMPORTED_MODULE_2___default()), {
+        dismissible: false,
+        className: "pwa-setting-alert",
+        controls: [m((flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_3___default()), {
+          className: "Button Button--link",
+          onclick: () => (0,_use_pwa_builder__WEBPACK_IMPORTED_MODULE_7__.requestPushPermissions)()
+        }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default_button'))]
+      }, m((flarum_common_components_Icon__WEBPACK_IMPORTED_MODULE_6___default()), {
+        name: "fas fa-exclamation-circle"
+      }), flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default')), 10);
+    }
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)('flarum/forum/components/SettingsPage', 'oncreate', function () {
+    registerFirebasePushNotificationListeners();
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)('flarum/forum/components/SettingsPage', 'onremove', function () {
+    removeFirebasePushNotificationListeners();
+  });
+}
+
+/***/ },
+
+/***/ "./src/forum/addShareButtons.tsx"
+/*!***************************************!*\
+  !*** ./src/forum/addShareButtons.tsx ***!
+  \***************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ addShareButtons)
+/* harmony export */ });
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/forum/app */ "flarum/forum/app");
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/common/extend */ "flarum/common/extend");
+/* harmony import */ var flarum_common_extend__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var flarum_common_utils_extractText__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! flarum/common/utils/extractText */ "flarum/common/utils/extractText");
+/* harmony import */ var flarum_common_utils_extractText__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(flarum_common_utils_extractText__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var flarum_forum_utils_DiscussionControls__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/forum/utils/DiscussionControls */ "flarum/forum/utils/DiscussionControls");
+/* harmony import */ var flarum_forum_utils_DiscussionControls__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_utils_DiscussionControls__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_forum_utils_PostControls__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/forum/utils/PostControls */ "flarum/forum/utils/PostControls");
+/* harmony import */ var flarum_forum_utils_PostControls__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_utils_PostControls__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_forum_utils_UserControls__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/forum/utils/UserControls */ "flarum/forum/utils/UserControls");
+/* harmony import */ var flarum_forum_utils_UserControls__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_utils_UserControls__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! flarum/common/components/Button */ "flarum/common/components/Button");
+/* harmony import */ var flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_6__);
+
+
+
+
+
+
+
+async function shareContent(data) {
+  try {
+    const title = flarum_common_utils_extractText__WEBPACK_IMPORTED_MODULE_2___default()(data.title);
+    await navigator.share({
+      title,
+      url: data.url
+    });
+  } catch (err) {
+    console.error('Share error:', err);
+  }
+}
+function addShareButtons() {
+  ;(0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)((flarum_forum_utils_DiscussionControls__WEBPACK_IMPORTED_MODULE_3___default()), 'userControls', function (items, discussion) {
+    if (!navigator.share) return;
+    items.add('share', m((flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_6___default()), {
+      icon: "fas fa-share-square",
+      onclick: () => shareContent({
+        title: discussion.title(),
+        url: window.location.protocol + '//' + window.location.hostname + flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route.discussion(discussion)
+      })
+    }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.discussion_controls.share_button')), -1);
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)((flarum_forum_utils_PostControls__WEBPACK_IMPORTED_MODULE_4___default()), 'userControls', function (items, post) {
+    if (!navigator.share || !post.user() || !post.discussion()) return;
+    items.add('share', m((flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_6___default()), {
+      icon: "fas fa-share-square",
+      onclick: () => shareContent({
+        title: flarum_common_utils_extractText__WEBPACK_IMPORTED_MODULE_2___default()(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.post_controls.share_api.title', {
+          username: post.user().displayName(),
+          title: post.discussion().title()
+        })),
+        url: window.location.protocol + '//' + window.location.hostname + flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route.post(post)
+      })
+    }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.post_controls.share_button')), 100);
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)((flarum_forum_utils_UserControls__WEBPACK_IMPORTED_MODULE_5___default()), 'userControls', function (items, user) {
+    if (!navigator.share || !user) return;
+    items.add('share', m((flarum_common_components_Button__WEBPACK_IMPORTED_MODULE_6___default()), {
+      icon: "fas fa-share-square",
+      onclick: () => shareContent({
+        title: user.displayName(),
+        url: window.location.protocol + '//' + window.location.hostname + flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().route.user(user)
+      })
+    }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('fof-pwa.forum.user_controls.share_button')), 100);
+  });
+}
+
+/***/ },
+
+/***/ "./src/forum/index.tsx"
+/*!*****************************!*\
+  !*** ./src/forum/index.tsx ***!
+  \*****************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/forum/app */ "flarum/forum/app");
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flarum/common/extend */ "flarum/common/extend");
+/* harmony import */ var flarum_common_extend__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var idb__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! idb */ "./node_modules/.pnpm/idb@8.0.3/node_modules/idb/build/index.js");
+/* harmony import */ var flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! flarum/common/components/Page */ "flarum/common/components/Page");
+/* harmony import */ var flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var flarum_common_components_LinkButton__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! flarum/common/components/LinkButton */ "flarum/common/components/LinkButton");
+/* harmony import */ var flarum_common_components_LinkButton__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(flarum_common_components_LinkButton__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var flarum_forum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! flarum/forum/components/SessionDropdown */ "flarum/forum/components/SessionDropdown");
+/* harmony import */ var flarum_forum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _addShareButtons__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./addShareButtons */ "./src/forum/addShareButtons.tsx");
+/* harmony import */ var _addPushNotifications__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./addPushNotifications */ "./src/forum/addPushNotifications.tsx");
+
+
+
+
+
+
+
+
+flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().initializers.add('fof-pwa', () => {
+  const isInStandaloneMode = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone || document.referrer.includes('android-app://');
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)((flarum_common_components_Page__WEBPACK_IMPORTED_MODULE_3___default().prototype), 'oninit', () => {
+    const basePath = flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum.attribute('basePath').replace(/\/$/, '');
+    const registerSW = async () => {
+      const dbPromise = (0,idb__WEBPACK_IMPORTED_MODULE_2__.openDB)('keyval-store', 1, {
+        upgrade(db) {
+          db.createObjectStore('keyval');
+        }
+      });
+      const db = await dbPromise;
+      await db.put('keyval', (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum).data.attributes, 'flarum.forumPayload');
+      if ('serviceWorker' in navigator) {
+        const sw = await navigator.serviceWorker.register(basePath + '/sw', {
+          scope: basePath + '/'
+        });
+        await navigator.serviceWorker.ready;
+        (flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().sw) = sw;
+        await (0,_addPushNotifications__WEBPACK_IMPORTED_MODULE_7__.refreshSubscription)((flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().sw));
+      }
+    };
+    registerSW();
+  });
+  (0,flarum_common_extend__WEBPACK_IMPORTED_MODULE_1__.extend)((flarum_forum_components_SessionDropdown__WEBPACK_IMPORTED_MODULE_5___default().prototype), 'items', function (items) {
+    if (isInStandaloneMode() && items.has('administration')) {
+      items.setContent('administration', m((flarum_common_components_LinkButton__WEBPACK_IMPORTED_MODULE_4___default()), {
+        icon: "fas fa-wrench",
+        href: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum.attribute('adminUrl'),
+        target: "_self",
+        external: true
+      }, flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().translator.trans('core.forum.header.admin_button')));
+    }
+  });
+  (0,_addShareButtons__WEBPACK_IMPORTED_MODULE_6__["default"])();
+  (0,_addPushNotifications__WEBPACK_IMPORTED_MODULE_7__["default"])();
+});
+
+/***/ },
+
+/***/ "./src/forum/use-pwa-builder.ts"
+/*!**************************************!*\
+  !*** ./src/forum/use-pwa-builder.ts ***!
+  \**************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PushPermissionRequest: () => (/* binding */ PushPermissionRequest),
+/* harmony export */   PushPermissionState: () => (/* binding */ PushPermissionState),
+/* harmony export */   PushToken: () => (/* binding */ PushToken),
+/* harmony export */   requestPushPermissionState: () => (/* binding */ requestPushPermissionState),
+/* harmony export */   requestPushPermissions: () => (/* binding */ requestPushPermissions),
+/* harmony export */   requestPushToken: () => (/* binding */ requestPushToken),
+/* harmony export */   usePWABuilder: () => (/* binding */ usePWABuilder),
+/* harmony export */   usingAppleWebview: () => (/* binding */ usingAppleWebview)
+/* harmony export */ });
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! flarum/forum/app */ "flarum/forum/app");
+/* harmony import */ var flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(flarum_forum_app__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Triggered when the push token is generated by the device.
+ */
+const PushToken = 'push-token';
+
+/**
+ * Triggered when the user requests permission on the push event.
+ */
+const PushPermissionRequest = 'push-permission-request';
+
+/**
+ * Returns the state of the push request of the device.
+ */
+const PushPermissionState = 'push-permission-state';
+/**
+ * Check if the client is a webview in an iOS or iPadOS device.
+ */
+const usingAppleWebview = () => !!(window.webkit && window.webkit.messageHandlers);
+const requestPushPermissionState = () => {
+  if (usingAppleWebview()) {
+    window.webkit.messageHandlers[PushPermissionState].postMessage(PushPermissionState);
+  }
+};
+const requestPushPermissions = () => {
+  if (usingAppleWebview()) {
+    window.webkit.messageHandlers[PushPermissionRequest].postMessage(PushPermissionRequest);
+  }
+};
+const requestPushToken = () => {
+  if (usingAppleWebview()) {
+    window.webkit.messageHandlers[PushToken].postMessage(PushToken);
+  }
+};
+const usePWABuilder = () => {
+  let permissionState = 'granted';
+  const handlePushPermissionRequest = event => {
+    const customEvent = event;
+    if (customEvent.detail !== 'granted') {
+      return;
+    }
+    permissionState = 'granted';
+    requestPushToken();
+  };
+  const handlePushToken = event => {
+    const customEvent = event;
+    flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().request({
+      method: 'POST',
+      url: flarum_forum_app__WEBPACK_IMPORTED_MODULE_0___default().forum.attribute('apiUrl') + '/pwa/firebase_push_subscriptions',
+      body: {
+        data: {
+          attributes: {
+            token: customEvent.detail
+          }
+        }
+      }
+    });
+  };
+  const handlePushPermissionState = event => {
+    const customEvent = event;
+    permissionState = customEvent.detail;
+    m.redraw();
+  };
+  const hasFirebasePushState = state => state === permissionState;
+  function registerFirebasePushNotificationListeners() {
+    if (!usingAppleWebview()) {
+      return;
+    }
+    requestPushPermissionState();
+    window.addEventListener(PushPermissionRequest, handlePushPermissionRequest);
+    window.addEventListener(PushPermissionState, handlePushPermissionState);
+    window.addEventListener(PushToken, handlePushToken);
+  }
+  function removeFirebasePushNotificationListeners() {
+    if (!usingAppleWebview()) {
+      return;
+    }
+    window.removeEventListener(PushPermissionRequest, handlePushPermissionRequest);
+    window.removeEventListener(PushPermissionState, handlePushPermissionState);
+    window.removeEventListener(PushToken, handlePushToken);
+  }
+  return {
+    hasFirebasePushState,
+    registerFirebasePushNotificationListeners,
+    removeFirebasePushNotificationListeners
+  };
+};
+
+/***/ },
+
+/***/ "flarum/common/components/Alert"
+/*!********************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/components/Alert')" ***!
+  \********************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/components/Alert');
+
+/***/ },
+
+/***/ "flarum/common/components/Button"
+/*!*********************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/components/Button')" ***!
+  \*********************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/components/Button');
+
+/***/ },
+
+/***/ "flarum/common/components/Icon"
+/*!*******************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/components/Icon')" ***!
+  \*******************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/components/Icon');
+
+/***/ },
+
+/***/ "flarum/common/components/Link"
+/*!*******************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/components/Link')" ***!
+  \*******************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/components/Link');
+
+/***/ },
+
+/***/ "flarum/common/components/LinkButton"
+/*!*************************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/components/LinkButton')" ***!
+  \*************************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/components/LinkButton');
+
+/***/ },
+
+/***/ "flarum/common/components/Page"
+/*!*******************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/components/Page')" ***!
+  \*******************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/components/Page');
+
+/***/ },
+
+/***/ "flarum/common/extend"
+/*!**********************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/extend')" ***!
+  \**********************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/extend');
+
+/***/ },
+
+/***/ "flarum/common/utils/extractText"
+/*!*********************************************************************!*\
+  !*** external "flarum.reg.get('core', 'common/utils/extractText')" ***!
+  \*********************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'common/utils/extractText');
+
+/***/ },
+
+/***/ "flarum/forum/app"
+/*!******************************************************!*\
+  !*** external "flarum.reg.get('core', 'forum/app')" ***!
+  \******************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'forum/app');
+
+/***/ },
+
+/***/ "flarum/forum/components/SessionDropdown"
+/*!*****************************************************************************!*\
+  !*** external "flarum.reg.get('core', 'forum/components/SessionDropdown')" ***!
+  \*****************************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'forum/components/SessionDropdown');
+
+/***/ },
+
+/***/ "flarum/forum/utils/DiscussionControls"
+/*!***************************************************************************!*\
+  !*** external "flarum.reg.get('core', 'forum/utils/DiscussionControls')" ***!
+  \***************************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'forum/utils/DiscussionControls');
+
+/***/ },
+
+/***/ "flarum/forum/utils/PostControls"
+/*!*********************************************************************!*\
+  !*** external "flarum.reg.get('core', 'forum/utils/PostControls')" ***!
+  \*********************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'forum/utils/PostControls');
+
+/***/ },
+
+/***/ "flarum/forum/utils/UserControls"
+/*!*********************************************************************!*\
+  !*** external "flarum.reg.get('core', 'forum/utils/UserControls')" ***!
+  \*********************************************************************/
+(module) {
+
+"use strict";
+module.exports = flarum.reg.get('core', 'forum/utils/UserControls');
+
+/***/ },
+
+/***/ "./node_modules/.pnpm/idb@8.0.3/node_modules/idb/build/index.js"
+/*!**********************************************************************!*\
+  !*** ./node_modules/.pnpm/idb@8.0.3/node_modules/idb/build/index.js ***!
+  \**********************************************************************/
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   deleteDB: () => (/* binding */ deleteDB),
+/* harmony export */   openDB: () => (/* binding */ openDB),
+/* harmony export */   unwrap: () => (/* binding */ unwrap),
+/* harmony export */   wrap: () => (/* binding */ wrap)
+/* harmony export */ });
+const instanceOfAny = (object, constructors) => constructors.some(c => object instanceof c);
+let idbProxyableTypes;
+let cursorAdvanceMethods;
+// This is a function to prevent it throwing up in node environments.
+function getIdbProxyableTypes() {
+  return idbProxyableTypes || (idbProxyableTypes = [IDBDatabase, IDBObjectStore, IDBIndex, IDBCursor, IDBTransaction]);
+}
+// This is a function to prevent it throwing up in node environments.
+function getCursorAdvanceMethods() {
+  return cursorAdvanceMethods || (cursorAdvanceMethods = [IDBCursor.prototype.advance, IDBCursor.prototype.continue, IDBCursor.prototype.continuePrimaryKey]);
+}
+const transactionDoneMap = new WeakMap();
+const transformCache = new WeakMap();
+const reverseTransformCache = new WeakMap();
+function promisifyRequest(request) {
+  const promise = new Promise((resolve, reject) => {
+    const unlisten = () => {
+      request.removeEventListener('success', success);
+      request.removeEventListener('error', error);
+    };
+    const success = () => {
+      resolve(wrap(request.result));
+      unlisten();
+    };
+    const error = () => {
+      reject(request.error);
+      unlisten();
+    };
+    request.addEventListener('success', success);
+    request.addEventListener('error', error);
+  });
+  // This mapping exists in reverseTransformCache but doesn't exist in transformCache. This
+  // is because we create many promises from a single IDBRequest.
+  reverseTransformCache.set(promise, request);
+  return promise;
+}
+function cacheDonePromiseForTransaction(tx) {
+  // Early bail if we've already created a done promise for this transaction.
+  if (transactionDoneMap.has(tx)) return;
+  const done = new Promise((resolve, reject) => {
+    const unlisten = () => {
+      tx.removeEventListener('complete', complete);
+      tx.removeEventListener('error', error);
+      tx.removeEventListener('abort', error);
+    };
+    const complete = () => {
+      resolve();
+      unlisten();
+    };
+    const error = () => {
+      reject(tx.error || new DOMException('AbortError', 'AbortError'));
+      unlisten();
+    };
+    tx.addEventListener('complete', complete);
+    tx.addEventListener('error', error);
+    tx.addEventListener('abort', error);
+  });
+  // Cache it for later retrieval.
+  transactionDoneMap.set(tx, done);
+}
+let idbProxyTraps = {
+  get(target, prop, receiver) {
+    if (target instanceof IDBTransaction) {
+      // Special handling for transaction.done.
+      if (prop === 'done') return transactionDoneMap.get(target);
+      // Make tx.store return the only store in the transaction, or undefined if there are many.
+      if (prop === 'store') {
+        return receiver.objectStoreNames[1] ? undefined : receiver.objectStore(receiver.objectStoreNames[0]);
+      }
+    }
+    // Else transform whatever we get back.
+    return wrap(target[prop]);
+  },
+  set(target, prop, value) {
+    target[prop] = value;
+    return true;
+  },
+  has(target, prop) {
+    if (target instanceof IDBTransaction && (prop === 'done' || prop === 'store')) {
+      return true;
+    }
+    return prop in target;
+  }
+};
+function replaceTraps(callback) {
+  idbProxyTraps = callback(idbProxyTraps);
+}
+function wrapFunction(func) {
+  // Due to expected object equality (which is enforced by the caching in `wrap`), we
+  // only create one new func per func.
+  // Cursor methods are special, as the behaviour is a little more different to standard IDB. In
+  // IDB, you advance the cursor and wait for a new 'success' on the IDBRequest that gave you the
+  // cursor. It's kinda like a promise that can resolve with many values. That doesn't make sense
+  // with real promises, so each advance methods returns a new promise for the cursor object, or
+  // undefined if the end of the cursor has been reached.
+  if (getCursorAdvanceMethods().includes(func)) {
+    return function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      // Calling the original function with the proxy as 'this' causes ILLEGAL INVOCATION, so we use
+      // the original object.
+      func.apply(unwrap(this), args);
+      return wrap(this.request);
+    };
+  }
+  return function () {
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+    // Calling the original function with the proxy as 'this' causes ILLEGAL INVOCATION, so we use
+    // the original object.
+    return wrap(func.apply(unwrap(this), args));
+  };
+}
+function transformCachableValue(value) {
+  if (typeof value === 'function') return wrapFunction(value);
+  // This doesn't return, it just creates a 'done' promise for the transaction,
+  // which is later returned for transaction.done (see idbObjectHandler).
+  if (value instanceof IDBTransaction) cacheDonePromiseForTransaction(value);
+  if (instanceOfAny(value, getIdbProxyableTypes())) return new Proxy(value, idbProxyTraps);
+  // Return the same value back if we're not going to transform it.
+  return value;
+}
+function wrap(value) {
+  // We sometimes generate multiple promises from a single IDBRequest (eg when cursoring), because
+  // IDB is weird and a single IDBRequest can yield many responses, so these can't be cached.
+  if (value instanceof IDBRequest) return promisifyRequest(value);
+  // If we've already transformed this value before, reuse the transformed value.
+  // This is faster, but it also provides object equality.
+  if (transformCache.has(value)) return transformCache.get(value);
+  const newValue = transformCachableValue(value);
+  // Not all types are transformed.
+  // These may be primitive types, so they can't be WeakMap keys.
+  if (newValue !== value) {
+    transformCache.set(value, newValue);
+    reverseTransformCache.set(newValue, value);
+  }
+  return newValue;
+}
+const unwrap = value => reverseTransformCache.get(value);
+
+/**
+ * Open a database.
+ *
+ * @param name Name of the database.
+ * @param version Schema version.
+ * @param callbacks Additional callbacks.
+ */
+function openDB(name, version, _temp) {
+  let {
+    blocked,
+    upgrade,
+    blocking,
+    terminated
+  } = _temp === void 0 ? {} : _temp;
+  const request = indexedDB.open(name, version);
+  const openPromise = wrap(request);
+  if (upgrade) {
+    request.addEventListener('upgradeneeded', event => {
+      upgrade(wrap(request.result), event.oldVersion, event.newVersion, wrap(request.transaction), event);
+    });
+  }
+  if (blocked) {
+    request.addEventListener('blocked', event => blocked(
+    // Casting due to https://github.com/microsoft/TypeScript-DOM-lib-generator/pull/1405
+    event.oldVersion, event.newVersion, event));
+  }
+  openPromise.then(db => {
+    if (terminated) db.addEventListener('close', () => terminated());
+    if (blocking) {
+      db.addEventListener('versionchange', event => blocking(event.oldVersion, event.newVersion, event));
+    }
+  }).catch(() => {});
+  return openPromise;
+}
+/**
+ * Delete a database.
+ *
+ * @param name Name of the database.
+ */
+function deleteDB(name, _temp2) {
+  let {
+    blocked
+  } = _temp2 === void 0 ? {} : _temp2;
+  const request = indexedDB.deleteDatabase(name);
+  if (blocked) {
+    request.addEventListener('blocked', event => blocked(
+    // Casting due to https://github.com/microsoft/TypeScript-DOM-lib-generator/pull/1405
+    event.oldVersion, event));
+  }
+  return wrap(request).then(() => undefined);
+}
+const readMethods = ['get', 'getKey', 'getAll', 'getAllKeys', 'count'];
+const writeMethods = ['put', 'add', 'delete', 'clear'];
+const cachedMethods = new Map();
+function getMethod(target, prop) {
+  if (!(target instanceof IDBDatabase && !(prop in target) && typeof prop === 'string')) {
+    return;
+  }
+  if (cachedMethods.get(prop)) return cachedMethods.get(prop);
+  const targetFuncName = prop.replace(/FromIndex$/, '');
+  const useIndex = prop !== targetFuncName;
+  const isWrite = writeMethods.includes(targetFuncName);
+  if (
+  // Bail if the target doesn't exist on the target. Eg, getAll isn't in Edge.
+  !(targetFuncName in (useIndex ? IDBIndex : IDBObjectStore).prototype) || !(isWrite || readMethods.includes(targetFuncName))) {
+    return;
+  }
+  const method = async function (storeName) {
+    // isWrite ? 'readwrite' : undefined gzipps better, but fails in Edge :(
+    const tx = this.transaction(storeName, isWrite ? 'readwrite' : 'readonly');
+    let target = tx.store;
+    for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+      args[_key3 - 1] = arguments[_key3];
+    }
+    if (useIndex) target = target.index(args.shift());
+    // Must reject if op rejects.
+    // If it's a write operation, must reject if tx.done rejects.
+    // Must reject with op rejection first.
+    // Must resolve with op value.
+    // Must handle both promises (no unhandled rejections)
+    return (await Promise.all([target[targetFuncName](...args), isWrite && tx.done]))[0];
+  };
+  cachedMethods.set(prop, method);
+  return method;
+}
+replaceTraps(oldTraps => ({
+  ...oldTraps,
+  get: (target, prop, receiver) => getMethod(target, prop) || oldTraps.get(target, prop, receiver),
+  has: (target, prop) => !!getMethod(target, prop) || oldTraps.has(target, prop)
+}));
+const advanceMethodProps = ['continue', 'continuePrimaryKey', 'advance'];
+const methodMap = {};
+const advanceResults = new WeakMap();
+const ittrProxiedCursorToOriginalProxy = new WeakMap();
+const cursorIteratorTraps = {
+  get(target, prop) {
+    if (!advanceMethodProps.includes(prop)) return target[prop];
+    let cachedFunc = methodMap[prop];
+    if (!cachedFunc) {
+      cachedFunc = methodMap[prop] = function () {
+        advanceResults.set(this, ittrProxiedCursorToOriginalProxy.get(this)[prop](...arguments));
+      };
+    }
+    return cachedFunc;
+  }
+};
+async function* iterate() {
+  // tslint:disable-next-line:no-this-assignment
+  let cursor = this;
+  if (!(cursor instanceof IDBCursor)) {
+    cursor = await cursor.openCursor(...arguments);
+  }
+  if (!cursor) return;
+  cursor = cursor;
+  const proxiedCursor = new Proxy(cursor, cursorIteratorTraps);
+  ittrProxiedCursorToOriginalProxy.set(proxiedCursor, cursor);
+  // Map this double-proxy back to the original, so other cursor methods work.
+  reverseTransformCache.set(proxiedCursor, unwrap(cursor));
+  while (cursor) {
+    yield proxiedCursor;
+    // If one of the advancing methods was not called, call continue().
+    cursor = await (advanceResults.get(proxiedCursor) || cursor.continue());
+    advanceResults.delete(proxiedCursor);
+  }
+}
+function isIteratorProp(target, prop) {
+  return prop === Symbol.asyncIterator && instanceOfAny(target, [IDBIndex, IDBObjectStore, IDBCursor]) || prop === 'iterate' && instanceOfAny(target, [IDBIndex, IDBObjectStore]);
+}
+replaceTraps(oldTraps => ({
+  ...oldTraps,
+  get(target, prop, receiver) {
+    if (isIteratorProp(target, prop)) return iterate;
+    return oldTraps.get(target, prop, receiver);
+  },
+  has(target, prop) {
+    return isIteratorProp(target, prop) || oldTraps.has(target, prop);
+  }
+}));
+
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		flarum.reg._webpack_runtimes["fof-pwa"] ||= __webpack_require__;// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			const getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+let __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
+(() => {
+"use strict";
+/*!******************!*\
+  !*** ./forum.ts ***!
+  \******************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_forum__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/forum */ "./src/forum/index.tsx");
+
+})();
+
+module.exports = __webpack_exports__;
+/******/ })()
+;
 //# sourceMappingURL=forum.js.map

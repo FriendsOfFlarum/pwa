@@ -1,6 +1,11 @@
+import { openDB } from 'idb';
+
+export {};
+declare const self: ServiceWorkerGlobalScope;
+
 importScripts('assets/extensions/fof-pwa/idb.js');
 
-const dbPromise = idb.openDB('keyval-store', 1, {
+const dbPromise = openDB('keyval-store', 1, {
   upgrade(db) {
     db.createObjectStore('keyval');
   },
@@ -24,20 +29,20 @@ const idbKeyval = {
   },
 };
 
-const CACHE = "pwa-page";
+const CACHE = 'pwa-page';
 
 const forumPayload = {};
 
 // Replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline";
-const offlineFallbackPage = "offline";
+const offlineFallbackPage = 'offline';
 
 // Install stage sets up the offline page in the cache and opens a new cache
-self.addEventListener("install", function (event) {
-  console.log("[PWA] Install event processing...");
+self.addEventListener('install', function (event) {
+  console.log('[PWA] Install event processing...');
 
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
-      console.log("[PWA] Cached offline page during install.");
+      console.log('[PWA] Cached offline page during install.');
 
       return cache.add(offlineFallbackPage);
     })
@@ -46,47 +51,43 @@ self.addEventListener("install", function (event) {
   const receiveInfo = async () => {
     const payload = await idbKeyval.get('flarum.forumPayload');
     Object.assign(forumPayload, payload);
-  }
+  };
 
   receiveInfo();
 });
 
 // If any fetch fails, it will show the offline page.
-self.addEventListener("fetch", function (event) {
+self.addEventListener('fetch', function (event) {
   event.respondWith(
-    caches.match(event.request).then(res => {
-      if (
-        event.request.method !== 'GET' ||
-        forumPayload.debug && forumPayload.clockworkEnabled ||
-        !res
-      ) {
-        return fetch(event.request);
-      }
+    caches
+      .match(event.request)
+      .then((res) => {
+        if (event.request.method !== 'GET' || (forumPayload.debug && forumPayload.clockworkEnabled) || !res) {
+          return fetch(event.request);
+        }
 
-      return res;
-    }).catch(error => {
-      // The following validates that the request was for a navigation to a new document
-      if (
-        event.request.destination !== "document" ||
-        event.request.mode !== "navigate"
-      ) {
-        throw error;
-      }
+        return res;
+      })
+      .catch((error) => {
+        // The following validates that the request was for a navigation to a new document
+        if (event.request.destination !== 'document' || event.request.mode !== 'navigate') {
+          throw error;
+        }
 
-      return caches.open(CACHE).then(function (cache) {
-        return cache.match(offlineFallbackPage);
-      });
-    })
+        return caches.open(CACHE).then(function (cache) {
+          return cache.match(offlineFallbackPage);
+        });
+      })
   );
 });
 
 // This is an event that can be fired from your page to tell the SW to update the offline page
-self.addEventListener("refreshOffline", function () {
+self.addEventListener('refreshOffline', function () {
   const offlinePageRequest = new Request(offlineFallbackPage);
 
   return fetch(offlineFallbackPage).then(function (response) {
     return caches.open(CACHE).then(function (cache) {
-      console.log("[PWA] Offline page updated from refreshOffline event: " + response.url);
+      console.log('[PWA] Offline page updated from refreshOffline event: ' + response.url);
       return cache.put(offlinePageRequest, response);
     });
   });
@@ -95,7 +96,7 @@ self.addEventListener("refreshOffline", function () {
 self.addEventListener('push', function (event) {
   function isJSON(str) {
     try {
-      return (JSON.parse(str) && !!str);
+      return JSON.parse(str) && !!str;
     } catch (e) {
       return false;
     }
@@ -108,8 +109,8 @@ self.addEventListener('push', function (event) {
       icon: event.data.json().icon,
       badge: event.data.json().badge,
       data: {
-        link: event.data.json().link
-      }
+        link: event.data.json().link,
+      },
     };
 
     const promiseChain = self.registration.showNotification(event.data.json().title, options);
@@ -121,11 +122,10 @@ self.addEventListener('push', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-  const clickedNotification = event.notification;
-  clickedNotification.close();
+  event.notification.close();
 
   if (event.notification.data && event.notification.data.link) {
-    const promiseChain = clients.openWindow(event.notification.data.link);
+    const promiseChain = self.clients.openWindow(event.notification.data.link);
     event.waitUntil(promiseChain);
   }
 });
