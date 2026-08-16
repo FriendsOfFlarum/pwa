@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -28,11 +29,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon    $last_used
  * @property User|null $user
  */
+#[Table('push_subscriptions')]
 class PushSubscription extends AbstractModel
 {
     use ScopeVisibilityTrait;
-
-    protected $table = 'push_subscriptions';
 
     protected $casts = [
         'expires_at' => 'datetime',

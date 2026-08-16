@@ -16,6 +16,7 @@ use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -25,11 +26,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property User|null $user
  */
 #[Fillable(['token', 'user_id'])]
+#[Table('firebase_push_subscriptions')]
 class FirebasePushSubscription extends AbstractModel
 {
     use ScopeVisibilityTrait;
-
-    protected $table = 'firebase_push_subscriptions';
 
     public function user(): BelongsTo
     {
