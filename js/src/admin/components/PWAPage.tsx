@@ -21,13 +21,9 @@ interface PWAManifest {
 }
 
 interface PWASettingsResponse {
-  data: {
-    attributes: {
-      manifest: PWAManifest;
-      sizes: number[];
-      status_messages: StatusMessage[];
-    };
-  };
+  manifest: PWAManifest;
+  sizes: number[];
+  status_messages: StatusMessage[];
 }
 
 export default class PWAPage extends ExtensionPage {
@@ -57,24 +53,14 @@ export default class PWAPage extends ExtensionPage {
         url: app.forum.attribute<string>('apiUrl') + '/pwa/settings',
       })
       .then((response) => {
-        this.manifest = response.data.attributes.manifest;
-        this.sizes = response.data.attributes.sizes;
-        this.status_messages = response.data.attributes.status_messages;
+        this.manifest = response.manifest;
+        this.sizes = response.sizes;
+        this.status_messages = response.status_messages;
 
         this.loading = false;
         m.redraw();
       });
   }
-
-  checkExistence(url: string): boolean {
-    let http = new XMLHttpRequest();
-
-    http.open('HEAD', url, false);
-    http.send();
-
-    return http.status !== 404;
-  }
-
   content(): JSX.Element {
     if (this.loading || this.saving) {
       return (

@@ -12,6 +12,8 @@
 
 namespace FoF\PWA;
 
+use Flarum\Api\Resource\ForumResource;
+use Flarum\Api\Schema\Str;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Gdpr\Extend\UserData;
@@ -21,7 +23,6 @@ use FoF\PWA\Api\Controller as ApiController;
 use FoF\PWA\Data\PushSubscriptions;
 use FoF\PWA\Forum\Controller as ForumController;
 use FoF\PWA\Model\PushSubscription;
-use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
 
@@ -37,7 +38,8 @@ return [
         ->get('/pwa/settings', 'fof-pwa.settings', ApiController\ShowPWASettingsController::class)
         ->delete('/pwa/logo/{size}', 'fof-pwa.size_delete', ApiController\DeleteLogoController::class)
         ->post('/pwa/logo/{size}', 'fof-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/firebase-config', 'fof-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
+        ->post('/pwa/firebase-config', 'fof-pwa.firebase-config.store',
+            ApiController\AddFirebaseConfigController::class)
         ->post('/reset_vapid', 'fof-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
@@ -55,21 +57,24 @@ return [
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
 
-    //    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
-    //    (new Extend\ApiSerializer(ForumSerializer::class))
-    //        ->attributes(function ($serializer, $model, $attributes) {
-    //            $settings = resolve(SettingsRepositoryInterface::class);
-    //            /** @var Cloud $assets */
-    //            $assets = resolve(Factory::class)->disk('flarum-assets');
-    //
-    //            foreach (Util::$ICON_SIZES as $size) {
-    //                if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
-    //                    $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
-    //                }
-    //            }
-    //
-    //            return $attributes;
-    //        }),
+
+    (new Extend\ApiResource(ForumResource::class))
+        ->fields(function () {
+            $settings = resolve(SettingsRepositoryInterface::class);
+            $assets = resolve(Factory::class)->disk('flarum-assets');
+
+            $fields = [];
+
+            foreach (Util::$ICON_SIZES as $size) {
+                $fields[] = Str::make("pwa-icon-{$size}x{$size}Url")
+                    ->get(function (object $model) use ($settings, $assets, $size) {
+                        $sizePath = $settings->get("fof-pwa.icon_{$size}_path");
+                        return $sizePath ? $assets->url($sizePath) : null;
+                    });
+            }
+
+            return $fields;
+        }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 

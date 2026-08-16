@@ -14,16 +14,14 @@ namespace FoF\PWA\Api\Controller;
 
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
-use Flarum\Http\RequestUtil;
-use Flarum\User\Exception\PermissionDeniedException;
 use FoF\PWA\PWATrait;
 use FoF\PWA\Util;
 use Illuminate\Support\Arr;
-use Intervention\Image\Image;
-use Intervention\Image\ImageManager;
+use Intervention\Image\Interfaces\EncodedImageInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Tobscure\JsonApi\Document;
 
 class UploadLogoController extends UploadImageController
 {
@@ -31,41 +29,34 @@ class UploadLogoController extends UploadImageController
 
     protected int $size;
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws PermissionDeniedException|RouteNotFoundException
-     */
-    public function data(ServerRequestInterface $request, Document $document)
+    protected string $fileExtension = 'png';
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        RequestUtil::getActor($request)->assertAdmin();
-
-        $routeParams = $request->getAttribute('routeParameters', []);
-        $size = intval(Arr::get($routeParams, 'size'));
-        $this->size = $size;
-
+        $size = (int) Arr::get($request->getAttribute('routeParameters', []), 'size');
         if (!in_array($size, Util::$ICON_SIZES)) {
             throw new RouteNotFoundException();
         }
 
-        $this->filenamePrefix = "pwa-icon-{$size}x{$size}";
-        $this->filePathSettingKey = "fof-pwa.icon_{$size}_path";
+        $this->size = $size;
 
-        // Debug logging
-        $uploadedFiles = $request->getUploadedFiles();
-        resolve('log')->debug('PWA Upload', [
-            'uploaded_keys' => array_keys($uploadedFiles),
-            'looking_for'   => $this->filenamePrefix,
-            'size'          => $size,
-        ]);
-
-        return parent::data($request, $document);
+        return parent::handle($request);
     }
 
-    protected function makeImage(UploadedFileInterface $file): Image
+    protected function filenamePrefix(ServerRequestInterface $request): string
     {
-        $manager = new ImageManager();
+        return "pwa-icon-{$this->size}x{$this->size}";
+    }
 
-        return $manager->make($file->getStream())->resize($this->size, $this->size)->encode('png');
+    protected function filePathSettingKey(ServerRequestInterface $request, UploadedFileInterface $file): string
+    {
+        return "fof-pwa.icon_{$this->size}_path";
+    }
+
+    protected function makeImage(UploadedFileInterface $file): EncodedImageInterface|StreamInterface
+    {
+        return $this->imageManager->read($file->getStream()->getMetadata('uri'))
+            ->resize($this->size, $this->size)
+            ->toPng();
     }
 }

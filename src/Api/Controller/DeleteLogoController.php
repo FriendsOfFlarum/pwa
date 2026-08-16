@@ -12,27 +12,20 @@
 
 namespace FoF\PWA\Api\Controller;
 
-use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\Exception\PermissionDeniedException;
 use FoF\PWA\PWATrait;
 use FoF\PWA\Util;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-/**
- * @TODO: Remove this in favor of one of the API resource classes that were added.
- *      Or extend an existing API Resource to add this to.
- *      Or use a vanilla RequestHandlerInterface controller.
- *
- *      @link https://docs.flarum.org/2.x/extend/api#endpoints
- */
-class DeleteLogoController extends AbstractDeleteController
+class DeleteLogoController implements RequestHandlerInterface
 {
     use PWATrait;
 
@@ -43,12 +36,7 @@ class DeleteLogoController extends AbstractDeleteController
         $this->uploadDir = $filesystemFactory->disk('flarum-assets');
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws PermissionDeniedException|RouteNotFoundException
-     */
-    protected function delete(ServerRequestInterface $request): void
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
 

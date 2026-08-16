@@ -42,7 +42,6 @@ export default class PWALogoUploadButton extends UploadImageButton {
           .request({
             method: 'POST',
             url: this.resourceUrl(),
-            serialize: (raw: any) => raw,
             body,
           })
           .then(

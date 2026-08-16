@@ -53,11 +53,9 @@ class ResetVAPIDKeysController implements RequestHandlerInterface
         $this->settings->set('fof-pwa.vapid.private', $keys['privateKey']);
         $this->settings->set('fof-pwa.vapid.public', $keys['publicKey']);
 
-        $query = PushSubscription::where('vapid_public_key', $keys['publicKey']);
-
-        $count = $query->count();
-
-        $query->delete();
+        $count = PushSubscription::query()
+            ->where('vapid_public_key', '!=', $keys['publicKey'])
+            ->delete();
 
         return new JsonResponse([
             'deleted' => $count,
