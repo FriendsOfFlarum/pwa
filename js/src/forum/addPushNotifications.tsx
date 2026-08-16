@@ -34,8 +34,8 @@ const subscribeUser = async (save: boolean): Promise<void> => {
 
   await app.request({
     method: 'POST',
-    url: app.forum.attribute<string>('apiUrl') + '/pwa/push',
-    body: { subscription },
+    url: app.forum.attribute<string>('apiUrl') + '/push_subscriptions',
+    body: { data: { attributes: subscription } },
   });
 };
 
@@ -156,7 +156,6 @@ export default function addPushNotifications(): void {
       items.add(
         'push-optin-default',
         <Alert
-          type="warning"
           dismissible={false}
           className="pwa-setting-alert"
           controls={[
@@ -198,7 +197,7 @@ export default function addPushNotifications(): void {
         <Alert
           type="error"
           dismissible={false}
-          attrs={{ className: 'pwa-setting-alert' }}
+          className="pwa-setting-alert"
           controls={[
             <a
               className="Button Button--link"
@@ -218,7 +217,7 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items: ItemList<Mithril.Children>) {
+  extend('flarum/forum/components/SettingsPage', 'notifi cationsItems', function (items: ItemList<Mithril.Children>) {
     if (!usingAppleWebview()) return;
 
     if (!hasFirebasePushState('authorized')) {
@@ -226,7 +225,7 @@ export default function addPushNotifications(): void {
         'firebase-push-optin-default',
         <Alert
           dismissible={false}
-          attrs={{ className: 'pwa-setting-alert' }}
+          className="pwa-setting-alert"
           controls={[
             <Button className="Button Button--link" onclick={() => requestPushPermissions()}>
               {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default_button')}

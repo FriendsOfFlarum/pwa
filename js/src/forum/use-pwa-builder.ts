@@ -87,9 +87,13 @@ export const usePWABuilder = (): PWABuilderHooks => {
     const customEvent = event as PushTokenEvent;
     app.request({
       method: 'POST',
-      url: app.forum.attribute<string>('apiUrl') + '/pwa/firebase-push-subscriptions',
+      url: app.forum.attribute<string>('apiUrl') + '/pwa/firebase_push_subscriptions',
       body: {
-        token: customEvent.detail,
+        data: {
+          attributes: {
+            token: customEvent.detail,
+          },
+        },
       },
     });
   };

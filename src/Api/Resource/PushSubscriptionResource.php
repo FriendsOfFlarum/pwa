@@ -20,6 +20,7 @@ use Flarum\User\Exception\PermissionDeniedException;
 use FoF\PWA\Model\PushSubscription;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
@@ -88,9 +89,12 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
             // Read-only: always set server-side in creating(), never trusted from the client.
             Schema\Str::make('vapidPublicKey'),
 
-            Schema\DateTime::make('expiresAt')
+            Schema\Integer::make('expirationTime')
                 ->nullable()
-                ->writableOnCreate(),
+                ->writable()
+                ->set(function (PushSubscription $model, ?int $value) {
+                    $model->expires_at = $value ? Carbon::createFromTimestampMs($value) : null;
+                }),
 
             // Hidden: write-only encryption material for the push service.
             // Not meant to be read back via the API.

@@ -12,44 +12,29 @@
 
 namespace FoF\PWA\Api\Controller;
 
-use Flarum\Api\Controller\AbstractShowController;
+use Flarum\Api\JsonApiResponse;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\Exception\PermissionDeniedException;
-use FoF\PWA\Api\Serializer\PWASettingsSerializer;
 use FoF\PWA\PWATrait;
 use FoF\PWA\Util;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Tobscure\JsonApi\Document;
 
-/**
- * @TODO: Remove this in favor of one of the API resource classes that were added.
- *      Or extend an existing API Resource to add this to.
- *      Or use a vanilla RequestHandlerInterface controller.
- *
- *      @link https://docs.flarum.org/2.x/extend/api#endpoints
- */
-class ShowPWASettingsController extends AbstractShowController
+class ShowPWASettingsController implements RequestHandlerInterface
 {
     use PWATrait;
 
-    /**
-     * {@inheritdoc}
-     */
-    public $serializer = PWASettingsSerializer::class;
-
-    public function __construct(protected SettingsRepositoryInterface $settings, protected TranslatorInterface $translator, protected UrlGenerator $url)
-    {
+    public function __construct(
+        protected SettingsRepositoryInterface $settings,
+        protected TranslatorInterface $translator,
+        protected UrlGenerator $url
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws PermissionDeniedException
-     */
-    protected function data(ServerRequestInterface $request, Document $document): array
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
 
@@ -122,10 +107,10 @@ class ShowPWASettingsController extends AbstractShowController
             ];
         }
 
-        return [
+        return new JsonApiResponse([
             'manifest'        => $this->buildManifest(),
             'sizes'           => Util::$ICON_SIZES,
             'status_messages' => $status_messages,
-        ];
+        ]);
     }
 }

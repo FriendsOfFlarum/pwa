@@ -56,21 +56,21 @@ return [
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
 
-    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
-    (new Extend\ApiSerializer(ForumSerializer::class))
-        ->attributes(function ($serializer, $model, $attributes) {
-            $settings = resolve(SettingsRepositoryInterface::class);
-            /** @var Cloud $assets */
-            $assets = resolve(Factory::class)->disk('flarum-assets');
-
-            foreach (Util::$ICON_SIZES as $size) {
-                if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
-                    $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
-                }
-            }
-
-            return $attributes;
-        }),
+//    // @TODO: Replace with the new implementation https://docs.flarum.org/2.x/extend/api#extending-api-resources
+//    (new Extend\ApiSerializer(ForumSerializer::class))
+//        ->attributes(function ($serializer, $model, $attributes) {
+//            $settings = resolve(SettingsRepositoryInterface::class);
+//            /** @var Cloud $assets */
+//            $assets = resolve(Factory::class)->disk('flarum-assets');
+//
+//            foreach (Util::$ICON_SIZES as $size) {
+//                if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
+//                    $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
+//                }
+//            }
+//
+//            return $attributes;
+//        }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
@@ -90,8 +90,8 @@ return [
 
     (new Extend\ServiceProvider())
         ->register(FlarumPWAServiceProvider::class),
+
     new Extend\ApiResource(Api\Resource\FirebasePushSubscriptionResource::class),
-    new Extend\ApiResource(Api\Resource\PWASettingsResource::class),
     new Extend\ApiResource(Api\Resource\PushSubscriptionResource::class),
 
     (new Extend\Conditional())
