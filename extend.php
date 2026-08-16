@@ -67,7 +67,8 @@ return [
 
             return array_map(
                 fn ($size) => Schema\Str::make("pwa-icon-{$size}x{$size}Url")
-                    ->get(fn (object $model) => ($path = $settings->get("fof-pwa.icon_{$size}_path"))
+                    ->get(
+                        fn (object $model) => ($path = $settings->get("fof-pwa.icon_{$size}_path"))
                         ? $assets->url($path)
                         : null
                     ),
