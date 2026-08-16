@@ -38,8 +38,11 @@ return [
         ->get('/pwa/settings', 'fof-pwa.settings', ApiController\ShowPWASettingsController::class)
         ->delete('/pwa/logo/{size}', 'fof-pwa.size_delete', ApiController\DeleteLogoController::class)
         ->post('/pwa/logo/{size}', 'fof-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/firebase-config', 'fof-pwa.firebase-config.store',
-            ApiController\AddFirebaseConfigController::class)
+        ->post(
+            '/pwa/firebase-config',
+            'fof-pwa.firebase-config.store',
+            ApiController\AddFirebaseConfigController::class
+        )
         ->post('/reset_vapid', 'fof-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
@@ -57,7 +60,6 @@ return [
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
 
-
     (new Extend\ApiResource(ForumResource::class))
         ->fields(function () {
             $settings = resolve(SettingsRepositoryInterface::class);
@@ -69,6 +71,7 @@ return [
                 $fields[] = Str::make("pwa-icon-{$size}x{$size}Url")
                     ->get(function (object $model) use ($settings, $assets, $size) {
                         $sizePath = $settings->get("fof-pwa.icon_{$size}_path");
+
                         return $sizePath ? $assets->url($sizePath) : null;
                     });
             }
