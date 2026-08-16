@@ -45,6 +45,7 @@ class ServiceWorkerController implements RequestHandlerInterface
         return new TextResponse(
             file_get_contents($path),
             200,
-            ['Content-Type' => 'text/javascript; charset=utf-8']);
+            ['Content-Type' => 'text/javascript; charset=utf-8']
+        );
     }
 }
