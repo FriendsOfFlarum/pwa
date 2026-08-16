@@ -39,7 +39,7 @@ class ServiceWorkerController implements RequestHandlerInterface
     {
         $path = dirname(__DIR__, 3).'/js/dist/sw.js';
         if (!file_exists($path)) {
-            return new TextResponse('Service Worker is not build.', 404);
+            return new TextResponse('Service Worker is not built.', 404);
         }
 
         return new TextResponse(
