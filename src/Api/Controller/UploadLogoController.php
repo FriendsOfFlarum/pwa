@@ -14,6 +14,7 @@ namespace FoF\PWA\Api\Controller;
 
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
+use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
 use FoF\PWA\Util;
 use Illuminate\Support\Arr;
@@ -33,12 +34,12 @@ class UploadLogoController extends UploadImageController
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $size = (int) Arr::get($request->getAttribute('routeParameters', []), 'size');
-        if (!in_array($size, Util::$ICON_SIZES)) {
+        $iconSize = IconSize::tryFrom((int) Arr::get($request->getAttribute('routeParameters', []), 'size'));
+        if (!$iconSize) {
             throw new RouteNotFoundException();
         }
 
-        $this->size = $size;
+        $this->size = $iconSize->value;
 
         return parent::handle($request);
     }

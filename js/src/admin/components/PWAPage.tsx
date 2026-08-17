@@ -17,6 +17,7 @@ interface StatusMessage {
 
 interface PWAManifest {
   description?: string;
+  icons?: Array<{ src: string; sizes: string; type: string }>;
   [key: string]: any;
 }
 
@@ -109,21 +110,26 @@ export default class PWAPage extends ExtensionPage {
     return (
       <Form className="PWAPage-section PWAPage-logo container">
         <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')} description={app.translator.trans('fof-pwa.admin.pwa.logo_text')}>
-          {this.sizes.map((size) => (
-            <div key={size} className="Form-group logoSet">
-              <UploadImageButton
-                name={`pwa-icon-${size}x${size}`}
-                routePath={`pwa/logo/${size}`}
-                value={app.data.settings[`fof-pwa.icon_${size}_path`]}
-                url={app.forum.attribute(`pwa-icon-${size}x${size}Url`)}
-              />
-              <div className="helpText">
-                {app.translator.trans('fof-pwa.admin.pwa.logo_size_text', {
-                  size,
-                })}
+          {this.sizes.map((size) => {
+            const icon = this.manifest.icons?.find((i) => i.sizes === `${size}x${size}`);
+            const url = icon ? icon.src : undefined;
+
+            return (
+              <div key={size} className="Form-group logoSet">
+                <UploadImageButton
+                  name={`pwa-icon-${size}x${size}`}
+                  routePath={`pwa/logo/${size}`}
+                  value={app.data.settings[`fof-pwa.icon_${size}_path`]}
+                  url={url}
+                />
+                <div className="helpText">
+                  {app.translator.trans('fof-pwa.admin.pwa.logo_size_text', {
+                    size,
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </FieldSet>
       </Form>
     );

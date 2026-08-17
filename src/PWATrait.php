@@ -37,15 +37,14 @@ trait PWATrait
     {
         /** @var Cloud $assetsFilesystem */
         $assetsFilesystem = resolve(Factory::class)->disk('flarum-assets');
-        /** @var SettingsRepositoryInterface $settings */
         $settings = resolve(SettingsRepositoryInterface::class);
 
         $icons = [];
-        foreach (Util::$ICON_SIZES as $size) {
-            if ($path = $settings->get("fof-pwa.icon_{$size}_path")) {
+        foreach (IconSize::cases() as $size) {
+            if ($path = $settings->get($size->getSettingsKey())) {
                 $icons[] = [
                     'src'   => $assetsFilesystem->url($path),
-                    'sizes' => "{$size}x{$size}",
+                    'sizes' => "{$size->value}x{$size->value}",
                     'type'  => 'image/png',
                 ];
             }

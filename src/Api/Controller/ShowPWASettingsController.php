@@ -16,6 +16,7 @@ use Flarum\Api\JsonApiResponse;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
+use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
 use FoF\PWA\Util;
 use Psr\Http\Message\ResponseInterface;
@@ -42,8 +43,8 @@ class ShowPWASettingsController implements RequestHandlerInterface
 
         $logo = false;
 
-        foreach (Util::$ICON_SIZES as $size) {
-            if ($size >= 144 && $this->settings->get("fof-pwa.icon_{$size}_path")) {
+        foreach (IconSize::cases() as $size) {
+            if ($size->value >= 144 && $this->settings->get($size->getSettingsKey())) {
                 $logo = true;
             }
         }
@@ -109,7 +110,7 @@ class ShowPWASettingsController implements RequestHandlerInterface
 
         return new JsonApiResponse([
             'manifest'        => $this->buildManifest(),
-            'sizes'           => Util::$ICON_SIZES,
+            'sizes'           => IconSize::cases(),
             'status_messages' => $status_messages,
         ]);
     }

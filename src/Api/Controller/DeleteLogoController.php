@@ -15,6 +15,7 @@ namespace FoF\PWA\Api\Controller;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
+use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
 use FoF\PWA\Util;
 use Illuminate\Contracts\Filesystem\Factory;
@@ -41,13 +42,13 @@ class DeleteLogoController implements RequestHandlerInterface
         RequestUtil::getActor($request)->assertAdmin();
 
         $routeParams = $request->getAttribute('routeParameters', []);
-        $size = Arr::get($routeParams, 'size');
+        $iconSize = IconSize::tryFrom((int) Arr::get($routeParams, 'size'));
 
-        if (!in_array($size, Util::$ICON_SIZES)) {
+        if (!$iconSize) {
             throw new RouteNotFoundException();
         }
 
-        $pathKey = "fof-pwa.icon_{$size}_path";
+        $pathKey = $iconSize->getSettingsKey();
         $path = $this->settings->get($pathKey);
 
         $this->uploadDir->delete($path);

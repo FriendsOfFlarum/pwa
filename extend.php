@@ -12,18 +12,14 @@
 
 namespace FoF\PWA;
 
-use Flarum\Api\Resource\ForumResource;
-use Flarum\Api\Schema;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Gdpr\Extend\UserData;
-use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
 use FoF\PWA\Data\PushSubscriptions;
 use FoF\PWA\Forum\Controller as ForumController;
 use FoF\PWA\Model\PushSubscription;
-use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
@@ -59,22 +55,6 @@ return [
         ->js(__DIR__.'/js/dist/admin.js')
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
-
-    (new Extend\ApiResource(ForumResource::class))
-        ->fields(function () {
-            $settings = resolve(SettingsRepositoryInterface::class);
-            $assets = resolve(Factory::class)->disk('flarum-assets');
-
-            return array_map(
-                fn ($size) => Schema\Str::make("pwa-icon-{$size}x{$size}Url")
-                    ->get(
-                        fn (object $model) => ($path = $settings->get("fof-pwa.icon_{$size}_path"))
-                        ? $assets->url($path)
-                        : null
-                    ),
-                Util::$ICON_SIZES
-            );
-        }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
