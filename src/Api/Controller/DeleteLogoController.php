@@ -17,7 +17,6 @@ use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
-use FoF\PWA\Util;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;

@@ -16,7 +16,6 @@ use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
-use FoF\PWA\Util;
 use Illuminate\Support\Arr;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Psr\Http\Message\ResponseInterface;

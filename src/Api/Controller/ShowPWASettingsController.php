@@ -18,7 +18,6 @@ use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
-use FoF\PWA\Util;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
