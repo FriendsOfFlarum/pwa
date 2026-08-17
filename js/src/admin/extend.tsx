@@ -24,9 +24,12 @@ export default [
       type: 'text',
     }))
     .setting(() => () => (
-      <FormGroup type="textarea" help={app.translator.trans('fof-pwa.admin.pwa.about.description_text')} disabled>
-        {app.forum.attribute<string>('description')}
-      </FormGroup>
+      <FormGroup
+        type="textarea"
+        help={app.translator.trans('fof-pwa.admin.pwa.about.description_text')}
+        placeholder={app.forum.attribute<string>('description')}
+        disabled
+      />
     ))
     .setting(() => ({
       setting: 'fof-pwa.themeColor',

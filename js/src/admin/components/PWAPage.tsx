@@ -3,14 +3,12 @@ import ExtensionPage, { ExtensionPageAttrs } from 'flarum/admin/components/Exten
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
-
-import PWALogoUploadButton from './PWALogoUploadButton';
-import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
-
-import type { Children, Vnode, VnodeDOM } from 'mithril';
 import extractText from 'flarum/common/utils/extractText';
 import FieldSet from 'flarum/common/components/FieldSet';
 import Form from 'flarum/common/components/Form';
+import UploadImageButton from 'flarum/common/components/UploadImageButton';
+import type { Children, Vnode, VnodeDOM } from 'mithril';
+import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
 interface StatusMessage {
   type: 'success' | 'error' | 'warning' | 'info';
@@ -62,9 +60,9 @@ export default class PWAPage extends ExtensionPage {
   sections(vnode: VnodeDOM<ExtensionPageAttrs, this>) {
     const items = super.sections(vnode);
 
-    items.add('intro', this.introSection(), 40);
-    items.add('maintenance', this.maintenanceSection(), 30);
-    items.setPriority('content', 20);
+    items.add('intro', this.introSection(), 50);
+    items.add('maintenance', this.maintenanceSection(), 40);
+    items.setPriority('content', 30);
     items.add('logo', this.logoSection(), 20);
     items.add('firebase', this.firebaseSection(), 10);
 
@@ -112,14 +110,19 @@ export default class PWAPage extends ExtensionPage {
       <Form className="PWAPage-section PWAPage-logo container">
         <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')} description={app.translator.trans('fof-pwa.admin.pwa.logo_text')}>
           {this.sizes.map((size) => (
-            <FieldSet key={size} className="logoFieldset">
-              <PWALogoUploadButton size={size} />
+            <div key={size} className="Form-group logoSet">
+              <UploadImageButton
+                name={`pwa-icon-${size}x${size}`}
+                routePath={`pwa/logo/${size}`}
+                value={app.data.settings[`fof-pwa.icon_${size}_path`]}
+                url={app.forum.attribute(`pwa-icon-${size}x${size}Url`)}
+              />
               <div className="helpText">
                 {app.translator.trans('fof-pwa.admin.pwa.logo_size_text', {
                   size,
                 })}
               </div>
-            </FieldSet>
+            </div>
           ))}
         </FieldSet>
       </Form>
