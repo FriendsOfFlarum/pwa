@@ -1,5 +1,5 @@
 import app from 'flarum/admin/app';
-import ExtensionPage from 'flarum/admin/components/ExtensionPage';
+import ExtensionPage, { ExtensionPageAttrs } from 'flarum/admin/components/ExtensionPage';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
@@ -7,11 +7,10 @@ import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import PWALogoUploadButton from './PWALogoUploadButton';
 import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
-import type Mithril from 'mithril';
+import type { Children, Vnode, VnodeDOM } from 'mithril';
 import extractText from 'flarum/common/utils/extractText';
 import FieldSet from 'flarum/common/components/FieldSet';
 import Form from 'flarum/common/components/Form';
-import FormGroup from 'flarum/common/components/FormGroup';
 
 interface StatusMessage {
   type: 'success' | 'error' | 'warning' | 'info';
@@ -30,23 +29,19 @@ interface PWASettingsResponse {
 }
 
 export default class PWAPage extends ExtensionPage {
-  loading: boolean = false;
-  saving: boolean = false;
-  status_messages: StatusMessage[] = [];
+  loadingApi: boolean = false;
+  statusMessages: StatusMessage[] = [];
   manifest: PWAManifest = {};
   sizes: number[] = [];
 
-  oninit(vnode: Mithril.Vnode) {
+  oninit(vnode: Vnode) {
     super.oninit(vnode);
-
-    this.saving = false;
     this.refresh();
   }
 
   refresh(): void {
-    this.loading = true;
-
-    this.status_messages = [];
+    this.loadingApi = true;
+    this.statusMessages = [];
     this.manifest = {};
     this.sizes = [];
 
@@ -58,148 +53,83 @@ export default class PWAPage extends ExtensionPage {
       .then((response) => {
         this.manifest = response.manifest;
         this.sizes = response.sizes;
-        this.status_messages = response.status_messages;
-
-        this.loading = false;
+        this.statusMessages = response.status_messages;
+        this.loadingApi = false;
         m.redraw();
       });
   }
-  content(): JSX.Element {
-    if (this.loading || this.saving) {
-      return (
-        <div className="PWAPage">
-          <div className="container">
+
+  sections(vnode: VnodeDOM<ExtensionPageAttrs, this>) {
+    const items = super.sections(vnode);
+
+    items.add('intro', this.introSection(), 40);
+    items.add('maintenance', this.maintenanceSection(), 30);
+    items.setPriority('content', 20);
+    items.add('logo', this.logoSection(), 20);
+    items.add('firebase', this.firebaseSection(), 10);
+
+    return items;
+  }
+
+  introSection(): Children {
+    return (
+      <div className="PWAPage-section PWAPage-intro container">
+        <h2>{app.translator.trans('fof-pwa.admin.pwa.heading')}</h2>
+        <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.text')}</div>
+      </div>
+    );
+  }
+
+  maintenanceSection(): Children {
+    return (
+      <FieldSet className="PWAPage-section PWAPage-maintenance container" label={app.translator.trans('fof-pwa.admin.pwa.maintenance.heading')}>
+        <div className="statusCheck">
+          {this.loadingApi ? (
             <LoadingIndicator />
-          </div>
+          ) : (
+            this.statusMessages.map((message) => (
+              <Alert key={message.message} type={message.type} dismissible={false}>
+                {message.message}
+              </Alert>
+            ))
+          )}
         </div>
-      );
-    }
+
+        <div className="Form-group">
+          <Button className="Button" onclick={this.resetVapid}>
+            {app.translator.trans('fof-pwa.admin.pwa.maintenance.reset_vapid_button')}
+          </Button>
+          <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.maintenance.reset_vapid_text')}</div>
+        </div>
+      </FieldSet>
+    );
+  }
+
+  logoSection(): Children {
+    if (this.loadingApi) return <LoadingIndicator />;
 
     return (
-      <div className="PWAPage">
-        <div className="container">
-          <Form>
-            <h2>{app.translator.trans('fof-pwa.admin.pwa.heading')}</h2>
-            <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.text')}</div>
-
-            <div className="statusCheck">
-              <legend>{app.translator.trans('fof-pwa.admin.pwa.status_check_heading')}</legend>
-              {this.status_messages.map((message) => (
-                <Alert type={message.type} dismissible={false}>
-                  {[message.message]}
-                </Alert>
-              ))}
-            </div>
-
-            <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.maintenance.heading')}>
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.debug',
-                label: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_text'),
-                type: 'boolean',
-              })}
-              {this.buildSettingComponent(() => {
-                return (
-                  <div>
-                    <Button className="Button" onclick={this.resetVapid.bind(this)}>
-                      Reset VAPID keys
-                    </Button>
-                    <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.maintenance.reset_vapid_text')}</div>
-                  </div>
-                );
-              })}
+      <Form className="PWAPage-section PWAPage-logo container">
+        <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')} description={app.translator.trans('fof-pwa.admin.pwa.logo_text')}>
+          {this.sizes.map((size) => (
+            <FieldSet key={size} className="logoFieldset">
+              <PWALogoUploadButton size={size} />
+              <div className="helpText">
+                {app.translator.trans('fof-pwa.admin.pwa.logo_size_text', {
+                  size,
+                })}
+              </div>
             </FieldSet>
+          ))}
+        </FieldSet>
+      </Form>
+    );
+  }
 
-            <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.about.heading')}>
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.shortName',
-                placeholder: this.setting('forum_title')(),
-                label: app.translator.trans('fof-pwa.admin.pwa.about.short_name_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.about.short_name_text'),
-                type: 'text',
-              })}
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.longName',
-                placeholder: this.setting('forum_title')(),
-                label: app.translator.trans('fof-pwa.admin.pwa.about.long_name_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.about.long_name_text'),
-                type: 'text',
-              })}
-              <FormGroup type="textarea" disabled={true} help={app.translator.trans('fof-pwa.admin.pwa.about.description_text')}>
-                {this.manifest.description}
-              </FormGroup>
-            </FieldSet>
-
-            <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.colors.heading')}>
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.themeColor',
-                placeholder: this.setting('theme_primary_color')(),
-                label: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_text'),
-                type: 'color-preview',
-              })}
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.backgroundColor',
-                label: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_text'),
-                type: 'color-preview',
-              })}
-            </FieldSet>
-
-            <FieldSet className="parent" label={app.translator.trans('fof-pwa.admin.pwa.other.heading')}>
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.forcePortrait',
-                label: app.translator.trans('fof-pwa.admin.pwa.other.force_portrait_text'),
-                type: 'boolean',
-              })}
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.userMaxSubscriptions',
-                label: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_text'),
-                type: 'number',
-                placeholder: 20,
-              })}
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.pushNotifPreferenceDefaultToEmail',
-                label: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_text'),
-                type: 'bool',
-              })}
-              {this.buildSettingComponent({
-                setting: 'fof-pwa.windowControlsOverlay',
-                label: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_label'),
-                help: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_text', {
-                  compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1" />,
-                  learnlink: (
-                    <a
-                      href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
-                      tabindex="-1"
-                    />
-                  ),
-                }),
-                type: 'bool',
-              })}
-            </FieldSet>
-
-            {this.submitButton()}
-
-            <FieldSet
-              label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')}
-              description={app.translator.trans('fof-pwa.admin.pwa.logo_text')}
-            >
-              {this.sizes.map((size) => {
-                return (
-                  <fieldset className="logoFieldset">
-                    <PWALogoUploadButton size={size} />
-                    <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.logo_size_text', { size })}</div>
-                  </fieldset>
-                );
-              })}
-            </FieldSet>
-          </Form>
-
-          <PWAUploadFirebaseConfigForm />
-        </div>
+  firebaseSection(): Children {
+    return (
+      <div className="PWAPage-section PWAPage-firebase container">
+        <PWAUploadFirebaseConfigForm />
       </div>
     );
   }
@@ -220,16 +150,5 @@ export default class PWAPage extends ExtensionPage {
           );
         });
     }
-  }
-
-  saveSettings(e: SubmitEvent): Promise<void> {
-    const hex = /^(#[0-9a-f]{3}([0-9a-f]{3})?)?$/i;
-
-    if (!hex.test(this.setting('fof-pwa.backgroundColor')())) {
-      alert(app.translator.trans('core.admin.appearance.enter_hex_message'));
-      return Promise.resolve();
-    }
-
-    return super.saveSettings(e);
   }
 }
