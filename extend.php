@@ -12,17 +12,14 @@
 
 namespace FoF\PWA;
 
-use Flarum\Api\Serializer\ForumSerializer;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Gdpr\Extend\UserData;
-use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
 use FoF\PWA\Data\PushSubscriptions;
 use FoF\PWA\Forum\Controller as ForumController;
-use Illuminate\Contracts\Filesystem\Cloud;
-use Illuminate\Contracts\Filesystem\Factory;
+use FoF\PWA\Model\PushSubscription;
 use Illuminate\Support\Arr;
 
 $metaClosure = function (Document $document) {
@@ -37,9 +34,11 @@ return [
         ->get('/pwa/settings', 'fof-pwa.settings', ApiController\ShowPWASettingsController::class)
         ->delete('/pwa/logo/{size}', 'fof-pwa.size_delete', ApiController\DeleteLogoController::class)
         ->post('/pwa/logo/{size}', 'fof-pwa.size_upload', ApiController\UploadLogoController::class)
-        ->post('/pwa/push', 'fof-pwa.push.create', ApiController\AddPushSubscriptionController::class)
-        ->post('/pwa/firebase-push-subscriptions', 'fof-pwa.firebase-subscriptions.create', ApiController\AddFirebasePushSubscriptionController::class)
-        ->post('/pwa/firebase-config', 'fof-pwa.firebase-config.store', ApiController\AddFirebaseConfigController::class)
+        ->post(
+            '/pwa/firebase-config',
+            'fof-pwa.firebase-config.store',
+            ApiController\AddFirebaseConfigController::class
+        )
         ->post('/reset_vapid', 'fof-pwa.reset_vapid', ApiController\ResetVAPIDKeysController::class),
 
     (new Extend\Routes('forum'))
@@ -56,21 +55,6 @@ return [
         ->js(__DIR__.'/js/dist/admin.js')
         ->css(__DIR__.'/resources/less/admin.less')
         ->content($metaClosure),
-
-    (new Extend\ApiSerializer(ForumSerializer::class))
-        ->attributes(function ($serializer, $model, $attributes) {
-            $settings = resolve(SettingsRepositoryInterface::class);
-            /** @var Cloud $assets */
-            $assets = resolve(Factory::class)->disk('flarum-assets');
-
-            foreach (Util::$ICON_SIZES as $size) {
-                if ($sizePath = $settings->get('fof-pwa.icon_'.strval($size).'_path')) {
-                    $attributes["pwa-icon-{$size}x{$size}Url"] = $assets->url($sizePath);
-                }
-            }
-
-            return $attributes;
-        }),
 
     new Extend\Locales(__DIR__.'/resources/locale'),
 
@@ -90,6 +74,9 @@ return [
 
     (new Extend\ServiceProvider())
         ->register(FlarumPWAServiceProvider::class),
+
+    new Extend\ApiResource(Api\Resource\FirebasePushSubscriptionResource::class),
+    new Extend\ApiResource(Api\Resource\PushSubscriptionResource::class),
 
     (new Extend\Conditional())
         ->whenExtensionEnabled('flarum-gdpr', fn () => [

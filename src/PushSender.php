@@ -20,6 +20,7 @@ use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use FoF\PWA\Model\PushSubscription;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Support\Arr;
@@ -34,26 +35,14 @@ class PushSender
 
     protected Cloud $assetsFilesystem;
 
-    protected LoggerInterface $logger;
-
-    protected SettingsRepositoryInterface $settings;
-
-    protected UrlGenerator $url;
-
-    protected NotificationBuilder $notifications;
-
     public function __construct(
         Factory $filesystemFactory,
-        LoggerInterface $logger,
-        SettingsRepositoryInterface $settings,
-        UrlGenerator $url,
-        NotificationBuilder $notifications,
+        protected LoggerInterface $logger,
+        protected SettingsRepositoryInterface $settings,
+        protected UrlGenerator $url,
+        protected NotificationBuilder $notifications,
     ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
-        $this->logger = $logger;
-        $this->settings = $settings;
-        $this->url = $url;
-        $this->notifications = $notifications;
     }
 
     /**
@@ -80,7 +69,7 @@ class PushSender
                 $notifications[] = [
                     'subscription' => Subscription::create([
                         'endpoint' => $subscription->endpoint,
-                        'keys'     => json_decode($subscription->keys, true),
+                        'keys'     => $subscription->keys,
                     ]),
                     'payload' => $payload,
                 ];

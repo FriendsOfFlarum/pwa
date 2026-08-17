@@ -1,12 +1,10 @@
 import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
-import NotificationGrid from 'flarum/forum/components/NotificationGrid';
-import SettingsPage from 'flarum/forum/components/SettingsPage';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import Link from 'flarum/common/components/Link';
 import Page from 'flarum/common/components/Page';
-import icon from 'flarum/common/helpers/icon';
+import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import { usingAppleWebview, requestPushPermissions, usePWABuilder } from './use-pwa-builder';
 import type Mithril from 'mithril';
@@ -29,15 +27,15 @@ const subscribeUser = async (save: boolean): Promise<void> => {
 
   const subscription = await app.sw.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: app.forum.attribute('vapidPublicKey'),
+    applicationServerKey: app.forum.attribute<string>('vapidPublicKey'),
   });
 
   if (!save) return;
 
   await app.request({
     method: 'POST',
-    url: app.forum.attribute<string>('apiUrl') + '/pwa/push',
-    body: { subscription },
+    url: `${app.forum.attribute<string>('apiUrl')}/push_subscriptions`,
+    body: { data: { attributes: subscription.toJSON() } },
   });
 };
 
@@ -117,7 +115,7 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend(NotificationGrid.prototype, 'notificationMethods', function (items: ItemList<any>) {
+  extend('flarum/forum/components/NotificationGrid', 'notificationMethods', function (items: ItemList<any>) {
     if (!pushConfigured()) return;
 
     items.add('push', {
@@ -127,7 +125,7 @@ export default function addPushNotifications(): void {
     });
   });
 
-  extend(SettingsPage.prototype, 'notificationsItems', function (items: ItemList<Mithril.Children>) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items: ItemList<Mithril.Children>) {
     if (usingAppleWebview() || !pushConfigured()) return;
 
     if (!supportsBrowserNotifications()) {
@@ -146,7 +144,7 @@ export default function addPushNotifications(): void {
             </a>,
           ]}
         >
-          {icon('fas fa-exclamation-triangle')}
+          <Icon name="fas fa-exclamation-triangle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.no_browser_support')}
         </Alert>,
         10
@@ -158,38 +156,22 @@ export default function addPushNotifications(): void {
       items.add(
         'push-optin-default',
         <Alert
-          type="warning"
           dismissible={false}
           className="pwa-setting-alert"
           controls={[
             <Button
               className="Button Button--link"
-              onclick={() => {
-                const requestPermission = window.Notification.requestPermission();
-
-                if (requestPermission instanceof Promise) {
-                  requestPermission.then((res) => {
-                    m.redraw();
-                    if (res === 'granted') {
-                      subscribeUser(true);
-                    }
-                  });
-                } else {
-                  // Legacy callback API
-                  window.Notification.requestPermission((res: NotificationPermission) => {
-                    m.redraw();
-                    if (res === 'granted') {
-                      subscribeUser(true);
-                    }
-                  });
-                }
+              onclick={async () => {
+                const result = await window.Notification.requestPermission();
+                m.redraw();
+                if (result === 'granted') await subscribeUser(true);
               }}
             >
               {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default_button')}
             </Button>,
           ]}
         >
-          {icon('fas fa-exclamation-circle')}
+          <Icon name="fas fa-exclamation-circle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default')}
         </Alert>,
         10
@@ -200,7 +182,7 @@ export default function addPushNotifications(): void {
         <Alert
           type="error"
           dismissible={false}
-          attrs={{ className: 'pwa-setting-alert' }}
+          className="pwa-setting-alert"
           controls={[
             <a
               className="Button Button--link"
@@ -212,7 +194,7 @@ export default function addPushNotifications(): void {
             </a>,
           ]}
         >
-          {icon('fas fa-exclamation-triangle')}
+          <Icon name="fas fa-exclamation-triangle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_denied')}
         </Alert>,
         10
@@ -220,7 +202,7 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend(SettingsPage.prototype, 'notificationsItems', function (items: ItemList<Mithril.Children>) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items: ItemList<Mithril.Children>) {
     if (!usingAppleWebview()) return;
 
     if (!hasFirebasePushState('authorized')) {
@@ -228,14 +210,14 @@ export default function addPushNotifications(): void {
         'firebase-push-optin-default',
         <Alert
           dismissible={false}
-          attrs={{ className: 'pwa-setting-alert' }}
+          className="pwa-setting-alert"
           controls={[
             <Button className="Button Button--link" onclick={() => requestPushPermissions()}>
               {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default_button')}
             </Button>,
           ]}
         >
-          {icon('fas fa-exclamation-circle')}
+          <Icon name="fas fa-exclamation-circle" />
           {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default')}
         </Alert>,
         10
@@ -243,11 +225,11 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend(SettingsPage.prototype, 'oncreate', function () {
+  extend('flarum/forum/components/SettingsPage', 'oncreate', function () {
     registerFirebasePushNotificationListeners();
   });
 
-  extend(SettingsPage.prototype, 'onremove', function () {
+  extend('flarum/forum/components/SettingsPage', 'onremove', function () {
     removeFirebasePushNotificationListeners();
   });
 }

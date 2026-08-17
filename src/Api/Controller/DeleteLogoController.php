@@ -12,50 +12,42 @@
 
 namespace FoF\PWA\Api\Controller;
 
-use Flarum\Api\Controller\AbstractDeleteController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\Exception\PermissionDeniedException;
+use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
-use FoF\PWA\Util;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\EmptyResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class DeleteLogoController extends AbstractDeleteController
+class DeleteLogoController implements RequestHandlerInterface
 {
     use PWATrait;
 
-    protected SettingsRepositoryInterface $settings;
-
     protected Filesystem $uploadDir;
 
-    public function __construct(SettingsRepositoryInterface $settings, Factory $filesystemFactory)
+    public function __construct(protected SettingsRepositoryInterface $settings, Factory $filesystemFactory)
     {
-        $this->settings = $settings;
         $this->uploadDir = $filesystemFactory->disk('flarum-assets');
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws PermissionDeniedException|RouteNotFoundException
-     */
-    protected function delete(ServerRequestInterface $request): EmptyResponse
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
 
         $routeParams = $request->getAttribute('routeParameters', []);
-        $size = Arr::get($routeParams, 'size');
+        $iconSize = IconSize::tryFrom((int) Arr::get($routeParams, 'size'));
 
-        if (!in_array($size, Util::$ICON_SIZES)) {
+        if (!$iconSize) {
             throw new RouteNotFoundException();
         }
 
-        $pathKey = "fof-pwa.icon_{$size}_path";
+        $pathKey = $iconSize->getSettingsKey();
         $path = $this->settings->get($pathKey);
 
         $this->uploadDir->delete($path);

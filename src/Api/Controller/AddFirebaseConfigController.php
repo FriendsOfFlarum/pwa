@@ -12,51 +12,32 @@
 
 namespace FoF\PWA\Api\Controller;
 
-use Flarum\Api\Controller\AbstractCreateController;
 use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\Exception\NotAuthenticatedException;
-use Flarum\User\Exception\PermissionDeniedException;
-use FoF\PWA\Api\Serializer\FirebasePushSubscriptionSerializer;
+use Laminas\Diactoros\Response\EmptyResponse;
+use Laminas\Diactoros\UploadedFile;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Tobscure\JsonApi\Document;
-use Tobscure\JsonApi\Exception\InvalidParameterException;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class AddFirebaseConfigController extends AbstractCreateController
+readonly class AddFirebaseConfigController implements RequestHandlerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public $serializer = FirebasePushSubscriptionSerializer::class;
-
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    private $settings;
-
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct(private SettingsRepositoryInterface $settings)
     {
-        $this->settings = $settings;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws NotAuthenticatedException
-     * @throws InvalidParameterException|PermissionDeniedException
-     */
-    protected function data(ServerRequestInterface $request, Document $document)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
-
         $files = $request->getUploadedFiles();
-
-        /** @var \Laminas\Diactoros\UploadedFile $config */
+        /** @var UploadedFile $config */
         $config = $files['file'];
 
         $this->settings->set(
             'fof-pwa.firebaseConfig',
             $config->getStream()->getContents(),
         );
+
+        return new EmptyResponse(204);
     }
 }

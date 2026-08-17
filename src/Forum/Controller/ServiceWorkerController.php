@@ -37,6 +37,15 @@ class ServiceWorkerController implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new TextResponse($this->assetDir->get('extensions/fof-pwa/sw.js'), 200, ['content-type' => 'text/javascript; charset=utf-8']);
+        $path = dirname(__DIR__, 3).'/js/dist/sw.js';
+        if (!file_exists($path)) {
+            return new TextResponse('Service Worker is not built.', 404);
+        }
+
+        return new TextResponse(
+            file_get_contents($path),
+            200,
+            ['Content-Type' => 'text/javascript; charset=utf-8']
+        );
     }
 }

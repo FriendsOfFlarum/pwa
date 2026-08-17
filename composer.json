@@ -1,36 +1,51 @@
 {
     "name": "fof/pwa",
     "description": "Turn your flarum site into a progressive web app!",
-    "keywords": [
-        "flarum"
-    ],
     "type": "flarum-extension",
     "license": "MIT",
+    "keywords": [
+        "flarum",
+        "pwa",
+        "web push"
+    ],
     "support": {
         "issues": "https://github.com/FriendsOfFlarum/pwa/issues",
         "source": "https://github.com/FriendsOfFlarum/pwa",
         "forum": "https://discuss.flarum.org/d/39678-friendsofflarum-progressive-web-app"
     },
-    "require": {
-        "php": "^8.1",
-        "ext-gmp": "*",
-        "flarum/core": "^1.8",
-        "minishlink/web-push": "^9.0.2",
-        "spomky-labs/base64url" : "^2.0.4",
-        "kreait/firebase-php": "^7.16"
+    "funding": [
+        {
+            "type": "website",
+            "url": "https://opencollective.com/fof/donate"
+        }
+    ],
+    "homepage": "https://friendsofflarum.org",
+    "scripts": {
+        "analyse:phpstan": "phpstan analyse",
+        "clear-cache:phpstan": "phpstan clear-result-cache"
     },
+    "scripts-descriptions": {
+        "analyse:phpstan": "Run static analysis"
+    },
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0.0-rc.5",
+        "minishlink/web-push": "^11.0.0",
+        "spomky-labs/base64url": "^2.0.4",
+        "kreait/firebase-php": "^8.4.0"
+    },
+    "require-dev": {
+        "flarum/phpstan": "^2.0.0-rc.5",
+        "flarum/gdpr": "^2.0@RC"
+    },
+    "minimum-stability": "RC",
     "suggest": {
         "ext-gmp": "This can improve push notification performance."
     },
     "authors": [
         {
-            "name": "Alexander Skvortsov",
-            "email": "askvortsov@flarum.org",
-            "role": "Developer"
-        },
-        {
-            "name": "IanM",
-            "role": "Developer"
+            "name": "FriendsOfFlarum",
+            "homepage": "https://friendsofflarum.org"
         }
     ],
     "autoload": {
@@ -67,26 +82,11 @@
         }
     },
     "config": {
-        "policy": {
-            "advisories": {
-                "ignore-id": [
-                    "PKSA-y2cr-5h3j-g3ys"
-                ]
-            }
+        "allow-plugins": {
+            "php-http/discovery": true
         }
-    },
-    "require-dev": {
-        "flarum/phpstan": "^1.0",
-        "flarum/gdpr": "^1.8"
     },
     "replace": {
         "askvortsov/flarum-pwa": "*"
-    },
-    "scripts": {
-        "analyse:phpstan": "phpstan analyse",
-        "clear-cache:phpstan": "phpstan clear-result-cache"
-    },
-    "scripts-descriptions": {
-        "analyse:phpstan": "Run static analysis"
     }
 }

@@ -10,26 +10,33 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace FoF\PWA;
+namespace FoF\PWA\Model;
 
+use Carbon\Carbon;
 use Flarum\Database\AbstractModel;
 use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\User\User;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int       $id
- * @property string    $token
+ * @property int       $user_id
+ * @property string    $endpoint
+ * @property string    $vapid_public_key
+ * @property string    $keys
+ * @property Carbon    $expires_at
+ * @property Carbon    $last_used
  * @property User|null $user
  */
-class FirebasePushSubscription extends AbstractModel
+#[Table('push_subscriptions')]
+class PushSubscription extends AbstractModel
 {
     use ScopeVisibilityTrait;
 
-    protected $table = 'firebase_push_subscriptions';
-
-    protected $fillable = [
-        'token', 'user_id',
+    protected $casts = [
+        'expires_at' => 'datetime',
+        'keys'       => 'array',
     ];
 
     public function user(): BelongsTo

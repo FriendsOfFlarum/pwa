@@ -12,49 +12,29 @@
 
 namespace FoF\PWA\Api\Controller;
 
-use Flarum\Api\Controller\AbstractShowController;
+use Flarum\Api\JsonApiResponse;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\Exception\PermissionDeniedException;
-use FoF\PWA\Api\Serializer\PWASettingsSerializer;
+use FoF\PWA\IconSize;
 use FoF\PWA\PWATrait;
-use FoF\PWA\Util;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Tobscure\JsonApi\Document;
 
-class ShowPWASettingsController extends AbstractShowController
+class ShowPWASettingsController implements RequestHandlerInterface
 {
     use PWATrait;
 
-    /**
-     * {@inheritdoc}
-     */
-    public $serializer = PWASettingsSerializer::class;
-
-    protected SettingsRepositoryInterface $settings;
-
-    protected TranslatorInterface $translator;
-
-    protected UrlGenerator $url;
-
     public function __construct(
-        SettingsRepositoryInterface $settings,
-        TranslatorInterface $translator,
-        UrlGenerator $url
+        protected SettingsRepositoryInterface $settings,
+        protected TranslatorInterface $translator,
+        protected UrlGenerator $url
     ) {
-        $this->settings = $settings;
-        $this->translator = $translator;
-        $this->url = $url;
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws PermissionDeniedException
-     */
-    protected function data(ServerRequestInterface $request, Document $document): array
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         RequestUtil::getActor($request)->assertAdmin();
 
@@ -62,8 +42,8 @@ class ShowPWASettingsController extends AbstractShowController
 
         $logo = false;
 
-        foreach (Util::$ICON_SIZES as $size) {
-            if ($size >= 144 && $this->settings->get("fof-pwa.icon_{$size}_path")) {
+        foreach (IconSize::cases() as $size) {
+            if ($size->value >= 144 && $this->settings->get($size->getSettingsKey())) {
                 $logo = true;
             }
         }
@@ -127,10 +107,10 @@ class ShowPWASettingsController extends AbstractShowController
             ];
         }
 
-        return [
+        return new JsonApiResponse([
             'manifest'        => $this->buildManifest(),
-            'sizes'           => Util::$ICON_SIZES,
+            'sizes'           => IconSize::cases(),
             'status_messages' => $status_messages,
-        ];
+        ]);
     }
 }

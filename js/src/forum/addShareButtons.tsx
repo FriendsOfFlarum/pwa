@@ -9,6 +9,7 @@ import Discussion from 'flarum/common/models/Discussion';
 import Post from 'flarum/common/models/Post';
 import User from 'flarum/common/models/User';
 import ItemList from 'flarum/common/utils/ItemList';
+import { absoluteUrl } from './helpers/url';
 import type Mithril from 'mithril';
 
 interface ShareData {
@@ -36,7 +37,7 @@ export default function addShareButtons(): void {
         onclick={() =>
           shareContent({
             title: discussion.title(),
-            url: window.location.protocol + '//' + window.location.hostname + app.route.discussion(discussion),
+            url: absoluteUrl(app.route.discussion(discussion)),
           })
         }
       >
@@ -61,7 +62,7 @@ export default function addShareButtons(): void {
                 title: post.discussion()!.title(),
               })
             ),
-            url: window.location.protocol + '//' + window.location.hostname + app.route.post(post),
+            url: absoluteUrl(app.route.post(post)),
           })
         }
       >
@@ -81,7 +82,7 @@ export default function addShareButtons(): void {
         onclick={() =>
           shareContent({
             title: user.displayName(),
-            url: window.location.protocol + '//' + window.location.hostname + app.route.user(user),
+            url: absoluteUrl(app.route.user(user)),
           })
         }
       >

@@ -14,6 +14,7 @@ namespace FoF\PWA;
 
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
+use FoF\PWA\Model\FirebasePushSubscription;
 use Illuminate\Container\Container;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Exception\Messaging\AuthenticationError;
@@ -24,24 +25,8 @@ use Psr\Log\LoggerInterface;
 
 class FirebasePushSender
 {
-    protected Container $container;
-
-    protected NotificationBuilder $notifications;
-
-    protected LoggerInterface $logger;
-
-    protected SettingsRepositoryInterface $settings;
-
-    public function __construct(
-        Container $container,
-        NotificationBuilder $notifications,
-        LoggerInterface $logger,
-        SettingsRepositoryInterface $settings,
-    ) {
-        $this->container = $container;
-        $this->notifications = $notifications;
-        $this->logger = $logger;
-        $this->settings = $settings;
+    public function __construct(protected Container $container, protected NotificationBuilder $notifications, protected LoggerInterface $logger, protected SettingsRepositoryInterface $settings)
+    {
     }
 
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void

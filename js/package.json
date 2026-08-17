@@ -2,22 +2,28 @@
   "name": "@fof/pwa",
   "private": true,
   "dependencies": {
-    "idb": "^5.0.8"
+    "idb": "^8.0.3"
   },
   "prettier": "@flarum/prettier-config",
   "devDependencies": {
     "@flarum/prettier-config": "^1.0.0",
+    "@types/mithril": "^2.2.9",
+    "concurrently": "^10.0.5",
     "flarum-tsconfig": "^2.0.0",
-    "flarum-webpack-config": "^2.0.2",
+    "flarum-webpack-config": "^3.0.4",
     "prettier": "^3.9.6",
+    "typescript": "^7.0.2",
     "typescript-coverage-report": "^0.6.4",
     "webpack": "^5.109.2",
-    "webpack-cli": "^7.2.2"
+    "webpack-cli": "^7.2.2",
+    "webpack-merge": "^6.0.1"
   },
   "scripts": {
-    "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production",
-    "analyze": "cross-env ANALYZER=true npm run build",
+    "dev": "concurrently \"webpack --mode development --watch\" \"pnpm dev:sw\"",
+    "dev:sw": "webpack --config sw/webpack.config.js --mode development --watch",
+    "build": "webpack --mode production && pnpm build:sw",
+    "build:sw": "webpack --config sw/webpack.config.js --mode production",
+    "analyze": "cross-env ANALYZER=true pnpm run build",
     "format": "prettier --write src",
     "format-check": "prettier --check src",
     "clean-typings": "pnx rimraf dist-typings && mkdir dist-typings",
