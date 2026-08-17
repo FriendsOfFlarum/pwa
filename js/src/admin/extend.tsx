@@ -6,16 +6,19 @@ import FormGroup from 'flarum/common/components/FormGroup';
 export default [
   new Extend.Admin()
     .page(PWAPage)
-    .setting(
-      () => ({
-        setting: 'fof-pwa.shortName',
-        placeholder: app.forum.attribute<string>('title'),
-        label: app.translator.trans('fof-pwa.admin.pwa.about.short_name_label'),
-        help: app.translator.trans('fof-pwa.admin.pwa.about.short_name_text'),
-        type: 'text',
-      }),
-      80
-    )
+    .setting(() => ({
+      setting: 'fof-pwa.debug',
+      label: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_text'),
+      type: 'boolean',
+    }))
+    .setting(() => ({
+      setting: 'fof-pwa.shortName',
+      placeholder: app.forum.attribute<string>('title'),
+      label: app.translator.trans('fof-pwa.admin.pwa.about.short_name_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.about.short_name_text'),
+      type: 'text',
+    }))
     .setting(() => ({
       setting: 'fof-pwa.longName',
       placeholder: app.forum.attribute<string>('title'),
