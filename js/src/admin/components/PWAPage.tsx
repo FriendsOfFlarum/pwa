@@ -9,6 +9,9 @@ import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
 import type Mithril from 'mithril';
 import extractText from 'flarum/common/utils/extractText';
+import FieldSet from 'flarum/common/components/FieldSet';
+import Form from 'flarum/common/components/Form';
+import FormGroup from 'flarum/common/components/FormGroup';
 
 interface StatusMessage {
   type: 'success' | 'error' | 'warning' | 'info';
@@ -75,7 +78,7 @@ export default class PWAPage extends ExtensionPage {
     return (
       <div className="PWAPage">
         <div className="container">
-          <form>
+          <Form>
             <h2>{app.translator.trans('fof-pwa.admin.pwa.heading')}</h2>
             <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.text')}</div>
 
@@ -88,8 +91,7 @@ export default class PWAPage extends ExtensionPage {
               ))}
             </div>
 
-            <fieldset className="parent">
-              <legend>{app.translator.trans('fof-pwa.admin.pwa.maintenance.heading')}</legend>
+            <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.maintenance.heading')}>
               {this.buildSettingComponent({
                 setting: 'fof-pwa.debug',
                 label: app.translator.trans('fof-pwa.admin.pwa.maintenance.debug_label'),
@@ -106,106 +108,85 @@ export default class PWAPage extends ExtensionPage {
                   </div>
                 );
               })}
-            </fieldset>
+            </FieldSet>
 
-            <fieldset className="parent">
-              <fieldset>
-                <legend>{app.translator.trans('fof-pwa.admin.pwa.about.heading')}</legend>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.shortName',
-                  placeholder: this.setting('forum_title')(),
-                  label: app.translator.trans('fof-pwa.admin.pwa.about.short_name_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.about.short_name_text'),
-                  type: 'text',
-                })}
-              </fieldset>
-              <fieldset>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.longName',
-                  placeholder: this.setting('forum_title')(),
-                  label: app.translator.trans('fof-pwa.admin.pwa.about.long_name_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.about.long_name_text'),
-                  type: 'text',
-                })}
-              </fieldset>
-              <fieldset>
-                <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.about.description_text')}</div>
-                <textarea className="FormControl" value={this.manifest.description} disabled={true}>
-                  {this.manifest.description}
-                </textarea>
-              </fieldset>
-            </fieldset>
+            <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.about.heading')}>
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.shortName',
+                placeholder: this.setting('forum_title')(),
+                label: app.translator.trans('fof-pwa.admin.pwa.about.short_name_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.about.short_name_text'),
+                type: 'text',
+              })}
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.longName',
+                placeholder: this.setting('forum_title')(),
+                label: app.translator.trans('fof-pwa.admin.pwa.about.long_name_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.about.long_name_text'),
+                type: 'text',
+              })}
+              <FormGroup type="textarea" disabled={true} help={app.translator.trans('fof-pwa.admin.pwa.about.description_text')}>
+                {this.manifest.description}
+              </FormGroup>
+            </FieldSet>
 
-            <fieldset className="parent">
-              <fieldset>
-                <legend>{app.translator.trans('fof-pwa.admin.pwa.colors.heading')}</legend>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.themeColor',
-                  placeholder: this.setting('theme_primary_color')(),
-                  label: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_text'),
-                  type: 'color-preview',
-                })}
-              </fieldset>
-              <fieldset>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.backgroundColor',
-                  label: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_text'),
-                  type: 'color-preview',
-                })}
-              </fieldset>
-            </fieldset>
+            <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.colors.heading')}>
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.themeColor',
+                placeholder: this.setting('theme_primary_color')(),
+                label: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.colors.theme_color_text'),
+                type: 'color-preview',
+              })}
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.backgroundColor',
+                label: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.colors.background_color_text'),
+                type: 'color-preview',
+              })}
+            </FieldSet>
 
-            <fieldset className="parent">
-              <fieldset>
-                <legend>{app.translator.trans('fof-pwa.admin.pwa.other.heading')}</legend>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.forcePortrait',
-                  label: app.translator.trans('fof-pwa.admin.pwa.other.force_portrait_text'),
-                  type: 'boolean',
-                })}
-              </fieldset>
-              <fieldset>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.userMaxSubscriptions',
-                  label: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_text'),
-                  type: 'number',
-                  placeholder: 20,
-                })}
-              </fieldset>
-              <fieldset>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.pushNotifPreferenceDefaultToEmail',
-                  label: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_text'),
-                  type: 'bool',
-                })}
-              </fieldset>
-              <fieldset>
-                {this.buildSettingComponent({
-                  setting: 'fof-pwa.windowControlsOverlay',
-                  label: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_label'),
-                  help: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_text', {
-                    compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1" />,
-                    learnlink: (
-                      <a
-                        href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
-                        tabindex="-1"
-                      />
-                    ),
-                  }),
-                  type: 'bool',
-                })}
-              </fieldset>
-            </fieldset>
+            <FieldSet className="parent" label={app.translator.trans('fof-pwa.admin.pwa.other.heading')}>
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.forcePortrait',
+                label: app.translator.trans('fof-pwa.admin.pwa.other.force_portrait_text'),
+                type: 'boolean',
+              })}
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.userMaxSubscriptions',
+                label: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_text'),
+                type: 'number',
+                placeholder: 20,
+              })}
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.pushNotifPreferenceDefaultToEmail',
+                label: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.other.push_notif_preference_default_to_email_text'),
+                type: 'bool',
+              })}
+              {this.buildSettingComponent({
+                setting: 'fof-pwa.windowControlsOverlay',
+                label: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_label'),
+                help: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_text', {
+                  compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1" />,
+                  learnlink: (
+                    <a
+                      href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay"
+                      tabindex="-1"
+                    />
+                  ),
+                }),
+                type: 'bool',
+              })}
+            </FieldSet>
 
             {this.submitButton()}
 
-            <fieldset>
-              <legend>{app.translator.trans('fof-pwa.admin.pwa.logo_heading')}</legend>
-              <div className="helpText">{app.translator.trans('fof-pwa.admin.pwa.logo_text')}</div>
+            <FieldSet
+              label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')}
+              description={app.translator.trans('fof-pwa.admin.pwa.logo_text')}
+            >
               {this.sizes.map((size) => {
                 return (
                   <fieldset className="logoFieldset">
@@ -214,8 +195,8 @@ export default class PWAPage extends ExtensionPage {
                   </fieldset>
                 );
               })}
-            </fieldset>
-          </form>
+            </FieldSet>
+          </Form>
 
           <PWAUploadFirebaseConfigForm />
         </div>
