@@ -27,15 +27,15 @@ const subscribeUser = async (save: boolean): Promise<void> => {
 
   const subscription = await app.sw.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: app.forum.attribute('vapidPublicKey'),
+    applicationServerKey: app.forum.attribute<string>('vapidPublicKey'),
   });
 
   if (!save) return;
 
   await app.request({
     method: 'POST',
-    url: app.forum.attribute<string>('apiUrl') + '/push_subscriptions',
-    body: { data: { attributes: subscription } },
+    url: `${app.forum.attribute<string>('apiUrl')}/push_subscriptions`,
+    body: { data: { attributes: subscription.toJSON() } },
   });
 };
 
@@ -161,25 +161,10 @@ export default function addPushNotifications(): void {
           controls={[
             <Button
               className="Button Button--link"
-              onclick={() => {
-                const requestPermission = window.Notification.requestPermission();
-
-                if (requestPermission instanceof Promise) {
-                  requestPermission.then((res) => {
-                    m.redraw();
-                    if (res === 'granted') {
-                      subscribeUser(true);
-                    }
-                  });
-                } else {
-                  // Legacy callback API
-                  window.Notification.requestPermission((res: NotificationPermission) => {
-                    m.redraw();
-                    if (res === 'granted') {
-                      subscribeUser(true);
-                    }
-                  });
-                }
+              onclick={async () => {
+                const result = await window.Notification.requestPermission();
+                m.redraw();
+                if (result === 'granted') await subscribeUser(true);
               }}
             >
               {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_default_button')}
@@ -217,7 +202,7 @@ export default function addPushNotifications(): void {
     }
   });
 
-  extend('flarum/forum/components/SettingsPage', 'notifi cationsItems', function (items: ItemList<Mithril.Children>) {
+  extend('flarum/forum/components/SettingsPage', 'notificationsItems', function (items: ItemList<Mithril.Children>) {
     if (!usingAppleWebview()) return;
 
     if (!hasFirebasePushState('authorized')) {
