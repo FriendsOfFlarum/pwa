@@ -1,24 +1,30 @@
-import ExtensionPage from 'flarum/admin/components/ExtensionPage';
-import type Mithril from 'mithril';
+import ExtensionPage, { ExtensionPageAttrs } from 'flarum/admin/components/ExtensionPage';
+import type { Children, Vnode, VnodeDOM } from 'mithril';
 interface StatusMessage {
     type: 'success' | 'error' | 'warning' | 'info';
     message: string;
 }
 interface PWAManifest {
     description?: string;
+    icons?: Array<{
+        src: string;
+        sizes: string;
+        type: string;
+    }>;
     [key: string]: any;
 }
 export default class PWAPage extends ExtensionPage {
-    loading: boolean;
-    saving: boolean;
-    status_messages: StatusMessage[];
+    loadingApi: boolean;
+    statusMessages: StatusMessage[];
     manifest: PWAManifest;
     sizes: number[];
-    oninit(vnode: Mithril.Vnode): void;
+    oninit(vnode: Vnode): void;
     refresh(): void;
-    checkExistence(url: string): boolean;
-    content(): JSX.Element;
+    sections(vnode: VnodeDOM<ExtensionPageAttrs, this>): import("flarum/common/utils/ItemList").default<unknown>;
+    introSection(): Children;
+    maintenanceSection(): Children;
+    logoSection(): Children;
+    firebaseSection(): Children;
     resetVapid(): void;
-    saveSettings(e: SubmitEvent): Promise<void>;
 }
 export {};

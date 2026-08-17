@@ -1,6 +1,6 @@
 import Component, { ComponentAttrs } from 'flarum/common/Component';
-import type Mithril from 'mithril';
+import type { Children } from 'mithril';
 export default class PWAUploadFirebaseConfigForm extends Component<ComponentAttrs> {
-    view(): Mithril.Children;
+    view(): Children;
     updateFirebaseConfig(event: Event): void;
 }
