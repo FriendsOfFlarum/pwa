@@ -65,9 +65,13 @@ export default [
       setting: 'fof-pwa.windowControlsOverlay',
       label: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_label'),
       help: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_text', {
-        compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" tabindex="-1" />,
+        compatibilitylink: <a href="https://caniuse.com/mdn-api_windowcontrolsoverlay" target="_blank" rel="noopener noreferrer" />,
         learnlink: (
-          <a href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay" tabindex="-1" />
+          <a
+            href="https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps/how-to/window-controls-overlay"
+            target="_blank"
+            rel="noopener noreferrer"
+          />
         ),
       }),
       type: 'bool',
