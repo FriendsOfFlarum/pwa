@@ -1,45 +1,30 @@
 import app from 'flarum/admin/app';
 import Component, { ComponentAttrs } from 'flarum/common/Component';
-import type Mithril from 'mithril';
+import type { Children } from 'mithril';
+import FieldSet from 'flarum/common/components/FieldSet';
 
 export default class PWAUploadFirebaseConfigForm extends Component<ComponentAttrs> {
-  view(): Mithril.Children {
+  view(): Children {
     return (
-      <form action="/pwa/firebase-config" method="POST" onsubmit={(e: SubmitEvent) => this.updateFirebaseConfig(e)}>
-        <fieldset>
-          <fieldset>
-            <legend>{app.translator.trans('fof-pwa.admin.pwa.firebase_config.heading')}</legend>
-            <div className="helpText">
-              <span>{app.translator.trans('fof-pwa.admin.pwa.firebase_config.help_text')}</span>
-
-              <a href="https://docs.pwabuilder.com/#/builder/app-store?id=push-notifications" target="_blank" rel="noopener noreferrer">
-                {app.translator.trans('fof-pwa.admin.pwa.firebase_config.see_documentation_here')}
-              </a>
-            </div>
-
-            <button
-              type="button"
-              className="Button"
-              onclick={() => {
-                const input = document.querySelector<HTMLInputElement>('#flarum-pwa-upload-button');
-                input?.click();
-              }}
-            >
-              {app.translator.trans('fof-pwa.admin.pwa.firebase_config.upload_file')}
-            </button>
-
-            <input id="flarum-pwa-upload-button" type="file" onchange={(e: Event) => this.updateFirebaseConfig(e)} style={{ opacity: 0 }} />
-          </fieldset>
-        </fieldset>
+      <form onsubmit={(e: SubmitEvent) => this.updateFirebaseConfig(e)}>
+        <FieldSet
+          label={app.translator.trans('fof-pwa.admin.pwa.firebase_config.heading')}
+          description={app.translator.trans('fof-pwa.admin.pwa.firebase_config.help_text', {
+            a: <a href="https://docs.pwabuilder.com/#/builder/app-store?id=push-notifications" target="_blank" rel="noopener noreferrer" />,
+          })}
+        >
+          <label className="Button">
+            {app.translator.trans('fof-pwa.admin.pwa.firebase_config.upload_file')}
+            <input type="file" accept=".json" hidden onchange={(e: Event) => this.updateFirebaseConfig(e)} />
+          </label>
+        </FieldSet>
       </form>
     );
   }
 
   updateFirebaseConfig(event: Event): void {
-    event.preventDefault();
-
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
     if (!file) return;
 
@@ -49,16 +34,12 @@ export default class PWAUploadFirebaseConfigForm extends Component<ComponentAttr
     app
       .request({
         method: 'POST',
-        url: app.forum.attribute<string>('apiUrl') + '/pwa/firebase-config',
-        body: body,
+        url: `${app.forum.attribute<string>('apiUrl')}/pwa/firebase-config`,
+        body,
       })
       .then(() => {
-        app.alerts.show(
-          {
-            type: 'success',
-          },
-          app.translator.trans('fof-pwa.admin.pwa.firebase_config.upload_successful')
-        );
+        app.alerts.show({ type: 'success' }, app.translator.trans('fof-pwa.admin.pwa.firebase_config.upload_successful'));
+        input.value = '';
       });
   }
 }

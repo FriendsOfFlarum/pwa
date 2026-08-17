@@ -28,8 +28,7 @@ fof-pwa:
         reset_vapid_success: Successfully reset VAPID keys. {count} subscriptions were reset. Reload the page to see an updated status check report.
       firebase_config:
         heading: Firebase
-        help_text: To add support for push notifications when publishing your app in the Apple app store, you need to use Firebase to add push notifications to your application. Please generate your Firebase Service Config and upload it here.
-        see_documentation_here: See documentation here
+        help_text: To add support for push notifications when publishing your app in the Apple app store, you need to use Firebase to add push notifications to your application. Please generate your Firebase Service Config and upload it here. <a>See documentation here</a>.
         upload_successful: Your firebase config has been uploaded successfully
         upload_file: Upload file
       other:
