@@ -23,7 +23,7 @@
     "dev:sw": "webpack --config sw/webpack.config.js --mode development --watch",
     "build": "webpack --mode production && pnpm build:sw",
     "build:sw": "webpack --config sw/webpack.config.js --mode production",
-    "analyze": "cross-env ANALYZER=true pnpm run build",
+    "analyze": "pnx cross-env ANALYZER=true pnpm run build",
     "format": "prettier --write src",
     "format-check": "prettier --check src",
     "clean-typings": "pnx rimraf dist-typings && mkdir dist-typings",
