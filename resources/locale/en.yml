@@ -20,7 +20,7 @@ fof-pwa:
         theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher as the color surrounding the site.
       maintenance:
         heading: Maintenance
-        debug_label: Debug mode?
+        debug_label: Enable debug mode
         debug_text: This will log info about notifications to `storage/logs`. It should generally be disabled to avoid filling up logs unnecessarily.
         reset_vapid_button: Reset VAPID keys
         reset_vapid_text: This will regenerate VAPID keys and delete any existing subscriptions using the current VAPID keys.
@@ -33,12 +33,12 @@ fof-pwa:
         upload_file: Upload file
       other:
         heading: Other
-        force_portrait_text: Force portrait orientation?
-        push_notif_preference_default_to_email_label: Default push preferences to email?
+        force_portrait_text: Force portrait orientation
+        push_notif_preference_default_to_email_label: Default push preferences to email
         push_notif_preference_default_to_email_text: If enabled, users will have push notifications enabled by default for all notification types where email notifications are enabled by default. If disabled, users will have push notifications disabled by default.
         user_max_subscriptions_label: Max push subscriptions per user
         user_max_subscriptions_text: How many push subscriptions should each user be able to have at a time? When a user receives a push notification, each subscription results in an API call. Each subscription typically corresponds to a browser the user has used.
-        window_controls_overlay_label: Enable Window Controls Overlay?
+        window_controls_overlay_label: Enable Window Controls Overlay
         window_controls_overlay_text: |
           If enabled, users can get a more immersive, native-like experience by hiding the native title bar. Whether Window Controls Overlay is actually applied depends on the user's preference and browser compatibility. You must customize your title bar with CSS/JS after enabling this, otherwise the controls will overlay elements of your forum's top navbar and the window will be nearly impossible to drag, resulting in a bad experience.
 
