@@ -9,27 +9,27 @@ import Discussion from 'flarum/common/models/Discussion';
 import Post from 'flarum/common/models/Post';
 import User from 'flarum/common/models/User';
 import ItemList from 'flarum/common/utils/ItemList';
-import { absoluteUrl } from './helpers/url';
-import type Mithril from 'mithril';
+import { absoluteUrl } from '../helpers/url';
+import type { Children } from 'mithril';
 
-interface ShareData {
-  title: string;
+export interface ShareData {
+  title: string | Children;
   url: string;
 }
 
 async function shareContent(data: ShareData): Promise<void> {
   try {
-    const title = extractText(data.title);
-    await navigator.share({ title, url: data.url });
+    await navigator.share({
+      title: extractText(data.title),
+      url: data.url,
+    });
   } catch (err) {
-    console.error('Share error:', err);
+    console.error('[fof-pwa] Share failed:', err);
   }
 }
 
-export default function addShareButtons(): void {
-  extend(DiscussionControls, 'userControls', function (items: ItemList<Mithril.Children>, discussion: Discussion) {
-    if (!navigator.share) return;
-
+export default function addShareControls(): void {
+  extend(DiscussionControls, 'userControls', function (items: ItemList<Children>, discussion: Discussion) {
     items.add(
       'share',
       <Button
@@ -47,8 +47,8 @@ export default function addShareButtons(): void {
     );
   });
 
-  extend(PostControls, 'userControls', function (items: ItemList<Mithril.Children>, post: Post) {
-    if (!navigator.share || !post.user() || !post.discussion()) return;
+  extend(PostControls, 'userControls', function (items: ItemList<Children>, post: Post) {
+    if (!post.user() || !post.discussion()) return;
 
     items.add(
       'share',
@@ -56,12 +56,10 @@ export default function addShareButtons(): void {
         icon="fas fa-share-square"
         onclick={() =>
           shareContent({
-            title: extractText(
-              app.translator.trans('fof-pwa.forum.post_controls.share_api.title', {
-                username: (post.user() as User).displayName(),
-                title: post.discussion()!.title(),
-              })
-            ),
+            title: app.translator.trans('fof-pwa.forum.post_controls.share_api.title', {
+              username: (post.user() as User).displayName(),
+              title: post.discussion()!.title(),
+            }),
             url: absoluteUrl(app.route.post(post)),
           })
         }
@@ -73,7 +71,7 @@ export default function addShareButtons(): void {
   });
 
   extend(UserControls, 'userControls', function (items: ItemList<any>, user?: User) {
-    if (!navigator.share || !user) return;
+    if (!user) return;
 
     items.add(
       'share',

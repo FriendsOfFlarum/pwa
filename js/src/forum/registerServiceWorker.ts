@@ -1,30 +1,35 @@
 import app from 'flarum/forum/app';
 import { openDB, type IDBPDatabase } from 'idb';
-import { refreshSubscription } from './addPushNotifications';
-import type { ServiceWorkerWithPush } from './types';
 
 let dbPromise: Promise<IDBPDatabase> | null = null;
+let registrationPromise: Promise<ServiceWorkerRegistration | undefined> | undefined;
 
-const getDB = (): Promise<IDBPDatabase> =>
-  (dbPromise ??= openDB('keyval-store', 1, {
-    upgrade(db) {
-      db.createObjectStore('keyval');
+const getDB = (): Promise<IDBPDatabase> => {
+  dbPromise ??= openDB('keyval-store', 1, {
+    upgrade(database) {
+      database.createObjectStore('keyval');
     },
-  }));
+  });
 
-export async function registerServiceWorker(): Promise<void> {
-  if (!('serviceWorker' in navigator)) return;
+  return dbPromise;
+};
+
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | undefined> {
+  if (!('serviceWorker' in navigator)) return undefined;
 
   const basePath = app.forum.attribute<string>('basePath').replace(/\/$/, '');
+  const database = await getDB();
+  await database.put('keyval', app.forum.data.attributes, 'flarum.forumPayload');
 
-  const db = await getDB();
-  await db.put('keyval', app.forum.data.attributes, 'flarum.forumPayload');
-
-  const sw = await navigator.serviceWorker.register(`${basePath}/sw`, {
+  await navigator.serviceWorker.register(`${basePath}/sw`, {
     scope: `${basePath}/`,
   });
 
-  await navigator.serviceWorker.ready;
-  app.sw = sw as ServiceWorkerWithPush;
-  await refreshSubscription(app.sw);
+  return await navigator.serviceWorker.ready;
+}
+
+export function getServiceWorkerRegistration(): Promise<ServiceWorkerRegistration | undefined> {
+  registrationPromise ??= registerServiceWorker();
+
+  return registrationPromise;
 }
