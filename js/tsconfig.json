@@ -5,6 +5,7 @@
     "rootDir": "./src",
     "declarationDir": "./dist-typings",
     "moduleResolution": "bundler",
+    "types": ["mithril"],
     "paths": {
       "flarum/*": ["../vendor/flarum/core/js/dist-typings/*"]
     }
