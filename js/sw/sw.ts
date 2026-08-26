@@ -1,144 +1,95 @@
-import { openDB } from 'idb';
-
 export {};
+
 declare const self: ServiceWorkerGlobalScope;
 
-const dbPromise = openDB('keyval-store', 1, {
-  upgrade(db) {
-    db.createObjectStore('keyval');
-  },
+const CACHE_NAME = 'fof-pwa-offline-v1';
+const OFFLINE_URL = 'offline';
+
+interface PushPayload {
+  title: string;
+  content?: string;
+  icon?: string;
+  badge?: string;
+  link?: string;
+}
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.add(OFFLINE_URL)));
 });
 
-const idbKeyval = {
-  async get(key: IDBValidKey) {
-    return (await dbPromise).get('keyval', key);
-  },
-  async set(key: IDBValidKey, val: unknown) {
-    return (await dbPromise).put('keyval', val, key);
-  },
-  async delete(key: IDBValidKey) {
-    return (await dbPromise).delete('keyval', key);
-  },
-  async clear() {
-    return (await dbPromise).clear('keyval');
-  },
-  async keys() {
-    return (await dbPromise).getAllKeys('keyval');
-  },
-};
-
-const CACHE = 'pwa-page';
-
-const forumPayload: {
-  debug?: boolean;
-  clockworkEnabled?: boolean;
-} = {};
-
-// Replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline";
-const offlineFallbackPage = 'offline';
-
-// Install stage sets up the offline page in the cache and opens a new cache
-self.addEventListener('install', function (event) {
-  console.log('[PWA] Install event processing...');
-
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.open(CACHE).then(function (cache) {
-      console.log('[PWA] Cached offline page during install.');
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((cacheName) => cacheName.startsWith('fof-pwa-offline') && cacheName !== CACHE_NAME)
+            .map((cacheName) => caches.delete(cacheName))
+        )
+      )
+  );
+});
 
-      return cache.add(offlineFallbackPage);
+self.addEventListener('fetch', (event) => {
+  if (event.request.mode !== 'navigate') {
+    return;
+  }
+
+  event.respondWith(
+    fetch(event.request).catch(async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const offlineResponse = await cache.match(OFFLINE_URL);
+
+      return (
+        offlineResponse ??
+        new Response('You are offline.', {
+          status: 503,
+          headers: {
+            'Content-Type': 'text/plain; charset=utf-8',
+          },
+        })
+      );
     })
   );
-
-  const receiveInfo = async () => {
-    const payload = await idbKeyval.get('flarum.forumPayload');
-    if (payload && typeof payload === 'object') {
-      Object.assign(forumPayload, payload);
-    }
-  };
-
-  receiveInfo();
 });
 
-// If any fetch fails, it will show the offline page.
-self.addEventListener('fetch', function (event) {
-  event.respondWith(
-    caches
-      .match(event.request)
-      .then((res) => {
-        if (event.request.method !== 'GET' || (forumPayload.debug && forumPayload.clockworkEnabled) || !res) {
-          return fetch(event.request);
-        }
+self.addEventListener('push', (event) => {
+  if (!event.data) {
+    return;
+  }
 
-        return res;
-      })
-      .catch((error) => {
-        // The following validates that the request was for a navigation to a new document
-        if (event.request.destination !== 'document' || event.request.mode !== 'navigate') {
-          throw error;
-        }
+  event.waitUntil(
+    (async () => {
+      let payload: PushPayload;
 
-        return caches.open(CACHE).then(function (cache) {
-          return cache.match(offlineFallbackPage).then(function (response) {
-            if (!response) {
-              throw error;
-            }
+      try {
+        payload = event.data!.json() as PushPayload;
+      } catch (error) {
+        console.error('[fof-pwa] Invalid push payload:', error);
+        return;
+      }
 
-            return response;
-          });
-        });
-      })
+      await self.registration.showNotification(payload.title, {
+        body: payload.content,
+        icon: payload.icon,
+        badge: payload.badge,
+        data: {
+          link: payload.link,
+        },
+      });
+    })()
   );
 });
 
-// This is an event that can be fired from your page to tell the SW to update the offline page
-self.addEventListener('refreshOffline', function () {
-  const offlinePageRequest = new Request(offlineFallbackPage);
-
-  return fetch(offlineFallbackPage).then(function (response) {
-    return caches.open(CACHE).then(function (cache) {
-      console.log('[PWA] Offline page updated from refreshOffline event: ' + response.url);
-      return cache.put(offlinePageRequest, response);
-    });
-  });
-});
-
-self.addEventListener('push', function (event) {
-  function isJSON(str: string): boolean {
-    try {
-      return Boolean(JSON.parse(str) && str);
-    } catch {
-      return false;
-    }
-  }
-
-  const data = event.data;
-
-  if (data && isJSON(data.text())) {
-    const payload = data.json();
-
-    console.log(payload);
-
-    const options = {
-      body: payload.content,
-      icon: payload.icon,
-      badge: payload.badge,
-      data: {
-        link: payload.link,
-      },
-    };
-
-    const promiseChain = self.registration.showNotification(payload.title, options);
-
-    event.waitUntil(promiseChain);
-  } else {
-    console.log('This push event has no data.');
-  }
-});
-
-self.addEventListener('notificationclick', function (event) {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  if (event.notification.data && event.notification.data.link) {
-    event.waitUntil(self.clients.openWindow(event.notification.data.link));
+  const link = event.notification.data?.link;
+
+  if (typeof link !== 'string' || !link) {
+    return;
   }
+
+  event.waitUntil(self.clients.openWindow(link));
 });

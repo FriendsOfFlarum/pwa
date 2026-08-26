@@ -1,9 +1,6 @@
 {
   "name": "@fof/pwa",
   "private": true,
-  "dependencies": {
-    "idb": "^8.0.3"
-  },
   "prettier": "@flarum/prettier-config",
   "devDependencies": {
     "@flarum/prettier-config": "^1.0.0",
