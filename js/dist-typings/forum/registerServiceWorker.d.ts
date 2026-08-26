@@ -1,1 +1,2 @@
-export declare function registerServiceWorker(): Promise<void>;
+export declare function registerServiceWorker(): Promise<ServiceWorkerRegistration | undefined>;
+export declare function getServiceWorkerRegistration(): Promise<ServiceWorkerRegistration | undefined>;
