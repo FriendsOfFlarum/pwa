@@ -1,131 +1,78 @@
 <!doctype html>
-<html>
+<html lang="{{ $translator->getLocale() }}">
 
 <head>
     <meta charset="utf-8">
-
-    <title>App Offline</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <title>{{ $translator->trans('fof-pwa.views.offline.header') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <meta name="color-scheme" content="light dark">
 
     <style>
+        :root {
+            color-scheme: light dark;
+            --bg-color: #fff;
+            --text-color: #111;
+            --muted-color: hsl(212.63157895,20%,50%);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #14191f;
+                --text-color: #ddd;
+                --muted-color: hsl(212.63157895,15%,50%);
+            }
+        }
+
         * {
             box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            font-size: 18px;
-            text-align: center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 1rem;
             line-height: 1.5;
-            color: #333;
-        }
-
-        input,
-        button,
-        select,
-        textarea {
-            font-family: inherit;
-            font-size: inherit;
-            line-height: inherit;
-        }
-
-        a {
-            cursor: pointer;
-            color: #2f6690;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.2rem;
         }
 
         .container {
-            margin: 100px auto;
-            max-width: 450px;
-            padding: 0 15px;
+            max-width: 55ch;
         }
 
-        .button {
-            display: inline-block;
-            padding: 15px 25px;
-            background: #2f6690;
-            color: #fff;
-            text-decoration: none;
-            text-align: center;
-            vertical-align: middle;
-            border-radius: 4px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-weight: bold;
-            border: 0;
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 8px;
         }
 
-        .button:hover {
-            text-decoration: none;
-        }
-
-        .button:active,
-        .button.active {
-            box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-        }
-
-        .form {
-            max-width: 300px;
-            margin: 0 auto;
-        }
-
-        .form .button {
-            display: block;
-            width: 100%;
-        }
-
-        .form-control {
-            display: block;
-            width: 100%;
-            text-align: center;
-            padding: 15px 20px;
-            background-color: #fff;
-            border: 2px solid #eee;
-            border-radius: 4px;
-            transition: border-color .15s;
-        }
-
-        .form-control:focus,
-        .form-control.focus {
-            border-color: #2f6690;
-            outline: none;
-        }
-
-        .errors {
-            color: #d83e3e;
-        }
-
-        .errors ul {
-            list-style-type: none;
+        p {
             margin: 0;
-            padding: 0;
+            color: var(--muted-color);
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <p>
-            <strong>{{ $translator->trans('fof-pwa.views.offline.header') }}</strong>
-        </p>
-        <p>
-            {{ $translator->trans('fof-pwa.views.offline.text') }}
-        </p>
-    </div>
-    <script>
-        console.log("Currently online? ", navigator.onLine);
-        setInterval(() => {
-            if (navigator.onLine) {
-                location.reload();
-            }
-        }, 2000);
-    </script>
-</body>
+<main class="container">
+    <h1>{{ $translator->trans('fof-pwa.views.offline.header') }}</h1>
+    <p>{{ $translator->trans('fof-pwa.views.offline.text') }}</p>
+</main>
 
+<script>
+    window.addEventListener('online', () => location.reload());
+    setInterval(() => {
+        if (navigator.onLine) {
+            location.reload();
+        }
+    }, 3000);
+</script>
+</body>
 </html>
