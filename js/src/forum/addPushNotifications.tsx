@@ -2,8 +2,6 @@ import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
-import Link from 'flarum/common/components/Link';
-import Page from 'flarum/common/components/Page';
 import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import { usingAppleWebview, requestPushPermissions, usePWABuilder } from './use-pwa-builder';
@@ -85,7 +83,7 @@ const pushConfigured = (): boolean => {
 const { registerFirebasePushNotificationListeners, removeFirebasePushNotificationListeners, hasFirebasePushState } = usePWABuilder();
 
 export default function addPushNotifications(): void {
-  extend(Page.prototype, 'oncreate', () => {
+  app.beforeMount(() => {
     if (!pushConfigured()) return;
 
     const dismissAlert = (): void => {
@@ -103,12 +101,27 @@ export default function addPushNotifications(): void {
       app.cache.pwaNotifsAlert = app.alerts.show(
         {
           controls: [
-            <Link className="Button Button--link" href={app.route('settings')} onclick={dismissAlert}>
-              {app.translator.trans('fof-pwa.forum.alerts.optin_button')}
-            </Link>,
+            <Button
+              className="Button Button--link"
+              onclick={async () => {
+                dismissAlert();
+                app.alerts.dismiss(app.cache.pwaNotifsAlert as number);
+
+                const result = await Notification.requestPermission();
+                if (result === 'granted') {
+                  await subscribeUser(true);
+                  app.alerts.show({ type: 'success' }, app.translator.trans('fof-pwa.forum.alerts.optin_success'));
+                } else if (result === 'denied') {
+                  app.alerts.show({ type: 'error' }, app.translator.trans('fof-pwa.forum.alerts.optin_declined'));
+                } else {
+                  app.alerts.show({}, app.translator.trans('fof-pwa.forum.alerts.optin_deferred'));
+                }
+              }}
+            >
+              {app.translator.trans('fof-pwa.forum.alerts.optin_enable_button')}
+            </Button>,
           ],
-          // @ts-ignore - `ondismiss` is not working here because of bug in Flarum core
-          onremove: dismissAlert,
+          ondismiss: dismissAlert,
         },
         app.translator.trans('fof-pwa.forum.alerts.optin')
       );
