@@ -199,7 +199,7 @@ export default function addPushNotifications(): void {
           controls={[
             <a
               className="Button Button--link"
-              href="https://support.humblebundle.com/hc/en-US/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers"
+              href="https://support.humblebundle.com/hc/en-us/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers"
               target="_blank"
               rel="noopener noreferrer"
             >
