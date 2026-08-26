@@ -69,8 +69,11 @@ fof-pwa:
       success: No potential issues found!
   forum:
     alerts:
-      optin: You have push notifications enabled, but have not configured this device.
-      optin_button: Configure
+      optin: This forum can send push notifications to this device. Would you like to enable them?
+      optin_enable_button: Enable
+      optin_success: Push notifications have been enabled on this device.
+      optin_declined: Push notifications were blocked. You can allow them later in your browser settings.
+      optin_deferred: Push notifications were not enabled. You can enable them later in your notification settings.
     discussion_controls:
       share_button: Share
     post_controls:
