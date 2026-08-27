@@ -2,6 +2,8 @@ import app from 'flarum/forum/app';
 import { getVapidPublicKey } from './utils';
 
 export async function syncPushSubscription(registration: ServiceWorkerRegistration): Promise<void> {
+  if (!app.session.user) return;
+
   const existingSubscription = await registration.pushManager.getSubscription();
 
   const subscription =
