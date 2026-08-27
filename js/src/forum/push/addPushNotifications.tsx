@@ -5,6 +5,7 @@ import Alert from 'flarum/common/components/Alert';
 import Button from 'flarum/common/components/Button';
 import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
+import LinkButton from 'flarum/common/components/LinkButton';
 import { usingAppleWebview } from '../native/appleWebView';
 import { getServiceWorkerRegistration } from '../registerServiceWorker';
 import { supportsWebPush, pushConfigured } from './utils';
@@ -91,14 +92,9 @@ export default function addPushNotifications(): void {
           dismissible={false}
           className="pwa-setting-alert"
           controls={[
-            <a
-              className="Button Button--link"
-              href="https://support.humblebundle.com/hc/en-us/articles/360008513933-Enabling-and-Disabling-Browser-Notifications-in-Various-Browsers"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <LinkButton href={app.route('fof-pwa.notifications-help')}>
               {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_denied_button')}
-            </a>,
+            </LinkButton>,
           ]}
         >
           <Icon name="fas fa-exclamation-triangle" />
