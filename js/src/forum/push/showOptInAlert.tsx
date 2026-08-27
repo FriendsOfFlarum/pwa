@@ -3,6 +3,7 @@ import Button from 'flarum/common/components/Button';
 import { getServiceWorkerRegistration } from '../registerServiceWorker';
 import { syncPushSubscription } from './subscription';
 import { hasEnabledPushPreference, pushConfigured, supportsWebPush } from './utils';
+import LinkButton from 'flarum/common/components/LinkButton';
 
 const OPT_IN_DISMISSED_KEY = 'fof-pwa.notif-alert.dismissed';
 
@@ -42,7 +43,17 @@ export default function showOptInAlert() {
               }
 
               if (permission === 'denied') {
-                app.alerts.show({ type: 'error' }, app.translator.trans('fof-pwa.forum.alerts.optin_declined'));
+                app.alerts.show(
+                  {
+                    type: 'error',
+                    controls: [
+                      <LinkButton href={app.route('fof-pwa.notifications-help')}>
+                        {app.translator.trans('fof-pwa.forum.settings.pwa_notifications.access_denied_button')}
+                      </LinkButton>,
+                    ],
+                  },
+                  app.translator.trans('fof-pwa.forum.alerts.optin_declined')
+                );
                 return;
               }
 

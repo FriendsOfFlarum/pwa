@@ -50,7 +50,8 @@ return [
         ->js(__DIR__.'/js/dist/forum.js')
         ->jsDirectory(__DIR__.'/js/dist/forum')
         ->css(__DIR__.'/resources/less/forum.less')
-        ->content($metaClosure),
+        ->content($metaClosure)
+        ->route('/pwa-notifications-help', 'fof-pwa.notifications-help'),
 
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')

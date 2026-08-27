@@ -6,6 +6,8 @@ import { pushConfigured, supportsWebPush } from './push/utils';
 import { syncPushSubscription } from './push/subscription';
 import { usingAppleWebview } from './native/appleWebView';
 
+export { default as extend } from './extend';
+
 app.initializers.add('fof-pwa', () => {
   addPushNotifications();
 
