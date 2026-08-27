@@ -13,11 +13,7 @@ export default class NotificationsHelpPage extends Page {
 
   view(vnode: Vnode<IPageAttrs, this>): Children {
     return (
-      <PageStructure
-        className="PWANotificationsHelpPage"
-        sidebar={() => /* @see https://github.com/flarum/framework/issues/4998 */ <div />}
-        hero={this.hero}
-      >
+      <PageStructure className="PWANotificationsHelpPage" hero={this.hero}>
         <section>
           <h2>{app.translator.trans('fof-pwa.forum.notifications_help.chromium_title')}</h2>
           <p>{app.translator.trans('fof-pwa.forum.notifications_help.chromium_instructions')}</p>

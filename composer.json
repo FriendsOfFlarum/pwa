@@ -29,7 +29,7 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "^2.0.0-rc.5",
+        "flarum/core": "^2.0.0-rc.8",
         "minishlink/web-push": "^11.0.0",
         "spomky-labs/base64url": "^2.0.4",
         "kreait/firebase-php": "^8.4.0"
