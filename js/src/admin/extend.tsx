@@ -75,5 +75,11 @@ export default [
         ),
       }),
       type: 'bool',
+    }))
+    .setting(() => ({
+      setting: 'fof-pwa.shareButtons',
+      label: app.translator.trans('fof-pwa.admin.pwa.other.share_buttons_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.other.share_buttons_text'),
+      type: 'boolean',
     })),
 ];
