@@ -12,7 +12,7 @@ app.initializers.add('fof-pwa', () => {
   addPushNotifications();
 
   app.beforeMount(async () => {
-    if ('share' in navigator) {
+    if ('share' in navigator && app.forum.attribute<boolean>('fofPwaShareButtons')) {
       const { default: addShareControls } = await import('./share/addShareControls');
       addShareControls();
     }
