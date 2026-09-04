@@ -27,7 +27,7 @@ async function shareContent(data: ShareData): Promise<void> {
 
 export default function addShareButtons(): void {
   extend(DiscussionControls, 'userControls', function (items: ItemList<Mithril.Children>, discussion: Discussion) {
-    if (!navigator.share) return;
+    if (!navigator.share || !app.forum.attribute<boolean>('fofPwaShareButtons')) return;
 
     items.add(
       'share',
@@ -47,7 +47,7 @@ export default function addShareButtons(): void {
   });
 
   extend(PostControls, 'userControls', function (items: ItemList<Mithril.Children>, post: Post) {
-    if (!navigator.share || !post.user() || !post.discussion()) return;
+    if (!navigator.share || !app.forum.attribute<boolean>('fofPwaShareButtons') || !post.user() || !post.discussion()) return;
 
     items.add(
       'share',
@@ -72,7 +72,7 @@ export default function addShareButtons(): void {
   });
 
   extend(UserControls, 'userControls', function (items: ItemList<any>, user?: User) {
-    if (!navigator.share || !user) return;
+    if (!navigator.share || !app.forum.attribute<boolean>('fofPwaShareButtons') || !user) return;
 
     items.add(
       'share',

@@ -79,8 +79,10 @@ return [
 
     (new Extend\Settings())
         ->serializeToForum('vapidPublicKey', 'fof-pwa.vapid.public', [Util::class, 'url_encode'])
+        ->serializeToForum('fofPwaShareButtons', 'fof-pwa.shareButtons', 'boolVal')
         ->default('fof-pwa.pushNotifPreferenceDefaultToEmail', true)
-        ->default('fof-pwa.userMaxSubscriptions', 20),
+        ->default('fof-pwa.userMaxSubscriptions', 20)
+        ->default('fof-pwa.shareButtons', true),
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),
