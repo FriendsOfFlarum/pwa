@@ -213,6 +213,14 @@ export default class PWAPage extends ExtensionPage {
                   type: 'bool',
                 })}
               </fieldset>
+              <fieldset>
+                {this.buildSettingComponent({
+                  setting: 'fof-pwa.shareButtons',
+                  label: app.translator.trans('fof-pwa.admin.pwa.other.share_buttons_label'),
+                  help: app.translator.trans('fof-pwa.admin.pwa.other.share_buttons_text'),
+                  type: 'boolean',
+                })}
+              </fieldset>
             </fieldset>
 
             {this.submitButton()}
