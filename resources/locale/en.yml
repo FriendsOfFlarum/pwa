@@ -113,7 +113,7 @@ fof-pwa:
       safari_ios_instructions: Push notifications on iOS require the app to be installed. In Safari, tap the "Share" icon and select "Add to Home Screen". Then open the newly installed app. If notifications are blocked, open the iOS "Settings" app, go to "Notifications", select this web app from the list, and turn on "Allow Notifications".
 
   api:
-    endpoint_https_required: Push notifications could not be enabled because your browser provided an invalid push service URL ("{host}"). A valid HTTPS URL is required.
+    endpoint_https_required: Push notifications could not be enabled because your browser provided an invalid push service URL "{url}". A valid HTTPS URL is required.
     endpoint_host_not_allowed: Push notifications could not be enabled because the push service host "{host}" used by your browser is not allowed. Please contact the forum administrator.
 
   views:

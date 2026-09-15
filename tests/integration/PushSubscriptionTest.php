@@ -72,7 +72,7 @@ class PushSubscriptionTest extends TestCase
 
         $this->assertSame(422, $response->getStatusCode());
         $error = json_decode((string) $response->getBody(), true)['errors'][0];
-        $this->assertSame('Push notifications could not be enabled because your browser provided an invalid push service URL ("fcm.googleapis.com"). A valid HTTPS URL is required.', $error['detail']);
+        $this->assertSame('Push notifications could not be enabled because your browser provided an invalid push service URL "http://fcm.googleapis.com/private-token". A valid HTTPS URL is required.', $error['detail']);
         $this->assertSame('/data/attributes/endpoint', $error['source']['pointer']);
         $this->assertSame(0, $this->database()->table('push_subscriptions')->count());
     }

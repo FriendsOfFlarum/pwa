@@ -48,7 +48,7 @@ class PushEndpointValidator extends AbstractValidator
                     $subdomains = array_map(fn (string $domain) => '.'.$domain, static::PUSH_HOST_ALLOWLIST);
 
                     if (!$host || $scheme !== 'https') {
-                        $fail($this->translator->trans('fof-pwa.api.endpoint_https_required', ['host' => $host]));
+                        $fail($this->translator->trans('fof-pwa.api.endpoint_https_required', ['url' => $value]));
 
                         return;
                     }
