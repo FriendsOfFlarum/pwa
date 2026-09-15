@@ -12,9 +12,6 @@
 
 namespace FoF\PWA\Forum\Controller;
 
-use FoF\PWA\PWATrait;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -23,14 +20,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class OfflineController implements RequestHandlerInterface
 {
-    use PWATrait;
-
-    protected Filesystem $assetDir;
-
-    public function __construct(FilesystemFactory $filesystemFactory, protected ViewFactory $viewFactory)
-    {
-        $this->assetDir = $filesystemFactory->disk('flarum-assets');
-    }
+    public function __construct(protected ViewFactory $viewFactory) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {

@@ -12,10 +12,6 @@
 
 namespace FoF\PWA\Forum\Controller;
 
-use FoF\PWA\PWATrait;
-use Illuminate\Contracts\Filesystem\Factory;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Laminas\Diactoros\Response\TextResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,18 +19,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ServiceWorkerController implements RequestHandlerInterface
 {
-    use PWATrait;
-
-    protected Filesystem $assetDir;
-
-    public function __construct(Factory $filesystemFactory)
-    {
-        $this->assetDir = $filesystemFactory->disk('flarum-assets');
-    }
-
-    /**
-     * @throws FileNotFoundException
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $path = dirname(__DIR__, 3).'/js/dist/sw.js';

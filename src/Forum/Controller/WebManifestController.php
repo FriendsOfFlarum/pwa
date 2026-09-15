@@ -22,9 +22,6 @@ class WebManifestController implements RequestHandlerInterface
 {
     use PWATrait;
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return (new JsonResponse($this->buildManifest()))
