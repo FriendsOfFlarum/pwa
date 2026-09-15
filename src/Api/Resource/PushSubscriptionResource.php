@@ -16,12 +16,11 @@ use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
 use Flarum\Api\Schema;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\Exception\PermissionDeniedException;
 use FoF\PWA\Model\PushSubscription;
+use FoF\PWA\Validator\PushEndpointValidator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Tobyz\JsonApiServer\Context as OriginalContext;
 
 /**
@@ -29,22 +28,7 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
  */
 class PushSubscriptionResource extends Resource\AbstractDatabaseResource
 {
-    /**
-     * Taken from https://github.com/pushpad/known-push-services/blob/master/whitelist.
-     *
-     * @var string[]
-     */
-    public const array PUSH_HOST_ALLOWLIST = [
-        'android.googleapis.com',
-        'fcm.googleapis.com',
-        'updates.push.services.mozilla.com',
-        'updates-autopush.stage.mozaws.net',
-        'updates-autopush.dev.mozaws.net',
-        'notify.windows.com',
-        'push.apple.com',
-    ];
-
-    public function __construct(protected SettingsRepositoryInterface $settings)
+    public function __construct(protected SettingsRepositoryInterface $settings, protected PushEndpointValidator $endpointValidator)
     {
     }
 
@@ -79,10 +63,7 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
                 ->writableOnCreate()
                 ->requiredOnCreate()
                 ->set(function (PushSubscription $subscription, string $value) {
-                    $host = parse_url($value, PHP_URL_HOST);
-                    if (!Str::endsWith($host, static::PUSH_HOST_ALLOWLIST)) {
-                        throw new PermissionDeniedException();
-                    }
+                    $this->endpointValidator->assertValid(['endpoint' => $value]);
                     $subscription->endpoint = $value;
                 }),
 
