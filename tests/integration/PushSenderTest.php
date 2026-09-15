@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of fof/pwa
+ *
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\PWA\Tests\integration;
 
 use Flarum\Testing\integration\TestCase;
@@ -22,12 +32,12 @@ class PushSenderTest extends TestCase
         $this->setting('fof-pwa.vapid.private', 'test-private-key');
         $this->prepareDatabase([
             'push_subscriptions' => [[
-                'id' => 1,
-                'user_id' => 1,
-                'endpoint' => self::ENDPOINT,
+                'id'               => 1,
+                'user_id'          => 1,
+                'endpoint'         => self::ENDPOINT,
                 'vapid_public_key' => 'test-public-key',
-                'keys' => '{}',
-                'last_used' => null,
+                'keys'             => '{}',
+                'last_used'        => null,
             ]],
         ]);
     }
@@ -55,12 +65,12 @@ class PushSenderTest extends TestCase
     {
         return [
             'connection failure' => [null, false],
-            'unauthorized' => [401, false],
-            'forbidden' => [403, false],
-            'not found' => [404, true],
-            'gone' => [410, true],
-            'rate limited' => [429, false],
-            'service failure' => [503, false],
+            'unauthorized'       => [401, false],
+            'forbidden'          => [403, false],
+            'not found'          => [404, true],
+            'gone'               => [410, true],
+            'rate limited'       => [429, false],
+            'service failure'    => [503, false],
         ];
     }
 

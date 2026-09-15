@@ -1,9 +1,19 @@
 <?php
 
+/*
+ * This file is part of fof/pwa
+ *
+ * Copyright (c) 2021 Alexander Skvortsov.
+ * Copyright (c) 2025 FriendsOfFlarum
+ *
+ * For detailed copyright and license information, please view the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FoF\PWA\Tests\integration;
 
-use Flarum\Testing\integration\TestCase;
 use Flarum\Locale\LocaleManager;
+use Flarum\Testing\integration\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 
 class PushSubscriptionTest extends TestCase
@@ -26,9 +36,9 @@ class PushSubscriptionTest extends TestCase
         $endpoint = 'https://fcm.googleapis.com/fcm/send/test-token';
         $response = $this->send($this->request('POST', '/api/push_subscriptions', [
             'authenticatedAs' => 1,
-            'json' => ['data' => ['attributes' => [
+            'json'            => ['data' => ['attributes' => [
                 'endpoint' => $endpoint,
-                'keys' => ['p256dh' => 'test-key', 'auth' => 'test-auth'],
+                'keys'     => ['p256dh' => 'test-key', 'auth' => 'test-auth'],
             ]]],
         ]));
 
@@ -42,7 +52,7 @@ class PushSubscriptionTest extends TestCase
     {
         $response = $this->send($this->request('POST', '/api/push_subscriptions', [
             'authenticatedAs' => 1,
-            'json' => ['data' => ['attributes' => ['endpoint' => 'https://evilfcm.googleapis.com/token']]],
+            'json'            => ['data' => ['attributes' => ['endpoint' => 'https://evilfcm.googleapis.com/token']]],
         ]));
 
         $this->assertSame(422, $response->getStatusCode());
@@ -57,7 +67,7 @@ class PushSubscriptionTest extends TestCase
     {
         $response = $this->send($this->request('POST', '/api/push_subscriptions', [
             'authenticatedAs' => 1,
-            'json' => ['data' => ['attributes' => ['endpoint' => 'http://fcm.googleapis.com/private-token']]],
+            'json'            => ['data' => ['attributes' => ['endpoint' => 'http://fcm.googleapis.com/private-token']]],
         ]));
 
         $this->assertSame(422, $response->getStatusCode());

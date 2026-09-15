@@ -28,7 +28,9 @@ use Tobyz\JsonApiServer\Context as OriginalContext;
  */
 class PushSubscriptionResource extends Resource\AbstractDatabaseResource
 {
-    public function __construct(protected SettingsRepositoryInterface $settings, protected PushEndpointValidator $endpointValidator) {}
+    public function __construct(protected SettingsRepositoryInterface $settings, protected PushEndpointValidator $endpointValidator)
+    {
+    }
 
     public function type(): string
     {
