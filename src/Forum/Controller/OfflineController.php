@@ -20,7 +20,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class OfflineController implements RequestHandlerInterface
 {
-    public function __construct(protected ViewFactory $viewFactory) {}
+    public function __construct(protected ViewFactory $viewFactory)
+    {
+    }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
