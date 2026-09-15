@@ -91,13 +91,12 @@ class PushSender
         $typeAndId = $blueprint->getType().strval($blueprint->getSubject()->id ?? -1);
         $topic = substr(str_pad(Base64Url::encode($typeAndId), $safariTopicLen, '0'), 0, $safariTopicLen);
 
-        $options = [
-            'topic' => $topic,
-        ];
-
         $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");
 
-        $webPush = new WebPush($auth, $options);
+        $webPush = new WebPush($auth, [
+            'topic' => $topic,
+            'TTL'   => (int) $this->settings->get('fof-pwa.pushNotificationTtl'),
+        ]);
         $webPush->setReuseVAPIDHeaders(true);
         $webPush->setAutomaticPadding(false);
 

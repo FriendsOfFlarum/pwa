@@ -54,14 +54,6 @@ export default [
       type: 'boolean',
     }))
     .setting(() => ({
-      setting: 'fof-pwa.userMaxSubscriptions',
-      label: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_label'),
-      help: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_text'),
-      type: 'number',
-      placeholder: 20,
-      min: 1,
-    }))
-    .setting(() => ({
       setting: 'fof-pwa.windowControlsOverlay',
       label: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_label'),
       help: app.translator.trans('fof-pwa.admin.pwa.other.window_controls_overlay_text', {
@@ -75,6 +67,22 @@ export default [
         ),
       }),
       type: 'bool',
+    }))
+    .setting(() => ({
+      setting: 'fof-pwa.userMaxSubscriptions',
+      label: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.other.user_max_subscriptions_text'),
+      type: 'number',
+      placeholder: 20,
+      min: 1,
+    }))
+    .setting(() => ({
+      setting: 'fof-pwa.pushNotificationTtl',
+      label: app.translator.trans('fof-pwa.admin.pwa.other.push_notification_ttl_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.other.push_notification_ttl_text'),
+      type: 'number',
+      placeholder: 86400,
+      min: 1,
     }))
     .setting(() => ({
       setting: 'fof-pwa.shareButtons',
