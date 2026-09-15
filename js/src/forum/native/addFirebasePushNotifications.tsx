@@ -56,7 +56,7 @@ function handlePushToken(event: Event): void {
   void app
     .request({
       method: 'POST',
-      url: `${app.forum.attribute<string>('apiUrl')}/pwa/firebase_push_subscriptions`,
+      url: `${app.forum.attribute<string>('apiUrl')}/firebase_push_subscriptions`,
       body: {
         data: {
           attributes: {

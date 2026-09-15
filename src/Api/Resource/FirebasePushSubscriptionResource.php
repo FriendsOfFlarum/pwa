@@ -59,4 +59,13 @@ class FirebasePushSubscriptionResource extends Resource\AbstractDatabaseResource
                 ->type('users'),
         ];
     }
+
+    public function creating(object $model, OriginalContext $context): ?object
+    {
+        // Reuse the token on repeated registrations and account changes on the same device.
+        $model = FirebasePushSubscription::query()->where('token', $model->token)->first() ?? $model;
+        $model->user_id = $context->getActor()->id;
+
+        return $model;
+    }
 }

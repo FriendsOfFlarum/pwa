@@ -31,6 +31,21 @@ class PushSubscriptionTest extends TestCase
     }
 
     #[Test]
+    public function firebase_registration_assigns_the_actor_and_reuses_the_token(): void
+    {
+        for ($attempt = 0; $attempt < 2; $attempt++) {
+            $response = $this->send($this->request('POST', '/api/firebase_push_subscriptions', [
+                'authenticatedAs' => 1,
+                'json'            => ['data' => ['attributes' => ['token' => 'test-firebase-token']]],
+            ]));
+
+            $this->assertSame(201, $response->getStatusCode(), (string) $response->getBody());
+            $this->assertSame(1, $this->database()->table('firebase_push_subscriptions')->count());
+            $this->assertSame(1, (int) $this->database()->table('firebase_push_subscriptions')->value('user_id'));
+        }
+    }
+
+    #[Test]
     public function authenticated_user_can_register_a_push_subscription(): void
     {
         $endpoint = 'https://fcm.googleapis.com/fcm/send/test-token';
