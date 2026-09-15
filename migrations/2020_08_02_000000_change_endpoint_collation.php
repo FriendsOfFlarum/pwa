@@ -20,6 +20,12 @@ return [
         }
 
         $connection = $schema->getConnection();
+
+        // SQLite already compares these strings case-sensitively. This collation is MySQL-specific.
+        if (!in_array($connection->getDriverName(), ['mysql', 'mariadb'], true)) {
+            return;
+        }
+
         $prefix = $connection->getTablePrefix();
         $tableName = $prefix.'push_subscriptions';
 

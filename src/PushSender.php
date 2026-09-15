@@ -116,19 +116,33 @@ class PushSender
          * @var MessageSentReport $report
          */
         foreach ($webPush->flush() as $report) {
-            if (!$report->isSuccess() && in_array($report->getResponse()->getStatusCode(), [401, 403, 404, 410])) {
-                PushSubscription::where('endpoint', $report->getEndpoint())->delete();
-            } elseif (!$report->isSuccess()) {
-                $this->log("[PWA PUSH] Message failed to sent for subscription {$report->getEndpoint()}: {$report->getReason()}");
-            } else {
-                $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
-                $subscription->last_used = Carbon::now();
-                $subscription->save();
+            if ($this->handleReport($report)) {
                 $sentCounter++;
             }
         }
 
         $this->log("[PWA PUSH] Sent $sentCounter notifications successfully.\n\n");
+    }
+
+    protected function handleReport(MessageSentReport $report): bool
+    {
+        if (!$report->isSuccess()) {
+            if ($report->isSubscriptionExpired()) {
+                PushSubscription::where('endpoint', $report->getEndpoint())->delete();
+            } else {
+                $this->log("[PWA PUSH] Message failed to send for subscription {$report->getEndpoint()}: {$report->getReason()}");
+            }
+
+            return false;
+        }
+
+        $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
+        if ($subscription) {
+            $subscription->last_used = Carbon::now();
+            $subscription->save();
+        }
+
+        return true;
     }
 
     protected function getPayload(BlueprintInterface $blueprint): array
