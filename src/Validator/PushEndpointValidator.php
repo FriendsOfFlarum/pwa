@@ -41,6 +41,7 @@ class PushEndpointValidator extends AbstractValidator
                 'bail',
                 'required',
                 'string',
+                'max:2048',
                 function (string $attribute, string $value, Closure $fail): void {
                     $url = parse_url($value);
                     $host = strtolower($url['host'] ?? '');
