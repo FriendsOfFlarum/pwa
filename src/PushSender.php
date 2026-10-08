@@ -134,8 +134,8 @@ class PushSender
      * query or two per subscription.
      *
      * @param Collection<int, PushSubscription> $subscriptions those sent to
-     * @param string[] $delivered endpoints delivered to
-     * @param string[] $expired endpoints that have expired
+     * @param string[]                          $delivered     endpoints delivered to
+     * @param string[]                          $expired       endpoints that have expired
      */
     protected function recordDeliveries(Collection $subscriptions, array $delivered, array $expired): void
     {
