@@ -5,6 +5,7 @@ import showOptInAlert from './push/showOptInAlert';
 import { pushConfigured, supportsWebPush } from './push/utils';
 import { syncPushSubscription } from './push/subscription';
 import { usingAppleWebview } from './native/appleWebView';
+import { isIOSStandalone } from './standalone/isIOSStandalone';
 
 export { default as extend } from './extend';
 
@@ -15,6 +16,13 @@ app.initializers.add('fof-pwa', () => {
     if ('share' in navigator && app.forum.attribute<boolean>('fofPwaShareButtons')) {
       const { default: addShareControls } = await import('./share/addShareControls');
       addShareControls();
+    }
+
+    // Only for the installed app on iOS, which has no pull to refresh of its
+    // own; everyone else never downloads this.
+    if (isIOSStandalone()) {
+      const { default: addPullToRefresh } = await import('./standalone/addPullToRefresh');
+      addPullToRefresh();
     }
 
     if (usingAppleWebview()) {

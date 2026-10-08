@@ -21,3 +21,49 @@
     }
   }
 }
+
+// Pull to refresh, for the installed app on iOS (see standalone/addPullToRefresh)
+.PWA-ptr {
+  position: fixed;
+  top: -48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--body-bg);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1100;
+  transition: opacity 0.1s ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.PWA-ptr-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--control-bg);
+  border-top-color: @primary-color;
+  border-radius: 50%;
+
+  .PWA-ptr.is-ready & {
+    border-color: @primary-color;
+  }
+
+  .PWA-ptr.is-refreshing & {
+    animation: fof-pwa-ptr-spin 0.7s linear infinite;
+  }
+}
+
+@keyframes fof-pwa-ptr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
