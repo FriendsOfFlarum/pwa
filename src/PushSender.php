@@ -23,6 +23,7 @@ use Flarum\User\User;
 use FoF\PWA\Model\PushSubscription;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Minishlink\WebPush\MessageSentReport;
 use Minishlink\WebPush\Subscription;
@@ -51,7 +52,7 @@ class PushSender
      */
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        $users = User::whereIn('id', $userIds)->get()->all();
+        $users = User::with('pushSubscriptions')->whereIn('id', $userIds)->get()->all();
 
         $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
         $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
@@ -60,12 +61,12 @@ class PushSender
 
         $payload = json_encode($this->getPayload($blueprint));
 
-        $sendingCounter = 0;
+        /** @var Collection<int, PushSubscription> $subscriptions */
+        $subscriptions = new Collection();
 
         foreach ($users as $user) {
-            $subscriptions = $user->pushSubscriptions;
-            $sendingCounter += $subscriptions->count();
-            foreach ($subscriptions as $subscription) {
+            foreach ($user->pushSubscriptions as $subscription) {
+                $subscriptions->push($subscription);
                 $notifications[] = [
                     'subscription' => Subscription::create([
                         'endpoint' => $subscription->endpoint,
@@ -91,9 +92,9 @@ class PushSender
         $typeAndId = $blueprint->getType().strval($blueprint->getSubject()->id ?? -1);
         $topic = substr(str_pad(Base64Url::encode($typeAndId), $safariTopicLen, '0'), 0, $safariTopicLen);
 
-        $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");
+        $this->log("[PWA PUSH] Attempting to send {$subscriptions->count()} notifications.\n\n");
 
-        $webPush = new WebPush($auth, [
+        $webPush = $this->newWebPush($auth, [
             'topic' => $topic,
             'TTL'   => (int) $this->settings->get('fof-pwa.pushNotificationTtl'),
         ]);
@@ -108,41 +109,57 @@ class PushSender
             );
         }
 
-        $sentCounter = 0;
+        $delivered = [];
+        $expired = [];
 
-        /**
-         * Check sent results.
-         *
-         * @var MessageSentReport $report
-         */
+        /** @var MessageSentReport $report */
         foreach ($webPush->flush() as $report) {
-            if ($this->handleReport($report)) {
-                $sentCounter++;
-            }
-        }
-
-        $this->log("[PWA PUSH] Sent $sentCounter notifications successfully.\n\n");
-    }
-
-    protected function handleReport(MessageSentReport $report): bool
-    {
-        if (!$report->isSuccess()) {
-            if ($report->isSubscriptionExpired()) {
-                PushSubscription::where('endpoint', $report->getEndpoint())->delete();
+            if ($report->isSuccess()) {
+                $delivered[] = $report->getEndpoint();
+            } elseif ($report->isSubscriptionExpired()) {
+                $expired[] = $report->getEndpoint();
             } else {
                 $this->log("[PWA PUSH] Message failed to send for subscription {$report->getEndpoint()}: {$report->getReason()}");
             }
-
-            return false;
         }
 
-        $subscription = PushSubscription::where('endpoint', $report->getEndpoint())->first();
-        if ($subscription) {
-            $subscription->last_used = Carbon::now();
-            $subscription->save();
+        $this->recordDeliveries($subscriptions, $delivered, $expired);
+
+        $this->log('[PWA PUSH] Sent '.count($delivered)." notifications successfully.\n\n");
+    }
+
+    /**
+     * Marks the subscriptions delivered to as used, and deletes those whose
+     * endpoints the push service says have expired, in batches rather than a
+     * query or two per subscription.
+     *
+     * @param Collection<int, PushSubscription> $subscriptions those sent to
+     * @param string[]                          $delivered     endpoints delivered to
+     * @param string[]                          $expired       endpoints that have expired
+     */
+    protected function recordDeliveries(Collection $subscriptions, array $delivered, array $expired): void
+    {
+        $delivered = array_flip($delivered);
+        $used = $subscriptions->filter(fn (PushSubscription $subscription) => isset($delivered[$subscription->endpoint]))->modelKeys();
+        $now = Carbon::now();
+
+        // Chunked to stay within the database's limit on bound parameters.
+        foreach (array_chunk($used, 1000) as $ids) {
+            PushSubscription::query()->whereIn('id', $ids)->update(['last_used' => $now]);
         }
 
-        return true;
+        // An expired endpoint is gone for every subscription that has it.
+        foreach (array_chunk(array_unique($expired), 1000) as $endpoints) {
+            PushSubscription::query()->whereIn('endpoint', $endpoints)->delete();
+        }
+    }
+
+    /**
+     * @throws ErrorException
+     */
+    protected function newWebPush(array $auth, array $options): WebPush
+    {
+        return new WebPush($auth, $options);
     }
 
     protected function getPayload(BlueprintInterface $blueprint): array
