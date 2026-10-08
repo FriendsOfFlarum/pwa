@@ -93,7 +93,7 @@ class PushSender
 
         $this->log("[PWA PUSH] Attempting to send $sendingCounter notifications.\n\n");
 
-        $webPush = new WebPush($auth, [
+        $webPush = $this->newWebPush($auth, [
             'topic' => $topic,
             'TTL'   => (int) $this->settings->get('fof-pwa.pushNotificationTtl'),
         ]);
@@ -143,6 +143,14 @@ class PushSender
         }
 
         return true;
+    }
+
+    /**
+     * @throws ErrorException
+     */
+    protected function newWebPush(array $auth, array $options): WebPush
+    {
+        return new WebPush($auth, $options);
     }
 
     protected function getPayload(BlueprintInterface $blueprint): array
