@@ -34,18 +34,18 @@
     },
     "require": {
         "php": "^8.3",
-        "flarum/core": "^2.0.0-rc.8",
+        "flarum/core": "^2.0.0",
         "minishlink/web-push": "^11.0.0",
         "spomky-labs/base64url": "^2.0.4",
         "kreait/firebase-php": "^8.4.0"
     },
     "require-dev": {
-        "flarum/phpstan": "^2.0.0-rc.5",
-        "flarum/gdpr": "^2.0@RC",
-        "flarum/testing": "^2.0.0",
-        "larastan/larastan": "^3.8 <3.12"
+        "flarum/phpstan": "^2.0.0",
+        "flarum/gdpr": "^2.0.0",
+        "flarum/testing": "^2.0.0"
     },
     "minimum-stability": "RC",
+    "prefer-stable": true,
     "suggest": {
         "ext-gmp": "This can improve push notification performance."
     },
