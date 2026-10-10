@@ -12,19 +12,21 @@
 
 namespace FoF\PWA\Forum\Controller;
 
-use FoF\PWA\PWATrait;
+use FoF\PWA\ManifestBuilder;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class WebManifestController implements RequestHandlerInterface
+readonly class WebManifestController implements RequestHandlerInterface
 {
-    use PWATrait;
+    public function __construct(protected ManifestBuilder $manifest)
+    {
+    }
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return (new JsonResponse($this->buildManifest()))
+        return (new JsonResponse($this->manifest->build()))
             ->withHeader('Content-Type', 'application/manifest+json');
     }
 }

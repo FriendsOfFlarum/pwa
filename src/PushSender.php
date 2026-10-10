@@ -32,8 +32,6 @@ use Psr\Log\LoggerInterface;
 
 class PushSender
 {
-    use PWATrait;
-
     protected Cloud $assetsFilesystem;
 
     public function __construct(
@@ -42,6 +40,7 @@ class PushSender
         protected SettingsRepositoryInterface $settings,
         protected UrlGenerator $url,
         protected NotificationBuilder $notifications,
+        protected IconProvider $icons,
     ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
     }
@@ -176,7 +175,7 @@ class PushSender
             $payload['badge'] = $this->assetsFilesystem->url($faviconPath);
         }
 
-        $pwaIcons = array_reverse($this->getIcons());
+        $pwaIcons = array_reverse($this->icons->get());
 
         if (!empty($pwaIcons)) {
             $payload['icon'] = $pwaIcons[0]['src'];

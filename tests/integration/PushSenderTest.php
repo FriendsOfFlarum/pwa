@@ -17,6 +17,7 @@ use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
 use FoF\PWA\PushSender;
+use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\ConnectionInterface;
 use Laminas\Diactoros\Request;
 use Laminas\Diactoros\Response;
@@ -36,6 +37,41 @@ class PushSenderTest extends TestCase
         $this->extension('fof-pwa');
         $this->setting('fof-pwa.vapid.public', 'test-public-key');
         $this->setting('fof-pwa.vapid.private', 'test-private-key');
+    }
+
+    #[Test]
+    #[DataProvider('notificationIcons')]
+    public function selects_the_largest_pwa_icon_or_falls_back_to_the_forum_logo(array $settings, ?string $expectedIcon): void
+    {
+        foreach ($settings as $key => $value) {
+            $this->setting($key, $value);
+        }
+
+        $this->setting('favicon_path', 'favicon.png');
+        $container = $this->app()->getContainer();
+        $payload = $container->make(PayloadPushSender::class)->payload();
+        $assets = $container->make(Factory::class)->disk('flarum-assets');
+
+        $this->assertSame($assets->url('favicon.png'), $payload['badge']);
+
+        if ($expectedIcon === null) {
+            $this->assertArrayNotHasKey('icon', $payload);
+        } else {
+            $this->assertSame($assets->url($expectedIcon), $payload['icon']);
+        }
+    }
+
+    public static function notificationIcons(): array
+    {
+        return [
+            'largest PWA icon' => [[
+                'fof-pwa.icon_196_path' => 'small.png',
+                'fof-pwa.icon_512_path' => 'large.png',
+                'logo_path'            => 'logo.png',
+            ], 'large.png'],
+            'forum logo' => [['logo_path' => 'logo.png'], 'logo.png'],
+            'no icon'    => [[], null],
+        ];
     }
 
     #[Test]
@@ -201,6 +237,14 @@ class PushSenderTest extends TestCase
     }
 }
 
+class PayloadPushSender extends PushSender
+{
+    public function payload(): array
+    {
+        return $this->getPayload(new PayloadBlueprint());
+    }
+}
+
 class TestablePushSender extends PushSender
 {
     public FakeWebPush $webPush;
@@ -284,5 +328,13 @@ class TestBlueprint implements BlueprintInterface
     public static function getSubjectModel(): string
     {
         return User::class;
+    }
+}
+
+class PayloadBlueprint extends TestBlueprint
+{
+    public static function getSubjectModel(): string
+    {
+        return '';
     }
 }
