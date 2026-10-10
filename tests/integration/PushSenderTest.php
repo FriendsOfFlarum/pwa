@@ -67,7 +67,7 @@ class PushSenderTest extends TestCase
             'largest PWA icon' => [[
                 'fof-pwa.icon_196_path' => 'small.png',
                 'fof-pwa.icon_512_path' => 'large.png',
-                'logo_path'            => 'logo.png',
+                'logo_path'             => 'logo.png',
             ], 'large.png'],
             'forum logo' => [['logo_path' => 'logo.png'], 'logo.png'],
             'no icon'    => [[], null],
