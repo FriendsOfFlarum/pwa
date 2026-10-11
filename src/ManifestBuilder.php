@@ -47,7 +47,6 @@ class ManifestBuilder
             'description' => $this->settings->get('forum_description', ''),
             'start_url'   => $basePath,
             'scope'       => $basePath,
-            'dir'         => 'auto',
             'theme_color' => $this->settings->get('fof-pwa.themeColor') ?: $this->settings->get('theme_primary_color'),
             'display'     => $this->settings->get('fof-pwa.display') ?: 'standalone',
             'orientation' => $this->settings->get('fof-pwa.orientation') ?: 'any',

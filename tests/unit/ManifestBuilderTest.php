@@ -48,7 +48,6 @@ class ManifestBuilderTest extends TestCase
             'description' => '',
             'start_url'   => $basePath,
             'scope'       => $basePath,
-            'dir'         => 'auto',
             'theme_color' => '#123456',
             'display'     => 'standalone',
             'orientation' => 'any',
