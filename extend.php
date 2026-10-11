@@ -70,6 +70,7 @@ return [
         ->default('fof-pwa.pushNotificationTtl', 86400)
         ->default('fof-pwa.userMaxSubscriptions', 20)
         ->default('fof-pwa.display', 'standalone')
+        ->default('fof-pwa.orientation', 'any')
         ->default('fof-pwa.shareButtons', true),
 
     (new Extend\Notification())

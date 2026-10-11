@@ -27,12 +27,12 @@ class ManifestTest extends TestCase
 
         $this->extension('fof-pwa');
         $this->setting('forum_title', 'Test forum');
-        $this->setting('fof-pwa.forcePortrait', true);
     }
 
     #[Test]
     public function includes_configured_fields_and_uploaded_icons(): void
     {
+        $this->setting('fof-pwa.orientation', 'portrait');
         $this->setting('fof-pwa.longName', 'My app');
         $this->setting('fof-pwa.shortName', 'App');
         $this->setting('forum_description', 'My community');
@@ -50,6 +50,7 @@ class ManifestTest extends TestCase
         $this->assertSame('My community', $manifest['description']);
         $this->assertSame('#123456', $manifest['theme_color']);
         $this->assertSame('#ffffff', $manifest['background_color']);
+        $this->assertSame('portrait', $manifest['orientation']);
         $this->assertSame(['window-controls-overlay'], $manifest['display_override']);
         $this->assertSame(['196x196', '512x512'], array_column($manifest['icons'], 'sizes'));
     }
@@ -64,12 +65,13 @@ class ManifestTest extends TestCase
         $manifest = json_decode((string) $response->getBody(), true);
         $this->assertSame('Test forum', $manifest['name']);
         $this->assertSame('standalone', $manifest['display']);
-        $this->assertSame('portrait', $manifest['orientation']);
+        $this->assertSame('any', $manifest['orientation']);
     }
 
     #[Test]
     public function chains_modifiers_and_resolves_dependencies_for_both_manifest_outputs(): void
     {
+        $this->setting('fof-pwa.orientation', 'portrait');
         $calls = 0;
         $this->extend(
             (new Manifest())->modify(function (array $manifest) use (&$calls): array {

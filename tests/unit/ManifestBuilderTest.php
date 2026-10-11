@@ -51,6 +51,7 @@ class ManifestBuilderTest extends TestCase
             'dir'         => 'auto',
             'theme_color' => '#123456',
             'display'     => 'standalone',
+            'orientation' => 'any',
             'icons'       => [],
         ], $builder->build());
     }
@@ -62,6 +63,42 @@ class ManifestBuilderTest extends TestCase
             'root with slash'         => ['https://example.com/', '/'],
             'subdirectory'            => ['https://example.com/community', '/community/'],
             'subdirectory with slash' => ['https://example.com/community/', '/community/'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('orientations')]
+    public function uses_the_configured_orientation(?string $orientation, string $expected): void
+    {
+        $settings = Mockery::mock(SettingsRepositoryInterface::class);
+        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
+            'fof-pwa.orientation' => $orientation,
+        ][$key] ?? $default);
+
+        $url = Mockery::mock(UrlGenerator::class);
+        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator('https://example.com', new RouteCollection()));
+
+        $icons = Mockery::mock(IconProvider::class);
+        $icons->shouldReceive('get')->andReturn([]);
+
+        $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
+
+        $this->assertSame($expected, $manifest['orientation']);
+    }
+
+    public static function orientations(): array
+    {
+        return [
+            'missing'             => [null, 'any'],
+            'empty'               => ['', 'any'],
+            'any'                 => ['any', 'any'],
+            'natural'             => ['natural', 'natural'],
+            'portrait'            => ['portrait', 'portrait'],
+            'portrait-primary'    => ['portrait-primary', 'portrait-primary'],
+            'portrait-secondary'  => ['portrait-secondary', 'portrait-secondary'],
+            'landscape'           => ['landscape', 'landscape'],
+            'landscape-primary'   => ['landscape-primary', 'landscape-primary'],
+            'landscape-secondary' => ['landscape-secondary', 'landscape-secondary'],
         ];
     }
 

@@ -62,9 +62,21 @@ export default [
       },
     }))
     .setting(() => ({
-      setting: 'fof-pwa.forcePortrait',
-      label: app.translator.trans('fof-pwa.admin.pwa.other.force_portrait_text'),
-      type: 'boolean',
+      setting: 'fof-pwa.orientation',
+      label: app.translator.trans('fof-pwa.admin.pwa.other.orientation_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.other.orientation_text'),
+      type: 'select',
+      default: 'any',
+      options: {
+        any: app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.any'),
+        natural: app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.natural'),
+        portrait: app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.portrait'),
+        'portrait-primary': app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.portrait_primary'),
+        'portrait-secondary': app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.portrait_secondary'),
+        landscape: app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.landscape'),
+        'landscape-primary': app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.landscape_primary'),
+        'landscape-secondary': app.translator.trans('fof-pwa.admin.pwa.other.orientation_options.landscape_secondary'),
+      },
     }))
     .setting(() => ({
       setting: 'fof-pwa.windowControlsOverlay',
