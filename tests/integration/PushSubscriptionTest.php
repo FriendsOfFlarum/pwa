@@ -12,9 +12,12 @@
 
 namespace FoF\PWA\Tests\integration;
 
+use Base64Url\Base64Url;
 use Flarum\Locale\LocaleManager;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
+use Minishlink\WebPush\ContentEncoding;
+use Minishlink\WebPush\Encryption;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +25,12 @@ use Psr\Http\Message\ResponseInterface;
 class PushSubscriptionTest extends TestCase
 {
     private const string ENDPOINT = 'https://fcm.googleapis.com/fcm/send/test-token';
-    private const array KEYS = ['p256dh' => 'test-key', 'auth' => 'test-auth'];
+
+    // Public test vectors from RFC 8291, section 5.
+    private const array KEYS = [
+        'p256dh' => 'BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4',
+        'auth'   => 'BTBZMqHH6r4Tts7J_aSIgg',
+    ];
 
     protected function setUp(): void
     {
@@ -63,13 +71,22 @@ class PushSubscriptionTest extends TestCase
             'authenticatedAs' => 1,
             'json'            => ['data' => ['attributes' => [
                 'endpoint' => $endpoint,
-                'keys'     => ['p256dh' => 'test-key', 'auth' => 'test-auth'],
+                'keys'     => self::KEYS,
             ]]],
         ]));
 
         $this->assertSame(201, $response->getStatusCode(), (string) $response->getBody());
         $this->assertSame(1, $this->database()->table('push_subscriptions')->where('endpoint', $endpoint)->count());
         $this->assertSame(1, (int) $this->database()->table('push_subscriptions')->where('endpoint', $endpoint)->value('user_id'));
+
+        $keys = json_decode($this->database()->table('push_subscriptions')->where('endpoint', $endpoint)->value('keys'), true);
+        $encrypted = Encryption::encrypt(
+            Encryption::padPayload('Test notification', 0, ContentEncoding::aes128gcm),
+            $keys['p256dh'],
+            $keys['auth'],
+            ContentEncoding::aes128gcm
+        );
+        $this->assertNotEmpty($encrypted['cipherText']);
     }
 
     #[Test]
@@ -80,7 +97,7 @@ class PushSubscriptionTest extends TestCase
         $id = json_decode((string) $original->getBody(), true)['data']['id'];
 
         $response = $this->registerSubscription(2, attributes: [
-            'keys'           => ['auth' => 'test-auth', 'p256dh' => 'test-key'],
+            'keys'           => ['auth' => self::KEYS['auth'], 'p256dh' => self::KEYS['p256dh']],
             'expirationTime' => 1893456000000,
         ]);
 
@@ -158,6 +175,64 @@ class PushSubscriptionTest extends TestCase
     }
 
     #[Test]
+    #[DataProvider('invalidKeys')]
+    public function invalid_keys_are_rejected_without_saving_or_evicting_subscriptions(mixed $keys): void
+    {
+        $this->assertRegistered(1, self::ENDPOINT.'-old');
+        $this->assertRegistered(1, self::ENDPOINT.'-new');
+        $before = $this->database()->table('push_subscriptions')->orderBy('id')->get()->all();
+
+        $response = $this->registerSubscription(1, attributes: ['keys' => $keys]);
+
+        $this->assertSame(422, $response->getStatusCode(), (string) $response->getBody());
+        $error = json_decode((string) $response->getBody(), true)['errors'][0];
+        $this->assertSame('/data/attributes/keys', $error['source']['pointer']);
+        $this->assertEquals($before, $this->database()->table('push_subscriptions')->orderBy('id')->get()->all());
+    }
+
+    public static function invalidKeys(): array
+    {
+        return [
+            'null'                  => [null],
+            'string'                => ['not-an-object'],
+            'empty'                 => [[]],
+            'missing p256dh'        => [['auth' => self::KEYS['auth']]],
+            'missing auth'          => [['p256dh' => self::KEYS['p256dh']]],
+            'array p256dh'          => [['p256dh' => ['invalid'], 'auth' => self::KEYS['auth']]],
+            'boolean auth'          => [['p256dh' => self::KEYS['p256dh'], 'auth' => true]],
+            'invalid p256dh base64' => [['p256dh' => 'invalid!', 'auth' => self::KEYS['auth']]],
+            'invalid auth base64'   => [['p256dh' => self::KEYS['p256dh'], 'auth' => 'invalid!']],
+            'short public key'      => [['p256dh' => Base64Url::encode("\x04".str_repeat("\0", 63)), 'auth' => self::KEYS['auth']]],
+            'short auth'            => [['p256dh' => self::KEYS['p256dh'], 'auth' => Base64Url::encode(str_repeat('a', 15))]],
+            'long auth'             => [['p256dh' => self::KEYS['p256dh'], 'auth' => Base64Url::encode(str_repeat('a', 17))]],
+            'compressed public key' => [['p256dh' => Base64Url::encode("\x02".substr(Base64Url::decode(self::KEYS['p256dh']), 1)), 'auth' => self::KEYS['auth']]],
+            'point outside P-256'   => [['p256dh' => Base64Url::encode("\x04".str_repeat("\0", 64)), 'auth' => self::KEYS['auth']]],
+        ];
+    }
+
+    #[Test]
+    public function encryption_keys_are_required_for_a_new_subscription(): void
+    {
+        $response = $this->send($this->request('POST', '/api/push_subscriptions', [
+            'authenticatedAs' => 1,
+            'json'            => ['data' => ['attributes' => ['endpoint' => self::ENDPOINT]]],
+        ]));
+
+        $this->assertSame(422, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertSame(0, $this->database()->table('push_subscriptions')->count());
+    }
+
+    #[Test]
+    public function valid_base64url_keys_with_padding_are_accepted(): void
+    {
+        $keys = ['p256dh' => self::KEYS['p256dh'].'=', 'auth' => self::KEYS['auth'].'=='];
+        $response = $this->registerSubscription(1, attributes: ['keys' => $keys]);
+
+        $this->assertSame(201, $response->getStatusCode(), (string) $response->getBody());
+        $this->assertSame($keys, json_decode($this->database()->table('push_subscriptions')->value('keys'), true));
+    }
+
+    #[Test]
     public function a_transfer_evicts_only_the_new_owners_least_recently_used_subscription(): void
     {
         $this->assertRegistered(1);
@@ -207,7 +282,7 @@ class PushSubscriptionTest extends TestCase
     {
         $response = $this->send($this->request('POST', '/api/push_subscriptions', [
             'authenticatedAs' => 1,
-            'json'            => ['data' => ['attributes' => ['endpoint' => 'https://evilfcm.googleapis.com/token']]],
+            'json'            => ['data' => ['attributes' => ['endpoint' => 'https://evilfcm.googleapis.com/token', 'keys' => self::KEYS]]],
         ]));
 
         $this->assertSame(422, $response->getStatusCode());
@@ -222,7 +297,7 @@ class PushSubscriptionTest extends TestCase
     {
         $response = $this->send($this->request('POST', '/api/push_subscriptions', [
             'authenticatedAs' => 1,
-            'json'            => ['data' => ['attributes' => ['endpoint' => 'http://fcm.googleapis.com/private-token']]],
+            'json'            => ['data' => ['attributes' => ['endpoint' => 'http://fcm.googleapis.com/private-token', 'keys' => self::KEYS]]],
         ]));
 
         $this->assertSame(422, $response->getStatusCode());

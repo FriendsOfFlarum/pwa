@@ -20,14 +20,14 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int       $id
- * @property int       $user_id
- * @property string    $endpoint
- * @property string    $vapid_public_key
- * @property string    $keys
- * @property Carbon    $expires_at
- * @property Carbon    $last_used
- * @property User|null $user
+ * @property int                        $id
+ * @property int                        $user_id
+ * @property string                     $endpoint
+ * @property string                     $vapid_public_key
+ * @property array<string, string>|null $keys
+ * @property Carbon                     $expires_at
+ * @property Carbon                     $last_used
+ * @property User|null                  $user
  */
 #[Table('push_subscriptions')]
 class PushSubscription extends AbstractModel
