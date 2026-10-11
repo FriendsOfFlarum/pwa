@@ -196,8 +196,10 @@ class PushSubscriptionTest extends TestCase
 
         $this->assertRegistered(1);
 
-        $this->assertEqualsCanonicalizing([self::ENDPOINT.'-new', self::ENDPOINT],
-            $this->database()->table('push_subscriptions')->where('user_id', 1)->pluck('endpoint')->all());
+        $this->assertEqualsCanonicalizing(
+            [self::ENDPOINT.'-new', self::ENDPOINT],
+            $this->database()->table('push_subscriptions')->where('user_id', 1)->pluck('endpoint')->all()
+        );
     }
 
     #[Test]
