@@ -45,12 +45,6 @@ class PushEndpointValidator implements ValidationRule
             return;
         }
 
-        if (mb_strlen($value) > 2048) {
-            $fail($this->translator->trans('validation.max.string', ['attribute' => $attribute, 'max' => 2048]));
-
-            return;
-        }
-
         $url = parse_url($value);
         $host = strtolower($url['host'] ?? '');
         $scheme = strtolower($url['scheme'] ?? '');

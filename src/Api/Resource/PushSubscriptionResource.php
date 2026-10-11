@@ -67,6 +67,7 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
             Schema\Str::make('endpoint')
                 ->writableOnCreate()
                 ->requiredOnCreate()
+                ->maxLength(2048)
                 ->rule(fn () => $this->endpointValidator),
 
             // Read-only: always set server-side in creating(), never trusted from the client.
