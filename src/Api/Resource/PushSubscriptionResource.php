@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Tobyz\JsonApiServer\Context as OriginalContext;
+use Tobyz\JsonApiServer\Exception\ConflictException;
 
 /**
  * @extends Resource\AbstractDatabaseResource<PushSubscription>
@@ -92,7 +93,7 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
 
     /**
      * Endpoints are effectively unique per browser registration.
-     * If a subscription for this endpoint already exists, reuse that row instead of creating a duplicate.
+     * Reuse an existing row only when the browser proves it has the same encryption keys.
      */
     public function newModel(OriginalContext $context): object
     {
@@ -100,6 +101,16 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
             $endpoint = Arr::get($context->body(), 'data.attributes.endpoint');
 
             if ($endpoint && $existing = PushSubscription::query()->where('endpoint', $endpoint)->first()) {
+                // Check before the API assigns request fields to the existing model.
+                foreach (['p256dh', 'auth'] as $key) {
+                    $value = Arr::get($context->body(), 'data.attributes.keys.'.$key);
+
+                    if (!is_string($value) || $value !== ($existing->keys[$key] ?? null)) {
+                        throw (new ConflictException('The push subscription keys do not match the existing endpoint.'))
+                            ->setSource(['pointer' => '/data/attributes/keys']);
+                    }
+                }
+
                 return $existing;
             }
         }
@@ -111,9 +122,8 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
     {
         $actor = $context->getActor();
 
-        // Only enforce the per-user subscription cap and (re)assign ownership for a genuinely new row.
-        // When newModel() returned an existing subscription (dedup match above), the original owner and cap bookkeeping are left untouched.
-        if (!$model->exists) {
+        // A transfer takes a slot for the new owner, just like a new subscription.
+        if (!$model->exists || $model->user_id != $actor->id) {
             $subscriptions = $actor->pushSubscriptions();
             $subscriptionCount = $subscriptions->count() + 1;
             $maxSubscriptionCount = $this->settings->get('fof-pwa.userMaxSubscriptions');
