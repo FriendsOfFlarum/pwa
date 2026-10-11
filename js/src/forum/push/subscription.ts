@@ -5,20 +5,22 @@ export async function syncPushSubscription(registration: ServiceWorkerRegistrati
   if (!app.session.user) return;
 
   const applicationServerKey = getVapidPublicKey();
-  let subscription = await registration.pushManager.getSubscription();
+  let existingSubscription = await registration.pushManager.getSubscription();
 
-  if (subscription && getApplicationServerKey(subscription) !== applicationServerKey) {
-    if (!(await subscription.unsubscribe())) {
+  if (existingSubscription && getApplicationServerKey(existingSubscription) !== applicationServerKey) {
+    if (!(await existingSubscription.unsubscribe())) {
       throw new Error('Could not unsubscribe from the previous VAPID key.');
     }
 
-    subscription = null;
+    existingSubscription = null;
   }
 
-  subscription ??= await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey,
-  });
+  const subscription =
+    existingSubscription ??
+    (await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey,
+    }));
 
   await app.request({
     method: 'POST',
