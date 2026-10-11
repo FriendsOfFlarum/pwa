@@ -1,16 +1,25 @@
 import app from 'flarum/forum/app';
-import { getVapidPublicKey } from './utils';
+import { getApplicationServerKey, getVapidPublicKey } from './utils';
 
 export async function syncPushSubscription(registration: ServiceWorkerRegistration): Promise<void> {
   if (!app.session.user) return;
 
-  const existingSubscription = await registration.pushManager.getSubscription();
+  const applicationServerKey = getVapidPublicKey();
+  let existingSubscription = await registration.pushManager.getSubscription();
+
+  if (existingSubscription && getApplicationServerKey(existingSubscription) !== applicationServerKey) {
+    if (!(await existingSubscription.unsubscribe())) {
+      throw new Error('Could not unsubscribe from the previous VAPID key.');
+    }
+
+    existingSubscription = null;
+  }
 
   const subscription =
     existingSubscription ??
     (await registration.pushManager.subscribe({
       userVisibleOnly: true,
-      applicationServerKey: getVapidPublicKey(),
+      applicationServerKey,
     }));
 
   await app.request({
