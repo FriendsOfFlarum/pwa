@@ -17,7 +17,7 @@ use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\PWA\IconSize;
-use FoF\PWA\PWATrait;
+use FoF\PWA\ManifestBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -25,12 +25,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ShowPWASettingsController implements RequestHandlerInterface
 {
-    use PWATrait;
-
     public function __construct(
         protected SettingsRepositoryInterface $settings,
         protected TranslatorInterface $translator,
-        protected UrlGenerator $url
+        protected UrlGenerator $url,
+        private readonly ManifestBuilder $manifest
     ) {
     }
 
@@ -39,6 +38,7 @@ class ShowPWASettingsController implements RequestHandlerInterface
         RequestUtil::getActor($request)->assertAdmin();
 
         $status_messages = [];
+        $manifest = $this->manifest->build();
 
         $logo = false;
 
@@ -48,7 +48,7 @@ class ShowPWASettingsController implements RequestHandlerInterface
             }
         }
 
-        if (!isset($this->buildManifest()['name'])) {
+        if (!isset($manifest['name'])) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('fof-pwa.admin.status.no_name'),
@@ -108,7 +108,7 @@ class ShowPWASettingsController implements RequestHandlerInterface
         }
 
         return new JsonApiResponse([
-            'manifest'        => $this->buildManifest(),
+            'manifest'        => $manifest,
             'sizes'           => IconSize::cases(),
             'status_messages' => $status_messages,
         ]);

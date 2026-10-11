@@ -15,7 +15,6 @@ namespace FoF\PWA\Api\Controller;
 use Flarum\Api\Controller\UploadImageController;
 use Flarum\Http\Exception\RouteNotFoundException;
 use FoF\PWA\IconSize;
-use FoF\PWA\PWATrait;
 use Illuminate\Support\Arr;
 use Intervention\Image\Interfaces\EncodedImageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -25,8 +24,6 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class UploadLogoController extends UploadImageController
 {
-    use PWATrait;
-
     protected int $size;
 
     protected string $fileExtension = 'png';
