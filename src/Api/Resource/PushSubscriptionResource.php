@@ -67,10 +67,7 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
             Schema\Str::make('endpoint')
                 ->writableOnCreate()
                 ->requiredOnCreate()
-                ->set(function (PushSubscription $subscription, string $value) {
-                    $this->endpointValidator->assertValid(['endpoint' => $value]);
-                    $subscription->endpoint = $value;
-                }),
+                ->rule(fn () => $this->endpointValidator),
 
             // Read-only: always set server-side in creating(), never trusted from the client.
             Schema\Str::make('vapidPublicKey'),

@@ -13,10 +13,11 @@
 namespace FoF\PWA\Validator;
 
 use Closure;
-use Flarum\Foundation\AbstractValidator;
+use Flarum\Locale\TranslatorInterface;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Str;
 
-class PushEndpointValidator extends AbstractValidator
+class PushEndpointValidator implements ValidationRule
 {
     /**
      * Taken from https://github.com/pushpad/known-push-services/blob/master/whitelist.
@@ -34,31 +35,35 @@ class PushEndpointValidator extends AbstractValidator
         'push.apple.com',
     ];
 
-    protected function getRules(): array
+    public function __construct(protected TranslatorInterface $translator)
     {
-        return [
-            'endpoint' => [
-                'bail',
-                'required',
-                'string',
-                'max:2048',
-                function (string $attribute, string $value, Closure $fail): void {
-                    $url = parse_url($value);
-                    $host = strtolower($url['host'] ?? '');
-                    $scheme = strtolower($url['scheme'] ?? '');
-                    $subdomains = array_map(fn (string $domain) => '.'.$domain, static::PUSH_HOST_ALLOWLIST);
+    }
 
-                    if (!$host || $scheme !== 'https') {
-                        $fail($this->translator->trans('fof-pwa.api.endpoint_https_required', ['url' => $value]));
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (!is_string($value)) {
+            return;
+        }
 
-                        return;
-                    }
+        if (mb_strlen($value) > 2048) {
+            $fail($this->translator->trans('validation.max.string', ['attribute' => $attribute, 'max' => 2048]));
 
-                    if (!(in_array($host, static::PUSH_HOST_ALLOWLIST, true) || Str::endsWith($host, $subdomains))) {
-                        $fail($this->translator->trans('fof-pwa.api.endpoint_host_not_allowed', ['host' => $host]));
-                    }
-                },
-            ],
-        ];
+            return;
+        }
+
+        $url = parse_url($value);
+        $host = strtolower($url['host'] ?? '');
+        $scheme = strtolower($url['scheme'] ?? '');
+        $subdomains = array_map(fn (string $domain) => '.'.$domain, static::PUSH_HOST_ALLOWLIST);
+
+        if (!$host || $scheme !== 'https') {
+            $fail($this->translator->trans('fof-pwa.api.endpoint_https_required', ['url' => $value]));
+
+            return;
+        }
+
+        if (!(in_array($host, static::PUSH_HOST_ALLOWLIST, true) || Str::endsWith($host, $subdomains))) {
+            $fail($this->translator->trans('fof-pwa.api.endpoint_host_not_allowed', ['host' => $host]));
+        }
     }
 }

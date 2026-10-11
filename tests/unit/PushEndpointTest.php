@@ -27,13 +27,16 @@ class PushEndpointTest extends TestCase
     public function validates_push_service_urls(string $endpoint, bool $allowed): void
     {
         $translator = new Translator('en');
-        $validator = new PushEndpointValidator(new Factory($translator), $translator);
+        $validator = (new Factory($translator))->make(
+            ['endpoint' => $endpoint],
+            ['endpoint' => [new PushEndpointValidator($translator)]]
+        );
 
         if (!$allowed) {
             $this->expectException(ValidationException::class);
         }
 
-        $validator->assertValid(['endpoint' => $endpoint]);
+        $validator->validate();
         $this->addToAssertionCount(1);
     }
 
@@ -46,6 +49,8 @@ class PushEndpointTest extends TestCase
             'Apple subdomain'                    => ['https://web.push.apple.com/token', true],
             'Windows subdomain'                  => ['https://wns2.notify.windows.com/token', true],
             'case insensitive host'              => ['https://FCM.GOOGLEAPIS.COM/token', true],
+            'maximum length'                     => ['https://fcm.googleapis.com/'.str_repeat('a', 2021), true],
+            'too long'                           => ['https://fcm.googleapis.com/'.str_repeat('a', 2022), false],
             'domain without label boundary'      => ['https://evilfcm.googleapis.com/token', false],
             'Apple suffix spoof'                 => ['https://evilpush.apple.com/token', false],
             'domain in path'                     => ['https://example.com/fcm.googleapis.com', false],
