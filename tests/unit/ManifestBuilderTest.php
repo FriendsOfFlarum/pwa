@@ -64,4 +64,23 @@ class ManifestBuilderTest extends TestCase
             'subdirectory with slash' => ['https://example.com/community/', '/community/'],
         ];
     }
+
+    #[Test]
+    public function uses_the_configured_display_mode(): void
+    {
+        $settings = Mockery::mock(SettingsRepositoryInterface::class);
+        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
+            'fof-pwa.display' => 'fullscreen',
+        ][$key] ?? $default);
+
+        $url = Mockery::mock(UrlGenerator::class);
+        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator('https://example.com', new RouteCollection()));
+
+        $icons = Mockery::mock(IconProvider::class);
+        $icons->shouldReceive('get')->andReturn([]);
+
+        $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
+
+        $this->assertSame('fullscreen', $manifest['display']);
+    }
 }

@@ -33,11 +33,28 @@ fof-pwa:
         upload_file: Upload file
       other:
         heading: Other
+        display_label: Display mode
+        display_text: |
+          How the app opens when launched from its icon:
+
+          Standalone: A separate app window without the browser's address bar.
+          Minimal UI: Like Standalone, with basic navigation such as back and reload.
+          Full screen: Uses the entire screen without browser controls.
+          Browser: Opens in a normal browser tab or window.
+
+          Browsers may use a fallback if the selected mode is not supported.
+        display_options:
+          standalone: Standalone
+          minimal_ui: Minimal UI
+          fullscreen: Full screen
+          browser: Browser
         force_portrait_text: Force portrait orientation
         push_notif_preference_default_to_email_label: Default push preferences to email
         push_notif_preference_default_to_email_text: If enabled, users will have push notifications enabled by default for all notification types where email notifications are enabled by default. If disabled, users will have push notifications disabled by default.
         window_controls_overlay_label: Enable Window Controls Overlay
         window_controls_overlay_text: |
+          When used by a supported desktop browser, Window Controls Overlay takes precedence over the selected display mode.
+
           If enabled, users can get a more immersive, native-like experience by hiding the native title bar. Whether Window Controls Overlay is actually applied depends on the user's preference and browser compatibility. You must customize your title bar with CSS/JS after enabling this, otherwise the controls will overlay elements of your forum's top navbar and the window will be nearly impossible to drag, resulting in a bad experience.
 
           See also: <compatibilitylink>Window Controls Overlay browser compatibility</compatibilitylink> & <learnlink>About Window Controls Overlay on Microsoft Learn</learnlink>
