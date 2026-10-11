@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int       $user_id
  * @property string    $endpoint
  * @property string    $vapid_public_key
- * @property string    $keys
+ * @property array<string, string>|null $keys
  * @property Carbon    $expires_at
  * @property Carbon    $last_used
  * @property User|null $user

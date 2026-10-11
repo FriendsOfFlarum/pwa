@@ -18,6 +18,7 @@ use Flarum\Api\Schema;
 use Flarum\Settings\SettingsRepositoryInterface;
 use FoF\PWA\Model\PushSubscription;
 use FoF\PWA\Validator\PushEndpointValidator;
+use FoF\PWA\Validator\PushKeysValidator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -29,8 +30,11 @@ use Tobyz\JsonApiServer\Exception\ConflictException;
  */
 class PushSubscriptionResource extends Resource\AbstractDatabaseResource
 {
-    public function __construct(protected SettingsRepositoryInterface $settings, protected PushEndpointValidator $endpointValidator)
-    {
+    public function __construct(
+        protected SettingsRepositoryInterface $settings,
+        protected PushEndpointValidator $endpointValidator,
+        protected PushKeysValidator $keysValidator,
+    ) {
     }
 
     public function type(): string
@@ -82,8 +86,9 @@ class PushSubscriptionResource extends Resource\AbstractDatabaseResource
             // Not meant to be read back via the API.
             Schema\Arr::make('keys')
                 ->hidden()
-                ->nullable()
-                ->writableOnCreate(),
+                ->requiredOnCreate()
+                ->writableOnCreate()
+                ->rule(fn () => $this->keysValidator),
 
             Schema\Relationship\ToOne::make('user')
                 ->includable()

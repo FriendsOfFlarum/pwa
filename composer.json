@@ -34,6 +34,7 @@
     },
     "require": {
         "php": "^8.3",
+        "ext-openssl": "*",
         "flarum/core": "^2.0.0",
         "minishlink/web-push": "^11.0.0",
         "spomky-labs/base64url": "^2.0.4",
