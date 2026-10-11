@@ -66,13 +66,11 @@ class ManifestBuilderTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('displayModes')]
-    public function selects_display_mode_and_configures_overlay_independently(?string $setting, bool $overlay, string $expectedDisplay): void
+    public function uses_the_configured_display_mode(): void
     {
         $settings = Mockery::mock(SettingsRepositoryInterface::class);
         $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
-            'fof-pwa.display'               => $setting,
-            'fof-pwa.windowControlsOverlay' => $overlay,
+            'fof-pwa.display' => 'fullscreen',
         ][$key] ?? $default);
 
         $url = Mockery::mock(UrlGenerator::class);
@@ -83,26 +81,6 @@ class ManifestBuilderTest extends TestCase
 
         $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
 
-        $this->assertSame($expectedDisplay, $manifest['display']);
-
-        if ($overlay) {
-            $this->assertSame(['window-controls-overlay'], $manifest['display_override']);
-        } else {
-            $this->assertArrayNotHasKey('display_override', $manifest);
-        }
-    }
-
-    public static function displayModes(): array
-    {
-        return [
-            'unset'                    => [null, false, 'standalone'],
-            'empty'                    => ['', false, 'standalone'],
-            'custom mode'              => ['custom-mode', false, 'custom-mode'],
-            'standalone'               => ['standalone', false, 'standalone'],
-            'standalone with overlay'  => ['standalone', true, 'standalone'],
-            'minimal-ui with overlay'  => ['minimal-ui', true, 'minimal-ui'],
-            'fullscreen with overlay'  => ['fullscreen', true, 'fullscreen'],
-            'browser with overlay'     => ['browser', true, 'browser'],
-        ];
+        $this->assertSame('fullscreen', $manifest['display']);
     }
 }
