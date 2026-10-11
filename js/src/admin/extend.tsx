@@ -49,6 +49,19 @@ export default [
       type: 'color-preview',
     }))
     .setting(() => ({
+      setting: 'fof-pwa.display',
+      label: app.translator.trans('fof-pwa.admin.pwa.other.display_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.other.display_text'),
+      type: 'select',
+      default: 'standalone',
+      options: {
+        standalone: app.translator.trans('fof-pwa.admin.pwa.other.display_options.standalone'),
+        'minimal-ui': app.translator.trans('fof-pwa.admin.pwa.other.display_options.minimal_ui'),
+        fullscreen: app.translator.trans('fof-pwa.admin.pwa.other.display_options.fullscreen'),
+        browser: app.translator.trans('fof-pwa.admin.pwa.other.display_options.browser'),
+      },
+    }))
+    .setting(() => ({
       setting: 'fof-pwa.forcePortrait',
       label: app.translator.trans('fof-pwa.admin.pwa.other.force_portrait_text'),
       type: 'boolean',

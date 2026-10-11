@@ -64,4 +64,45 @@ class ManifestBuilderTest extends TestCase
             'subdirectory with slash' => ['https://example.com/community/', '/community/'],
         ];
     }
+
+    #[Test]
+    #[DataProvider('displayModes')]
+    public function selects_display_mode_and_configures_overlay_independently(?string $setting, bool $overlay, string $expectedDisplay): void
+    {
+        $settings = Mockery::mock(SettingsRepositoryInterface::class);
+        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
+            'fof-pwa.display'               => $setting,
+            'fof-pwa.windowControlsOverlay' => $overlay,
+        ][$key] ?? $default);
+
+        $url = Mockery::mock(UrlGenerator::class);
+        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator('https://example.com', new RouteCollection()));
+
+        $icons = Mockery::mock(IconProvider::class);
+        $icons->shouldReceive('get')->andReturn([]);
+
+        $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
+
+        $this->assertSame($expectedDisplay, $manifest['display']);
+
+        if ($overlay) {
+            $this->assertSame(['window-controls-overlay'], $manifest['display_override']);
+        } else {
+            $this->assertArrayNotHasKey('display_override', $manifest);
+        }
+    }
+
+    public static function displayModes(): array
+    {
+        return [
+            'unset'                    => [null, false, 'standalone'],
+            'empty'                    => ['', false, 'standalone'],
+            'custom mode'              => ['custom-mode', false, 'custom-mode'],
+            'standalone'               => ['standalone', false, 'standalone'],
+            'standalone with overlay'  => ['standalone', true, 'standalone'],
+            'minimal-ui with overlay'  => ['minimal-ui', true, 'minimal-ui'],
+            'fullscreen with overlay'  => ['fullscreen', true, 'fullscreen'],
+            'browser with overlay'     => ['browser', true, 'browser'],
+        ];
+    }
 }

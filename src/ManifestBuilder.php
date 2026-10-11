@@ -49,7 +49,7 @@ class ManifestBuilder
             'scope'       => $basePath,
             'dir'         => 'auto',
             'theme_color' => $this->settings->get('fof-pwa.themeColor') ?: $this->settings->get('theme_primary_color'),
-            'display'     => 'standalone',
+            'display'     => $this->settings->get('fof-pwa.display') ?: 'standalone',
             'icons'       => $this->icons->get(),
         ];
 
