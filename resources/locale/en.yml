@@ -48,7 +48,25 @@ fof-pwa:
           minimal_ui: Minimal UI
           fullscreen: Full screen
           browser: Browser
-        force_portrait_text: Force portrait orientation
+        orientation_label: Orientation
+        orientation_text: |
+          Any: Let the app rotate with the device.
+          Natural: Use the device's usual orientation, typically portrait on phones and landscape on monitors.
+          Portrait: Keep the app vertical.
+          Landscape: Keep the app horizontal.
+
+          Portrait and Landscape each allow two positions, 180 degrees apart. Select a Primary or Secondary option to use just one. On a phone, Portrait (primary) usually means upright, and Portrait (secondary) means upside down. For landscape, which direction is primary depends on the device.
+
+          Some browsers and devices may ignore the selected orientation.
+        orientation_options:
+          any: Any
+          natural: Natural
+          portrait: Portrait
+          portrait_primary: Portrait (primary)
+          portrait_secondary: Portrait (secondary)
+          landscape: Landscape
+          landscape_primary: Landscape (primary)
+          landscape_secondary: Landscape (secondary)
         push_notif_preference_default_to_email_label: Default push preferences to email
         push_notif_preference_default_to_email_text: If enabled, users will have push notifications enabled by default for all notification types where email notifications are enabled by default. If disabled, users will have push notifications disabled by default.
         window_controls_overlay_label: Enable Window Controls Overlay

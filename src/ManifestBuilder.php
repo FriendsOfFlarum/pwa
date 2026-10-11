@@ -50,15 +50,12 @@ class ManifestBuilder
             'dir'         => 'auto',
             'theme_color' => $this->settings->get('fof-pwa.themeColor') ?: $this->settings->get('theme_primary_color'),
             'display'     => $this->settings->get('fof-pwa.display') ?: 'standalone',
+            'orientation' => $this->settings->get('fof-pwa.orientation') ?: 'any',
             'icons'       => $this->icons->get(),
         ];
 
         if ($backgroundColor = $this->settings->get('fof-pwa.backgroundColor')) {
             $manifest['background_color'] = $backgroundColor;
-        }
-
-        if ($this->settings->get('fof-pwa.forcePortrait')) {
-            $manifest['orientation'] = 'portrait';
         }
 
         if ($shortName = $this->settings->get('fof-pwa.shortName')) {
