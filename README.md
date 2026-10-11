@@ -23,14 +23,18 @@ composer update fof/pwa
 Customize the manifest in your extension's or forum's `extend.php`:
 
 ```php
+use Flarum\Extend;
 use FoF\PWA\Extend as PwaExtend;
 
 return [
-    (new PwaExtend\Manifest())
-        ->modify(function (array $manifest): array {
-            $manifest['categories'] = ['social'];
-            return $manifest;
-        }),
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('fof-pwa', fn () => [
+            (new PwaExtend\Manifest())
+                ->modify(function (array $manifest): array {
+                    $manifest['categories'] = ['social'];
+                    return $manifest;
+                }),
+        ]),
 ];
 ```
 
