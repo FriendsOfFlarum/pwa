@@ -13,10 +13,13 @@
 namespace FoF\PWA\Tests\integration;
 
 use Flarum\Database\AbstractModel;
+use Flarum\Discussion\Discussion;
+use Flarum\Notification\AlertableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Testing\integration\TestCase;
 use Flarum\User\User;
 use FoF\PWA\PushSender;
+use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\ConnectionInterface;
 use Laminas\Diactoros\Request;
@@ -150,6 +153,112 @@ class PushSenderTest extends TestCase
         $this->assertCount(4, $rows->filter(fn ($row) => $row->last_used !== null), 'Every delivered subscription should be marked as used.');
     }
 
+    #[Test]
+    public function each_recipient_is_sent_their_own_unread_count(): void
+    {
+        $this->prepareRecipients();
+        $this->prepareDatabase(['notifications' => [
+            // user 3: two unread; a read one and a deleted one don't count
+            $this->notification(1, 3), $this->notification(2, 3),
+            $this->notification(3, 3, read: true), $this->notification(4, 3, deleted: true),
+            // user 4: one unread; one of a type nothing registers isn't alertable
+            $this->notification(5, 4), $this->notification(6, 4, type: 'notRegistered'),
+        ]]);
+        $webPush = new FakeWebPush();
+
+        $this->notifyRecipients([2, 3, 4], $webPush);
+
+        $this->assertSame(
+            [2 => 0, 3 => 2, 4 => 1],
+            $this->unreadCountsSent($webPush, [2, 3, 4]),
+        );
+    }
+
+    #[Test]
+    public function an_alert_not_saved_yet_is_counted_once(): void
+    {
+        $this->prepareRecipients();
+        // user 2's alert for this notification is already saved; user 3's job hasn't run yet
+        $this->prepareDatabase(['notifications' => [$this->notification(1, 2)]]);
+        // user 4 has alerts for this type turned off, so it isn't counted
+        $this->database()->table('users')->where('id', 4)->update(['preferences' => json_encode(['notify_discussionRenamed_alert' => false])]);
+        $webPush = new FakeWebPush();
+
+        $this->notifyRecipients([2, 3, 4], $webPush, new AlertBlueprint());
+
+        $this->assertSame([2 => 1, 3 => 1, 4 => 0], $this->unreadCountsSent($webPush, [2, 3, 4]));
+    }
+
+    #[Test]
+    public function cores_cached_count_is_used_when_it_has_one(): void
+    {
+        $this->prepareRecipients();
+        $this->prepareDatabase(['notifications' => [$this->notification(1, 2)]]);
+        $cache = $this->app()->getContainer()->make(Cache::class);
+        $cache->put('user.2.unread_notification_count', 7, 300);
+        // Redis hands a stored number back as a string.
+        $cache->put('user.3.unread_notification_count', '4', 300);
+        $webPush = new FakeWebPush();
+
+        $this->notifyRecipients([2, 3, 4], $webPush);
+
+        $this->assertSame([2 => 7, 3 => 4, 4 => 0], $this->unreadCountsSent($webPush, [2, 3, 4]));
+    }
+
+    #[Test]
+    public function counting_unread_notifications_costs_the_same_for_one_recipient_as_for_many(): void
+    {
+        $this->prepareRecipients();
+        $this->prepareDatabase(['notifications' => [
+            $this->notification(1, 2), $this->notification(2, 3), $this->notification(3, 4), $this->notification(4, 4),
+        ]]);
+
+        // A first send loads what any send needs once (settings, preferences), so neither measured run pays for it.
+        $this->notifyRecipients([2], new FakeWebPush(), new AlertBlueprint());
+        // One recipient's count is cached, so both ways of counting are measured.
+        $this->app()->getContainer()->make(Cache::class)->put('user.4.unread_notification_count', 2, 300);
+
+        $one = $this->queriesDuring(fn () => $this->notifyRecipients([2], new FakeWebPush(), new AlertBlueprint()));
+        $many = $this->queriesDuring(fn () => $this->notifyRecipients([2, 3, 4], new FakeWebPush(), new AlertBlueprint()));
+
+        $this->assertCount(count($one), $many, 'Queries grew with the number of recipients.');
+        $this->assertSame([], $this->repeatedQueries($many, 2), 'A query was run once per recipient.');
+    }
+
+    /**
+     * @return array<int, int> user id => the unread count every one of their devices was sent
+     */
+    private function unreadCountsSent(FakeWebPush $webPush, array $userIds): array
+    {
+        $counts = [];
+
+        foreach ($userIds as $userId) {
+            $sent = array_unique(array_map(
+                fn (int $device) => json_decode($webPush->payloads[$this->endpoint($userId, $device)], true)['unreadCount'],
+                [1, 2]
+            ));
+            $this->assertCount(1, $sent, "User $userId's devices were sent different counts.");
+            $counts[$userId] = $sent[0];
+        }
+
+        return $counts;
+    }
+
+    private function notification(int $id, int $userId, bool $read = false, bool $deleted = false, string $type = 'discussionRenamed'): array
+    {
+        return [
+            'id'           => $id,
+            'user_id'      => $userId,
+            'from_user_id' => null,
+            'type'         => $type,
+            'subject_id'   => $id <= 6 ? $id : 1,
+            'data'         => null,
+            'created_at'   => '2026-10-01 00:00:00',
+            'read_at'      => $read ? '2026-10-02 00:00:00' : null,
+            'is_deleted'   => $deleted,
+        ];
+    }
+
     /**
      * Three users with two subscriptions each.
      */
@@ -166,7 +275,10 @@ class PushSenderTest extends TestCase
             }
         }
 
-        $this->prepareDatabase([User::class => $users, 'push_subscriptions' => $subscriptions]);
+        // Real, visible subjects for the notifications: core's own count leaves out any it can't see.
+        $discussions = array_map(fn (int $id) => ['id' => $id, 'title' => "Discussion $id", 'user_id' => 2, 'created_at' => '2026-10-01 00:00:00', 'comment_count' => 1, 'participant_count' => 1, 'is_private' => false], range(1, 6));
+
+        $this->prepareDatabase([User::class => $users, Discussion::class => $discussions, 'push_subscriptions' => $subscriptions]);
     }
 
     private function subscription(int $id, int $userId, string $endpoint): array
@@ -194,12 +306,12 @@ class PushSenderTest extends TestCase
         return array_merge(...array_map(fn (int $userId) => [$this->endpoint($userId, 1), $this->endpoint($userId, 2)], $userIds));
     }
 
-    private function notifyRecipients(array $userIds, FakeWebPush $webPush): void
+    private function notifyRecipients(array $userIds, FakeWebPush $webPush, ?BlueprintInterface $blueprint = null): void
     {
         $sender = $this->app()->getContainer()->make(TestablePushSender::class);
         $sender->webPush = $webPush;
 
-        $sender->notify(new TestBlueprint(), $userIds);
+        $sender->notify($blueprint ?? new TestBlueprint(), $userIds);
     }
 
     /**
@@ -270,6 +382,9 @@ class FakeWebPush extends WebPush
     /** @var string[] */
     public array $queued = [];
 
+    /** @var array<string, string|null> endpoint => payload */
+    public array $payloads = [];
+
     /**
      * @param array<string, int|null> $statuses null for an endpoint that couldn't be reached
      */
@@ -281,6 +396,7 @@ class FakeWebPush extends WebPush
     public function queueNotification(SubscriptionInterface $subscription, ?string $payload = null, array $options = [], array $auth = []): void
     {
         $this->queued[] = $subscription->getEndpoint();
+        $this->payloads[$subscription->getEndpoint()] = $payload;
     }
 
     public function flush(?int $batchSize = null): \Generator
@@ -336,5 +452,26 @@ class PayloadBlueprint extends TestBlueprint
     public static function getSubjectModel(): string
     {
         return '';
+    }
+}
+
+/**
+ * An alert of a type core registers (so it is alertable), about discussion 1.
+ */
+class AlertBlueprint extends TestBlueprint implements AlertableInterface
+{
+    public function getSubject(): ?AbstractModel
+    {
+        return (new Discussion())->forceFill(['id' => 1]);
+    }
+
+    public static function getType(): string
+    {
+        return 'discussionRenamed';
+    }
+
+    public static function getSubjectModel(): string
+    {
+        return Discussion::class;
     }
 }

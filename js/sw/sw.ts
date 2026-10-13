@@ -11,6 +11,7 @@ interface PushPayload {
   icon?: string;
   badge?: string;
   link?: string;
+  unreadCount?: number;
 }
 
 self.addEventListener('install', (event) => {
@@ -78,9 +79,28 @@ self.addEventListener('push', (event) => {
           link: payload.link,
         },
       });
+
+      // After the notification, so a badge that fails cannot stop it being shown.
+      await setAppBadge(payload.unreadCount);
     })()
   );
 });
+
+/**
+ * The unread count on the installed app's icon (Badging API: iOS and iPadOS
+ * home screen apps, and installed apps in Chromium browsers and Safari).
+ */
+async function setAppBadge(count: unknown): Promise<void> {
+  if (typeof count !== 'number' || !Number.isInteger(count) || count < 0 || !('setAppBadge' in self.navigator)) {
+    return;
+  }
+
+  try {
+    await (count > 0 ? self.navigator.setAppBadge(count) : self.navigator.clearAppBadge());
+  } catch {
+    // Not allowed here (no notification permission): the badge is a nicety.
+  }
+}
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
