@@ -3,11 +3,14 @@
   "private": true,
   "prettier": "@flarum/prettier-config",
   "devDependencies": {
+    "@flarum/jest-config": "^2.0.2",
     "@flarum/prettier-config": "^1.0.0",
+    "@types/jest": "^29.5.14",
     "@types/mithril": "^2.2.9",
     "concurrently": "^10.0.6",
     "flarum-tsconfig": "^2.0.0",
     "flarum-webpack-config": "^3.0.6",
+    "jest": "^29.7.0",
     "prettier": "^3.9.9",
     "typescript": "^7.0.2",
     "typescript-coverage-report": "^0.6.4",
@@ -27,7 +30,8 @@
     "build-typings": "pnpm run clean-typings && ([ -e src/@types ] && cp -r src/@types dist-typings/@types || true) && tsc && pnpm run post-build-typings",
     "post-build-typings": "find dist-typings -type f -name '*.d.ts' -print0 | xargs -0 sed -i 's,../src/@types,@types,g'",
     "check-typings": "tsc --noEmit --emitDeclarationOnly false",
-    "check-typings-coverage": "typescript-coverage-report"
+    "check-typings-coverage": "typescript-coverage-report",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "devEngines": {
     "packageManager": {
