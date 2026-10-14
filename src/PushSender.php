@@ -17,13 +17,10 @@ use Carbon\Carbon;
 use ErrorException;
 use Exception;
 use Flarum\Http\UrlGenerator;
-use Flarum\Notification\AlertableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
-use Flarum\Notification\Notification;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Model\PushSubscription;
-use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Eloquent\Collection;
@@ -44,7 +41,6 @@ class PushSender
         protected UrlGenerator $url,
         protected NotificationBuilder $notifications,
         protected IconProvider $icons,
-        protected Cache $cache,
     ) {
         $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
     }
@@ -55,7 +51,7 @@ class PushSender
      */
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        $users = User::with('pushSubscriptions')->whereIn('id', $userIds)->get()->all();
+        $users = User::with(['pushSubscriptions', 'groups'])->whereIn('id', $userIds)->get()->all();
 
         $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
         $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
@@ -64,14 +60,15 @@ class PushSender
 
         $payload = $this->getPayload($blueprint);
         $users = array_values(array_filter($users, fn (User $user) => $user->pushSubscriptions->isNotEmpty()));
-        $unread = $this->unreadCounts($blueprint, $users);
 
         /** @var Collection<int, PushSubscription> $subscriptions */
         $subscriptions = new Collection();
 
         foreach ($users as $user) {
-            // Per recipient: the app icon's badge shows their own unread count.
-            $userPayload = json_encode($payload + ['unreadCount' => $unread[$user->id]]);
+            // Per recipient: the app icon's badge shows the bell's count, core's own
+            // (cached, and cleared when a notification is saved or read). An alert is
+            // pushed after core has saved it, so it is counted.
+            $userPayload = json_encode($payload + ['unreadCount' => $user->getUnreadNotificationCount()]);
 
             foreach ($user->pushSubscriptions as $subscription) {
                 $subscriptions->push($subscription);
@@ -160,85 +157,6 @@ class PushSender
         foreach (array_chunk(array_unique($expired), 1000) as $endpoints) {
             PushSubscription::query()->whereIn('endpoint', $endpoints)->delete();
         }
-    }
-
-    /**
-     * Each recipient's unread notification count, as the header's bell shows
-     * it, for the app icon's badge.
-     *
-     * Core's cached count is used where it has one (it is cleared whenever a
-     * notification is created or read). The rest come from one grouped query
-     * for the whole send, never one per recipient, summed over each user's
-     * alertable types as core does. Unlike core's count, that query does not
-     * re-check that each notification's subject is still visible to its
-     * recipient (a check that can only be made one user at a time), so after
-     * a discussion is hidden or made private the badge can count it until the
-     * forum is next opened, which sets the badge to the bell's own count.
-     *
-     * This notification's alert is saved by core's own queued job, which may
-     * not have run yet: if it has not, it is counted here, for a recipient
-     * who has alerts of its type on.
-     *
-     * @param User[] $users
-     *
-     * @return array<int, int> user id => unread count
-     */
-    protected function unreadCounts(BlueprintInterface $blueprint, array $users): array
-    {
-        $counts = [];
-        $missing = [];
-        $keys = array_map(fn (User $user) => "user.{$user->id}.unread_notification_count", $users);
-        $cached = $keys ? $this->cache->many($keys) : [];
-
-        foreach ($users as $user) {
-            $value = $cached["user.{$user->id}.unread_notification_count"] ?? null;
-
-            // Numeric, not int: Redis hands a stored number back as a string.
-            if (is_numeric($value)) {
-                $counts[$user->id] = (int) $value;
-            } else {
-                $missing[] = $user->id;
-            }
-        }
-
-        $byType = [];
-
-        foreach (array_chunk($missing, 1000) as $ids) {
-            $rows = Notification::query()
-                ->select('user_id', 'type')
-                ->selectRaw('COUNT(*) as unread')
-                ->whereIn('user_id', $ids)
-                ->whereNull('read_at')
-                ->where('is_deleted', false)
-                ->groupBy('user_id', 'type')
-                ->toBase()
-                ->get();
-
-            foreach ($rows as $row) {
-                $byType[(int) $row->user_id][$row->type] = (int) $row->unread;
-            }
-        }
-
-        $alertable = $blueprint instanceof AlertableInterface;
-        $saved = [];
-
-        if ($alertable) {
-            foreach (array_chunk(Arr::pluck($users, 'id'), 1000) as $ids) {
-                $saved += array_flip(Notification::matchingBlueprint($blueprint)->whereIn('user_id', $ids)->pluck('user_id')->all());
-            }
-        }
-
-        foreach ($users as $user) {
-            $count = $counts[$user->id] ?? array_sum(array_intersect_key($byType[$user->id] ?? [], array_flip($user->getAlertableNotificationTypes())));
-
-            if ($alertable && !isset($saved[$user->id]) && $user->shouldAlert($blueprint::getType())) {
-                $count++;
-            }
-
-            $counts[$user->id] = $count;
-        }
-
-        return $counts;
     }
 
     /**
