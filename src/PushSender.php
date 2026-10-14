@@ -51,19 +51,25 @@ class PushSender
      */
     public function notify(BlueprintInterface $blueprint, array $userIds = []): void
     {
-        $users = User::with('pushSubscriptions')->whereIn('id', $userIds)->get()->all();
+        $users = User::with(['pushSubscriptions', 'groups'])->whereIn('id', $userIds)->get()->all();
 
         $this->log('[PWA PUSH] Notification Type: '.$blueprint::getType());
         $this->log('[PWA PUSH] Sending for users with ids: '.json_encode(Arr::pluck($users, 'id')));
 
         $notifications = [];
 
-        $payload = json_encode($this->getPayload($blueprint));
+        $payload = $this->getPayload($blueprint);
+        $users = array_values(array_filter($users, fn (User $user) => $user->pushSubscriptions->isNotEmpty()));
 
         /** @var Collection<int, PushSubscription> $subscriptions */
         $subscriptions = new Collection();
 
         foreach ($users as $user) {
+            // Per recipient: the app icon's badge shows the bell's count, core's own
+            // (cached, and cleared when a notification is saved or read). An alert is
+            // pushed after core has saved it, so it is counted.
+            $userPayload = json_encode($payload + ['unreadCount' => $user->getUnreadNotificationCount()]);
+
             foreach ($user->pushSubscriptions as $subscription) {
                 $subscriptions->push($subscription);
                 $notifications[] = [
@@ -71,7 +77,7 @@ class PushSender
                         'endpoint' => $subscription->endpoint,
                         'keys'     => $subscription->keys,
                     ]),
-                    'payload' => $payload,
+                    'payload' => $userPayload,
                 ];
             }
         }

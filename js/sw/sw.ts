@@ -1,4 +1,4 @@
-export {};
+import { setAppBadge } from './appBadge';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -11,6 +11,7 @@ interface PushPayload {
   icon?: string;
   badge?: string;
   link?: string;
+  unreadCount?: number;
 }
 
 self.addEventListener('install', (event) => {
@@ -78,6 +79,9 @@ self.addEventListener('push', (event) => {
           link: payload.link,
         },
       });
+
+      // After the notification, so a badge that fails cannot stop it being shown.
+      await setAppBadge(payload.unreadCount);
     })()
   );
 });

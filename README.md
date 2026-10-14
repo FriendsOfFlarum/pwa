@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg) [![Latest Stable Version](https://img.shields.io/packagist/v/fof/pwa.svg)](https://packagist.org/packages/fof/pwa)
 
-A [Flarum](https://flarum.org) extension that lets users install your forum as an app, adding a shortcut to their home screen or desktop. It also adds push notification support. Configure both from your admin dashboard.
+A [Flarum](https://flarum.org) extension that lets users install your forum as an app, adding a shortcut to their home screen or desktop. It also adds push notification support, and shows the unread notification count on the installed app's icon where the browser supports it (iOS and iPadOS home screen apps, and installed apps in Chromium browsers and Safari). Configure both from your admin dashboard.
 
 ## Installation
 

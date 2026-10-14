@@ -8,6 +8,8 @@
 /tests export-ignore
 
 /js/src export-ignore
+/js/tests export-ignore
+/js/jest.config.cjs export-ignore
 /js/sw export-ignore
 /js/admin.ts export-ignore
 /js/forum.ts export-ignore
