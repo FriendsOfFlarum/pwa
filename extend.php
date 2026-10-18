@@ -15,7 +15,6 @@ namespace FoF\PWA;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Gdpr\Extend\UserData;
-use Flarum\Notification\Event\Sent;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
 use FoF\PWA\Data\PushSubscriptions;
@@ -76,9 +75,6 @@ return [
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),
-
-    (new Extend\Event())
-        ->listen(Sent::class, PushNotificationDriver::class.'@sent'),
 
     (new Extend\View())
         ->namespace('fof-pwa', __DIR__.'/views'),

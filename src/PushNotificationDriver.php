@@ -12,10 +12,8 @@
 
 namespace FoF\PWA;
 
-use Flarum\Notification\AlertableInterface;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Notification\Driver\NotificationDriverInterface;
-use Flarum\Notification\Event\Sent;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Job\SendPushNotificationsJob;
@@ -53,28 +51,6 @@ class PushNotificationDriver implements NotificationDriverInterface
      * @throws ReflectionException
      */
     public function send(BlueprintInterface $blueprint, array $users): void
-    {
-        // An alert is pushed once core has saved it (see sent()), so the
-        // push's unread count for the app icon's badge includes it.
-        if ($blueprint instanceof AlertableInterface) {
-            return;
-        }
-
-        $this->push($blueprint, $users);
-    }
-
-    /**
-     * Pushes an alert to the recipients core has just saved it for.
-     */
-    public function sent(Sent $event): void
-    {
-        $this->push($event->blueprint, $event->recipients);
-    }
-
-    /**
-     * @param User[] $users
-     */
-    protected function push(BlueprintInterface $blueprint, array $users): void
     {
         if (!$this->notifications->supports(get_class($blueprint))) {
             return;

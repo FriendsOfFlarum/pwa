@@ -1,89 +1,143 @@
 import { jest } from '@jest/globals';
-import app from 'flarum/forum/app';
-import NotificationsDropdown from 'flarum/forum/components/NotificationsDropdown';
-import syncAppBadge from '../../src/forum/push/syncAppBadge';
-import { setAppBadge } from '../../sw/appBadge';
+import { syncAppBadge } from '../../sw/appBadge';
 
-// What the icon's badge was asked to show, page and service worker alike.
+// What happened, in order: notifications shown and the icon's badge calls.
 const calls: string[] = [];
-let bell = 0;
+// The forum's notifications still shown, as the browser keeps them.
+let shown: Notification[] = [];
+// How long the next getNotifications() calls take to answer, in ms.
+let delays: number[] = [];
 
-// The page and the worker share one navigator here: the order of the calls is what is under test.
+const openWindow = jest.fn(async () => null);
+
 Object.assign(navigator, {
   setAppBadge: jest.fn(async (n: number) => void calls.push(`set ${n}`)),
   clearAppBadge: jest.fn(async () => void calls.push('clear')),
-  serviceWorker: new EventTarget(),
 });
-// The worker's open windows: one, this page, which gets its messages as a browser delivers them (later, not inline).
 Object.assign(self, {
-  clients: {
-    matchAll: async () => [
-      { postMessage: (data: unknown) => setTimeout(() => navigator.serviceWorker.dispatchEvent(new MessageEvent('message', { data }))) },
-    ],
+  clients: { openWindow },
+  registration: {
+    showNotification: async (title: string, options: NotificationOptions) => {
+      const notification = {
+        title,
+        data: options.data,
+        close: () => void (shown = shown.filter((n) => n !== notification)),
+      } as unknown as Notification;
+      shown.push(notification);
+      calls.push(`show ${title}`);
+    },
+    getNotifications: () => {
+      const list = [...shown];
+      return new Promise((resolve) => setTimeout(() => resolve(list), delays.shift() ?? 0));
+    },
   },
 });
-(app as any).session = { user: { unreadNotificationCount: () => bell } };
 
-syncAppBadge();
+// A browser event for the worker's listeners, with the promises it was kept alive for.
+async function dispatch(type: string, props: object) {
+  const waits: Promise<unknown>[] = [];
+  self.dispatchEvent(Object.assign(new Event(type), props, { waitUntil: (p: Promise<unknown>) => waits.push(p) }));
+  await Promise.all(waits);
+}
 
-// What the header does on every redraw: its bell's lifecycle hook runs.
-const redraw = () =>
-  NotificationsDropdown.prototype.onupdate.call(Object.create(NotificationsDropdown.prototype), { dom: document.createElement('div') } as any);
-const settle = () => new Promise((resolve) => setTimeout(resolve, 10));
+const push = (title: string, link?: string) => dispatch('push', { data: { json: () => ({ title, link }) } });
+const click = (notification: Notification) => dispatch('notificationclick', { notification });
+// The user swiping it away: the browser takes it off the list, then tells the worker.
+const dismiss = (notification: Notification) => {
+  notification.close();
+  return dispatch('notificationclose', { notification });
+};
 
-beforeEach(async () => {
-  // Every test starts from a page that has shown a cleared bell.
-  bell = 0;
-  redraw();
-  await settle();
+beforeAll(async () => {
+  await import('../../sw/sw');
+});
+
+beforeEach(() => {
   calls.length = 0;
+  shown = [];
+  delays = [];
+  openWindow.mockClear();
 });
 
-test('the badge follows the bell, once per change', () => {
-  bell = 2;
-  redraw();
-  redraw();
-  bell = 1;
-  redraw();
+test('each push shows its notification, then the badge counts the ones shown', async () => {
+  await push('a');
+  await push('b');
+  await push('c');
 
-  expect(calls).toEqual(['set 2', 'set 1']);
+  expect(calls).toEqual(['show a', 'set 1', 'show b', 'set 2', 'show c', 'set 3']);
 });
 
-test('a push delayed past "Mark all as read" does not leave its count on the badge while the forum is open', async () => {
-  bell = 2;
-  redraw();
-  bell = 0; // Mark all as read
-  redraw();
+test('clicking a notification opens it and takes it off the badge', async () => {
+  await push('a', 'https://forum.test/d/1');
+  await push('b');
+  calls.length = 0;
 
-  await setAppBadge(2); // the delayed push, in the service worker
-  await settle();
-  redraw();
+  const clicked = click(shown[0]);
 
-  expect(calls).toEqual(['set 2', 'clear', 'set 2', 'clear']);
+  // While the click is still being handled, or the browser may block the window.
+  expect(openWindow).toHaveBeenCalledWith('https://forum.test/d/1');
+  await clicked;
+  expect(calls).toEqual(['set 1']);
 });
 
-test('coming back to the forum puts the bell count back', () => {
-  document.dispatchEvent(new Event('visibilitychange'));
+test('clicking a notification without a link still takes it off the badge', async () => {
+  await push('a');
+  calls.length = 0;
 
+  await click(shown[0]);
+
+  expect(openWindow).not.toHaveBeenCalled();
   expect(calls).toEqual(['clear']);
 });
 
-test('the worker ignores a count that is not a whole number of zero or more, and tells no window', async () => {
-  for (const count of [undefined, null, '7', -1, 2.5]) {
-    await setAppBadge(count);
-  }
-  await settle();
+test('dismissing notifications counts the badge down, and clears it at none', async () => {
+  await push('a');
+  await push('b');
+  calls.length = 0;
 
-  expect(calls).toEqual([]);
+  await dismiss(shown[0]);
+  await dismiss(shown[0]);
+
+  expect(calls).toEqual(['set 1', 'clear']);
 });
 
-test('a badge the worker is not allowed to set tells no window', async () => {
+test('a recount that answers late cannot overwrite a later one', async () => {
+  await push('a');
+  calls.length = 0;
+  delays = [30, 0];
+
+  // A recount reads one notification, but the browser is slow to answer;
+  // a second is shown meanwhile and its recount reads two.
+  const first = syncAppBadge();
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  await push('b');
+  await first;
+
+  expect(calls).toEqual(['show b', 'set 1', 'set 2']);
+});
+
+test('a badge the worker may not set does not stop the notification, or the next badge', async () => {
   (navigator.setAppBadge as jest.Mock<any>).mockImplementationOnce(async () => {
     throw new Error('NotAllowedError');
   });
 
-  await setAppBadge(3);
-  await settle();
+  await push('a');
+  await push('b');
 
-  expect(calls).toEqual([]);
+  expect(calls).toEqual(['show a', 'show b', 'set 2']);
+});
+
+test('without the Badging API, notifications are shown and nothing else happens', async () => {
+  const { setAppBadge, clearAppBadge } = navigator as any;
+  delete (navigator as any).setAppBadge;
+  delete (navigator as any).clearAppBadge;
+
+  try {
+    await push('a');
+    await dismiss(shown[0]);
+  } finally {
+    Object.assign(navigator, { setAppBadge, clearAppBadge });
+  }
+
+  expect(calls).toEqual(['show a']);
 });

@@ -1,23 +1,28 @@
 declare const self: ServiceWorkerGlobalScope;
 
+let pending: Promise<void> = Promise.resolve();
+
 /**
- * The unread count on the installed app's icon (Badging API: iOS and iPadOS
- * home screen apps, and installed apps in Chromium browsers and Safari).
+ * Sets the installed app's icon badge to the number of the forum's notifications
+ * still shown, and clears it when there are none (Badging API). Android badges an
+ * installed app from its notifications already; iOS and iPadOS home screen apps
+ * only show a badge that is set.
  */
-export async function setAppBadge(count: unknown): Promise<void> {
-  if (typeof count !== 'number' || !Number.isInteger(count) || count < 0 || !('setAppBadge' in self.navigator)) {
+export function syncAppBadge(): Promise<void> {
+  // One recount at a time, so an earlier count can never overwrite a later one.
+  return (pending = pending.then(recount));
+}
+
+async function recount(): Promise<void> {
+  if (!('setAppBadge' in self.navigator)) {
     return;
   }
 
   try {
+    const count = (await self.registration.getNotifications()).length;
+
     await (count > 0 ? self.navigator.setAppBadge(count) : self.navigator.clearAppBadge());
   } catch {
     // Not allowed here (no notification permission): the badge is a nicety.
-    return;
-  }
-
-  // An open forum shows the bell's count on the badge: tell it to put that back.
-  for (const client of await self.clients.matchAll({ type: 'window', includeUncontrolled: true })) {
-    client.postMessage({ type: 'fof-pwa:badge' });
   }
 }

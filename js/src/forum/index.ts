@@ -2,7 +2,6 @@ import app from 'flarum/forum/app';
 import { getServiceWorkerRegistration } from './registerServiceWorker';
 import addPushNotifications from './push/addPushNotifications';
 import showOptInAlert from './push/showOptInAlert';
-import syncAppBadge from './push/syncAppBadge';
 import { pushConfigured, supportsWebPush } from './push/utils';
 import { syncPushSubscription } from './push/subscription';
 import { usingAppleWebview } from './native/appleWebView';
@@ -12,7 +11,6 @@ export { default as extend } from './extend';
 
 app.initializers.add('fof-pwa', () => {
   addPushNotifications();
-  syncAppBadge();
 
   app.beforeMount(async () => {
     if ('share' in navigator && app.forum.attribute<boolean>('fofPwaShareButtons')) {

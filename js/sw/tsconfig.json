@@ -8,5 +8,5 @@
     "types": [],
     "skipLibCheck": true
   },
-  "include": ["sw.ts", "appBadge.ts"]
+  "include": ["sw.ts"]
 }
