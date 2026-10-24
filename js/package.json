@@ -7,7 +7,7 @@
     "@types/mithril": "^2.2.9",
     "concurrently": "^10.0.6",
     "flarum-tsconfig": "^2.0.0",
-    "flarum-webpack-config": "^3.0.6",
+    "flarum-webpack-config": "^3.1.0",
     "prettier": "^3.9.9",
     "typescript": "^7.0.2",
     "typescript-coverage-report": "^0.6.4",
