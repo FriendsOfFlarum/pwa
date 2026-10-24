@@ -179,8 +179,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       flarum-webpack-config:
-        specifier: ^3.0.6
-        version: 3.0.6(supports-color@10.2.2)(webpack@5.111.1)
+        specifier: ^3.1.0
+        version: 3.1.0(supports-color@10.2.2)(webpack@5.111.1)
       prettier:
         specifier: ^3.9.9
         version: 3.9.9
@@ -1350,8 +1350,8 @@ packages:
   flarum-tsconfig@2.0.0:
     resolution: {integrity: sha512-YEyYu9uZCc7WIXw4Q+W60aC2RVSw7/K0tlaVfQrJbovw6Uu0dIV5AdRRtpJFGjVhzv+OmMfbQeG5aI+xxf/gvQ==}
 
-  flarum-webpack-config@3.0.6:
-    resolution: {integrity: sha512-W+XwQ8r0QFJk6njKSKWBirjt4MKrfp2ytdO8z2OQjgn0uDzNNlDXo1CgYRbAINWIOGPZv0a2+1dMP9zq/M/lMw==}
+  flarum-webpack-config@3.1.0:
+    resolution: {integrity: sha512-pFM2YC30Pj0yt+AU4bU7qFMagX5J3453xVpbCXmgmf7yAYXt8E/eK2bl7P4HM54T+224wUF+38M2mywO+sJt1Q==}
     peerDependencies:
       webpack: ^5.104.1
 
@@ -1958,9 +1958,9 @@ packages:
     peerDependencies:
       typescript: 2 || 3 || 4
 
-  typescript@4.9.5:
-    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
-    engines: {node: '>=4.2.0'}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   typescript@7.0.2:
@@ -3402,7 +3402,7 @@ snapshots:
       '@types/throttle-debounce': 2.1.0
       dayjs: 1.11.23
 
-  flarum-webpack-config@3.0.6(supports-color@10.2.2)(webpack@5.111.1):
+  flarum-webpack-config@3.1.0(supports-color@10.2.2)(webpack@5.111.1):
     dependencies:
       '@babel/core': 7.29.7(supports-color@10.2.2)
       '@babel/plugin-transform-object-assign': 7.29.7(@babel/core@7.29.7(supports-color@10.2.2))
@@ -3415,7 +3415,7 @@ snapshots:
       babel-loader: 9.2.1(@babel/core@7.29.7(supports-color@10.2.2))(webpack@5.111.1)
       loader-utils: 1.4.2
       schema-utils: 3.3.0
-      typescript: 4.9.5
+      typescript: 5.9.3
       webpack: 5.111.1(webpack-cli@7.2.3)
       webpack-bundle-analyzer: 4.10.2
     transitivePeerDependencies:
@@ -3960,7 +3960,7 @@ snapshots:
       type-coverage-core: 2.30.3(typescript@7.0.2)
       typescript: 7.0.2
 
-  typescript@4.9.5: {}
+  typescript@5.9.3: {}
 
   typescript@7.0.2:
     optionalDependencies:
