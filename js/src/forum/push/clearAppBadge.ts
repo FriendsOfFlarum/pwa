@@ -1,8 +1,7 @@
 /**
- * Clears the installed app's icon badge whenever the forum is opened or brought
- * back to the front: the bell shows what is unread from then on. iOS fires no
- * `notificationclose` for a dismissed notification, so the service worker can't
- * recount then, and this is the earliest the badge can be put right.
+ * iOS does not fire `notificationclose` on dismissal, leaving the badge stale.
+ * Clear it when the forum becomes visible, since the worker cannot detect dismissal.
+ * See https://github.com/FriendsOfFlarum/pwa/pull/34#issuecomment-6481424552.
  */
 export default function clearAppBadge() {
   if (!('clearAppBadge' in navigator)) {

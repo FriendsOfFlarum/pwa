@@ -79,7 +79,7 @@ self.addEventListener('push', (event) => {
         },
       });
 
-      // After the notification, so a badge that fails cannot stop it being shown.
+      // Show the notification before updating the badge in case the update fails.
       await syncAppBadge();
     })()
   );

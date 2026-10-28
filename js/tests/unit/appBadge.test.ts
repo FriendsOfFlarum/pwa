@@ -1,11 +1,9 @@
 import { jest } from '@jest/globals';
 import { syncAppBadge } from '../../sw/appBadge';
 
-// What happened, in order: notifications shown and the icon's badge calls.
 const calls: string[] = [];
-// The forum's notifications still shown, as the browser keeps them.
 let shown: Notification[] = [];
-// How long the next getNotifications() calls take to answer, in ms.
+// Response delays for successive getNotifications() calls, in milliseconds.
 let delays: number[] = [];
 
 const openWindow = jest.fn(async () => null);
@@ -33,7 +31,6 @@ Object.assign(self, {
   },
 });
 
-// A browser event for the worker's listeners, with the promises it was kept alive for.
 async function dispatch(type: string, props: object) {
   const waits: Promise<unknown>[] = [];
   self.dispatchEvent(Object.assign(new Event(type), props, { waitUntil: (p: Promise<unknown>) => waits.push(p) }));
@@ -42,7 +39,7 @@ async function dispatch(type: string, props: object) {
 
 const push = (title: string, link?: string) => dispatch('push', { data: { json: () => ({ title, link }) } });
 const click = (notification: Notification) => dispatch('notificationclick', { notification });
-// The user swiping it away: the browser takes it off the list, then tells the worker.
+// The browser removes dismissed notifications before firing notificationclose.
 const dismiss = (notification: Notification) => {
   notification.close();
   return dispatch('notificationclose', { notification });
@@ -74,7 +71,7 @@ test('clicking a notification opens it and takes it off the badge', async () => 
 
   const clicked = click(shown[0]);
 
-  // While the click is still being handled, or the browser may block the window.
+  // openWindow must run during the click handler to avoid popup blocking.
   expect(openWindow).toHaveBeenCalledWith('https://forum.test/d/1');
   await clicked;
   expect(calls).toEqual(['set 1']);
@@ -106,8 +103,6 @@ test('a recount that answers late cannot overwrite a later one', async () => {
   calls.length = 0;
   delays = [30, 0];
 
-  // A recount reads one notification, but the browser is slow to answer;
-  // a second is shown meanwhile and its recount reads two.
   const first = syncAppBadge();
   await new Promise((resolve) => setTimeout(resolve, 5));
   await push('b');
