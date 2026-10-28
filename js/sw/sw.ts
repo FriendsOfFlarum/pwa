@@ -1,4 +1,4 @@
-export {};
+import { syncAppBadge } from './appBadge';
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -78,6 +78,9 @@ self.addEventListener('push', (event) => {
           link: payload.link,
         },
       });
+
+      // After the notification, so a badge that fails cannot stop it being shown.
+      await syncAppBadge();
     })()
   );
 });
@@ -87,9 +90,9 @@ self.addEventListener('notificationclick', (event) => {
 
   const link = event.notification.data?.link;
 
-  if (typeof link !== 'string' || !link) {
-    return;
-  }
+  event.waitUntil(Promise.all([typeof link === 'string' && link ? self.clients.openWindow(link) : null, syncAppBadge()]));
+});
 
-  event.waitUntil(self.clients.openWindow(link));
+self.addEventListener('notificationclose', (event) => {
+  event.waitUntil(syncAppBadge());
 });
