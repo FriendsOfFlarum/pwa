@@ -1,6 +1,6 @@
 {
     "name": "fof/pwa",
-    "description": "Turn your flarum site into a progressive web app!",
+    "description": "Make your Flarum forum installable as an app with push notification support.",
     "type": "flarum-extension",
     "license": "MIT",
     "keywords": [
