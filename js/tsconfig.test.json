@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "emitDeclarationOnly": false,
+    "lib": ["ES2022", "DOM", "WebWorker"],
+    "types": ["jest"]
+  },
+  "include": ["tests/**/*"],
+  "files": ["./node_modules/@flarum/jest-config/shims.d.ts"]
+}

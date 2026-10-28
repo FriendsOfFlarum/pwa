@@ -1,17 +1,15 @@
-import { jest } from '@jest/globals';
+import { jest, beforeAll, beforeEach, test, expect } from '@jest/globals';
 import { syncAppBadge } from '../../sw/appBadge';
 
 const calls: string[] = [];
 let shown: Notification[] = [];
-// Response delays for successive getNotifications() calls, in milliseconds.
-let delays: number[] = [];
 
 const openWindow = jest.fn(async () => null);
+const getNotifications = jest.fn(async () => [...shown]);
+const setAppBadge = jest.fn(async (n: number) => void calls.push(`set ${n}`));
+const clearAppBadge = jest.fn(async () => void calls.push('clear'));
 
-Object.assign(navigator, {
-  setAppBadge: jest.fn(async (n: number) => void calls.push(`set ${n}`)),
-  clearAppBadge: jest.fn(async () => void calls.push('clear')),
-});
+Object.assign(navigator, { setAppBadge, clearAppBadge });
 Object.assign(self, {
   clients: { openWindow },
   registration: {
@@ -24,10 +22,7 @@ Object.assign(self, {
       shown.push(notification);
       calls.push(`show ${title}`);
     },
-    getNotifications: () => {
-      const list = [...shown];
-      return new Promise((resolve) => setTimeout(() => resolve(list), delays.shift() ?? 0));
-    },
+    getNotifications,
   },
 });
 
@@ -52,7 +47,7 @@ beforeAll(async () => {
 beforeEach(() => {
   calls.length = 0;
   shown = [];
-  delays = [];
+  getNotifications.mockClear();
   openWindow.mockClear();
 });
 
@@ -101,20 +96,28 @@ test('dismissing notifications counts the badge down, and clears it at none', as
 test('a recount that answers late cannot overwrite a later one', async () => {
   await push('a');
   calls.length = 0;
-  delays = [30, 0];
+  const notifications = [...shown];
+  let finishRecount!: (notifications: Notification[]) => void;
+  getNotifications.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finishRecount = resolve;
+      })
+  );
 
   const first = syncAppBadge();
-  await new Promise((resolve) => setTimeout(resolve, 5));
-  await push('b');
-  await first;
+  // Let the first recount reach getNotifications before queuing another push.
+  await Promise.resolve();
+  const second = push('b');
+  await Promise.resolve();
+  finishRecount(notifications);
+  await Promise.all([first, second]);
 
   expect(calls).toEqual(['show b', 'set 1', 'set 2']);
 });
 
 test('a badge the worker may not set does not stop the notification, or the next badge', async () => {
-  (navigator.setAppBadge as jest.Mock<any>).mockImplementationOnce(async () => {
-    throw new Error('NotAllowedError');
-  });
+  setAppBadge.mockRejectedValueOnce(new Error('NotAllowedError'));
 
   await push('a');
   await push('b');
@@ -123,9 +126,9 @@ test('a badge the worker may not set does not stop the notification, or the next
 });
 
 test('without the Badging API, notifications are shown and nothing else happens', async () => {
-  const { setAppBadge, clearAppBadge } = navigator as any;
-  delete (navigator as any).setAppBadge;
-  delete (navigator as any).clearAppBadge;
+  const optionalNavigator: Partial<Navigator> = navigator;
+  delete optionalNavigator.setAppBadge;
+  delete optionalNavigator.clearAppBadge;
 
   try {
     await push('a');

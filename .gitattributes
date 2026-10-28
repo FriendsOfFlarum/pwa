@@ -15,7 +15,9 @@
 /js/forum.ts export-ignore
 /js/package.json export-ignore
 /js/pnpm-lock.yaml export-ignore
+/js/pnpm-workspace.yaml export-ignore
 /js/tsconfig.json export-ignore
+/js/tsconfig.test.json export-ignore
 /js/webpack.config.js export-ignore
 
 /js/dist/** -diff linguist-generated

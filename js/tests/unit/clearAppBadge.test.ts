@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { jest, beforeEach, afterEach, test, expect } from '@jest/globals';
 import clearAppBadge from '../../src/forum/push/clearAppBadge';
 
 const clear = jest.fn(async () => {});
@@ -12,7 +12,18 @@ const changeVisibility = (state: DocumentVisibilityState) => {
   document.dispatchEvent(new Event('visibilitychange'));
 };
 
-beforeEach(() => clear.mockClear());
+beforeEach(() => {
+  clear.mockClear();
+  visibility = 'visible';
+  jest.spyOn(document, 'addEventListener');
+});
+
+afterEach(() => {
+  for (const [type, listener] of jest.mocked(document.addEventListener).mock.calls) {
+    document.removeEventListener(type, listener);
+  }
+  jest.restoreAllMocks();
+});
 
 test('opening the forum clears the badge, and so does bringing it back to the front', () => {
   clearAppBadge();
@@ -31,5 +42,5 @@ test('a forum opened in the background leaves the badge until it is shown', () =
   expect(clear).not.toHaveBeenCalled();
 
   changeVisibility('visible');
-  expect(clear).toHaveBeenCalled();
+  expect(clear).toHaveBeenCalledTimes(1);
 });

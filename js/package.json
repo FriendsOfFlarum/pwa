@@ -5,6 +5,7 @@
   "devDependencies": {
     "@flarum/jest-config": "^2.1.1",
     "@flarum/prettier-config": "^1.0.0",
+    "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
     "@types/mithril": "^2.2.9",
     "concurrently": "^10.0.6",
@@ -29,7 +30,7 @@
     "build-typings": "pnpm run clean-typings && ([ -e src/@types ] && cp -r src/@types dist-typings/@types || true) && tsc && pnpm run post-build-typings",
     "post-build-typings": "find dist-typings -type f -name '*.d.ts' -print0 | xargs -0 sed -i 's,../src/@types,@types,g'",
     "check-typings": "tsc --noEmit --emitDeclarationOnly false",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
+    "test": "tsc -p tsconfig.test.json && node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "devEngines": {
     "packageManager": {
