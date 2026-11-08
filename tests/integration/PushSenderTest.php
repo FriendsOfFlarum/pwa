@@ -41,36 +41,31 @@ class PushSenderTest extends TestCase
 
     #[Test]
     #[DataProvider('notificationIcons')]
-    public function selects_the_largest_pwa_icon_or_falls_back_to_the_forum_logo(array $settings, ?string $expectedIcon): void
+    public function uses_the_app_icon_and_favicon(array $settings, ?string $expectedIcon, ?string $expectedBadge): void
     {
         foreach ($settings as $key => $value) {
             $this->setting($key, $value);
         }
 
-        $this->setting('favicon_path', 'favicon.png');
         $container = $this->app()->getContainer();
         $payload = $container->make(PayloadPushSender::class)->payload();
         $assets = $container->make(Factory::class)->disk('flarum-assets');
 
-        $this->assertSame($assets->url('favicon.png'), $payload['badge']);
-
-        if ($expectedIcon === null) {
-            $this->assertArrayNotHasKey('icon', $payload);
-        } else {
-            $this->assertSame($assets->url($expectedIcon), $payload['icon']);
-        }
+        $this->assertSame($expectedIcon === null ? null : $assets->url($expectedIcon), $payload['icon'] ?? null);
+        $this->assertSame($expectedBadge === null ? null : $assets->url($expectedBadge), $payload['badge'] ?? null);
     }
 
     public static function notificationIcons(): array
     {
+        $appIcon = json_encode(['icon-192.png' => 'icon-192.png', 'icon-512.png' => 'icon-512.png', 'favicon.png' => 'app-favicon.png']);
+
+        // A logo is rarely square, so it is never the icon.
         return [
-            'largest PWA icon' => [[
-                'fof-pwa.icon_196_path' => 'small.png',
-                'fof-pwa.icon_512_path' => 'large.png',
-                'logo_path'             => 'logo.png',
-            ], 'large.png'],
-            'forum logo' => [['logo_path' => 'logo.png'], 'logo.png'],
-            'no icon'    => [[], null],
+            'app icon and favicon' => [['app_icon_paths' => $appIcon, 'favicon_path' => 'favicon.png'], 'icon-192.png', 'favicon.png'],
+            'app icon only'        => [['app_icon_paths' => $appIcon], 'icon-192.png', 'app-favicon.png'],
+            'favicon only'         => [['favicon_path' => 'favicon.png'], 'favicon.png', 'favicon.png'],
+            'logo only'            => [['logo_path' => 'logo.png'], null, null],
+            'nothing'              => [[], null, null],
         ];
     }
 

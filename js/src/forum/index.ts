@@ -1,12 +1,10 @@
 import app from 'flarum/forum/app';
-import { getServiceWorkerRegistration } from './registerServiceWorker';
 import addPushNotifications from './push/addPushNotifications';
 import showOptInAlert from './push/showOptInAlert';
 import clearAppBadge from './push/clearAppBadge';
-import { pushConfigured, supportsWebPush } from './push/utils';
+import { getServiceWorkerRegistration, pushConfigured, supportsWebPush } from './push/utils';
 import { syncPushSubscription } from './push/subscription';
 import { usingAppleWebview } from './native/appleWebView';
-import { isIOSStandalone } from './utils/platforrm';
 
 export { default as extend } from './extend';
 
@@ -38,10 +36,5 @@ app.initializers.add('fof-pwa', () => {
       .catch((error) => {
         console.error('[fof-pwa] SW initialization failed:', error);
       });
-
-    if (isIOSStandalone()) {
-      const { default: addPullToRefresh } = await import('./addPullToRefresh');
-      addPullToRefresh();
-    }
   });
 });

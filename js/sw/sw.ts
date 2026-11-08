@@ -2,9 +2,6 @@ import { syncAppBadge } from './appBadge';
 
 declare const self: ServiceWorkerGlobalScope;
 
-const CACHE_NAME = 'fof-pwa-offline-v1';
-const OFFLINE_URL = 'offline';
-
 interface PushPayload {
   title: string;
   content?: string;
@@ -13,44 +10,14 @@ interface PushPayload {
   link?: string;
 }
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.add(OFFLINE_URL)));
-});
-
+// Flarum shows the offline page now, so the copy fof/pwa kept goes.
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
       .then((cacheNames) =>
-        Promise.all(
-          cacheNames
-            .filter((cacheName) => cacheName.startsWith('fof-pwa-offline') && cacheName !== CACHE_NAME)
-            .map((cacheName) => caches.delete(cacheName))
-        )
+        Promise.all(cacheNames.filter((cacheName) => cacheName.startsWith('fof-pwa-offline')).map((cacheName) => caches.delete(cacheName)))
       )
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.mode !== 'navigate') {
-    return;
-  }
-
-  event.respondWith(
-    fetch(event.request).catch(async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const offlineResponse = await cache.match(OFFLINE_URL);
-
-      return (
-        offlineResponse ??
-        new Response('You are offline.', {
-          status: 503,
-          headers: {
-            'Content-Type': 'text/plain; charset=utf-8',
-          },
-        })
-      );
-    })
   );
 });
 

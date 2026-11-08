@@ -16,13 +16,12 @@ use Base64Url\Base64Url;
 use Carbon\Carbon;
 use ErrorException;
 use Exception;
+use Flarum\Forum\Branding\Branding;
 use Flarum\Http\UrlGenerator;
 use Flarum\Notification\Blueprint\BlueprintInterface;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use FoF\PWA\Model\PushSubscription;
-use Illuminate\Contracts\Filesystem\Cloud;
-use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Minishlink\WebPush\MessageSentReport;
@@ -32,17 +31,13 @@ use Psr\Log\LoggerInterface;
 
 class PushSender
 {
-    protected Cloud $assetsFilesystem;
-
     public function __construct(
-        Factory $filesystemFactory,
         protected LoggerInterface $logger,
         protected SettingsRepositoryInterface $settings,
         protected UrlGenerator $url,
         protected NotificationBuilder $notifications,
-        protected IconProvider $icons,
+        protected Branding $branding,
     ) {
-        $this->assetsFilesystem = $filesystemFactory->disk('flarum-assets');
     }
 
     /**
@@ -171,16 +166,15 @@ class PushSender
             'link'    => $message->url(),
         ];
 
-        if ($faviconPath = $this->settings->get('favicon_path')) {
-            $payload['badge'] = $this->assetsFilesystem->url($faviconPath);
+        // Without an uploaded favicon, core's comes from the app icon.
+        $favicon = $this->branding->faviconUrl();
+
+        if ($favicon) {
+            $payload['badge'] = $favicon;
         }
 
-        $pwaIcons = array_reverse($this->icons->get());
-
-        if (!empty($pwaIcons)) {
-            $payload['icon'] = $pwaIcons[0]['src'];
-        } elseif ($logoPath = $this->settings->get('logo_path')) {
-            $payload['icon'] = $this->assetsFilesystem->url($logoPath);
+        if ($icon = $this->branding->appIconUrls()['icon-192.png'] ?? $favicon) {
+            $payload['icon'] = $icon;
         }
 
         return $payload;
