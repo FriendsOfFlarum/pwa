@@ -5,8 +5,7 @@ import Button from 'flarum/common/components/Button';
 import LoadingIndicator from 'flarum/common/components/LoadingIndicator';
 import extractText from 'flarum/common/utils/extractText';
 import FieldSet from 'flarum/common/components/FieldSet';
-import Form from 'flarum/common/components/Form';
-import UploadImageButton from 'flarum/common/components/UploadImageButton';
+import Link from 'flarum/common/components/Link';
 import type { Children, Vnode, VnodeDOM } from 'mithril';
 import PWAUploadFirebaseConfigForm from './PWAUploadFirebaseConfigForm';
 
@@ -15,23 +14,13 @@ interface StatusMessage {
   message: string;
 }
 
-interface PWAManifest {
-  description?: string;
-  icons?: Array<{ src: string; sizes: string; type: string }>;
-  [key: string]: any;
-}
-
 interface PWASettingsResponse {
-  manifest: PWAManifest;
-  sizes: number[];
   status_messages: StatusMessage[];
 }
 
 export default class PWAPage extends ExtensionPage {
   loadingApi: boolean = false;
   statusMessages: StatusMessage[] = [];
-  manifest: PWAManifest = {};
-  sizes: number[] = [];
 
   oninit(vnode: Vnode) {
     super.oninit(vnode);
@@ -41,8 +30,6 @@ export default class PWAPage extends ExtensionPage {
   refresh(): void {
     this.loadingApi = true;
     this.statusMessages = [];
-    this.manifest = {};
-    this.sizes = [];
 
     app
       .request<PWASettingsResponse>({
@@ -50,8 +37,6 @@ export default class PWAPage extends ExtensionPage {
         url: app.forum.attribute<string>('apiUrl') + '/pwa/settings',
       })
       .then((response) => {
-        this.manifest = response.manifest;
-        this.sizes = response.sizes;
         this.statusMessages = response.status_messages;
         this.loadingApi = false;
         m.redraw();
@@ -105,33 +90,15 @@ export default class PWAPage extends ExtensionPage {
   }
 
   logoSection(): Children {
-    if (this.loadingApi) return <LoadingIndicator />;
-
     return (
-      <Form className="PWAPage-section PWAPage-logo container">
-        <FieldSet label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')} description={app.translator.trans('fof-pwa.admin.pwa.logo_text')}>
-          {this.sizes.map((size) => {
-            const icon = this.manifest.icons?.find((i) => i.sizes === `${size}x${size}`);
-            const url = icon ? icon.src : undefined;
-
-            return (
-              <div key={size} className="Form-group logoSet">
-                <UploadImageButton
-                  name={`pwa-icon-${size}x${size}`}
-                  routePath={`pwa/logo/${size}`}
-                  value={app.data.settings[`fof-pwa.icon_${size}_path`]}
-                  url={url}
-                />
-                <div className="helpText">
-                  {app.translator.trans('fof-pwa.admin.pwa.logo_size_text', {
-                    size,
-                  })}
-                </div>
-              </div>
-            );
+      <FieldSet className="PWAPage-section PWAPage-logo container" label={app.translator.trans('fof-pwa.admin.pwa.logo_heading')}>
+        <div className="helpText">
+          {app.translator.trans('fof-pwa.admin.pwa.logo_text', {
+            appearance: <Link href={app.route('appearance')} />,
+            basics: <Link href={app.route('basics')} />,
           })}
-        </FieldSet>
-      </Form>
+        </div>
+      </FieldSet>
     );
   }
 

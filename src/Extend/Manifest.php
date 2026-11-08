@@ -18,13 +18,16 @@ use Flarum\Foundation\ContainerUtil;
 use FoF\PWA\ManifestBuilder;
 use Illuminate\Contracts\Container\Container;
 
+/**
+ * @deprecated Use Flarum\Extend\Theme::manifest(). Kept so existing integrations keep working.
+ */
 class Manifest implements ExtenderInterface
 {
     /** @var list<callable|class-string> */
     private array $callbacks = [];
 
     /**
-     * Modify the completed manifest, including the admin preview.
+     * Modify the completed manifest.
      *
      * Callbacks run in registration order, each receiving the previous result.
      * Invokable classes are resolved through the container when called.

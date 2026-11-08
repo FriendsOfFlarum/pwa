@@ -13,11 +13,11 @@
 namespace FoF\PWA\Api\Controller;
 
 use Flarum\Api\JsonApiResponse;
+use Flarum\Forum\Branding\Branding;
+use Flarum\Forum\Branding\WebManifest;
 use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
-use FoF\PWA\IconSize;
-use FoF\PWA\ManifestBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -29,7 +29,8 @@ class ShowPWASettingsController implements RequestHandlerInterface
         protected SettingsRepositoryInterface $settings,
         protected TranslatorInterface $translator,
         protected UrlGenerator $url,
-        private readonly ManifestBuilder $manifest
+        protected WebManifest $manifest,
+        protected Branding $branding
     ) {
     }
 
@@ -40,14 +41,6 @@ class ShowPWASettingsController implements RequestHandlerInterface
         $status_messages = [];
         $manifest = $this->manifest->build();
 
-        $logo = false;
-
-        foreach (IconSize::cases() as $size) {
-            if ($size->value >= 144 && $this->settings->get($size->getSettingsKey())) {
-                $logo = true;
-            }
-        }
-
         if (!isset($manifest['name'])) {
             $status_messages[] = [
                 'type'    => 'error',
@@ -55,7 +48,7 @@ class ShowPWASettingsController implements RequestHandlerInterface
             ];
         }
 
-        if (!$logo) {
+        if ($this->branding->appIconUrls() === []) {
             $status_messages[] = [
                 'type'    => 'error',
                 'message' => $this->translator->trans('fof-pwa.admin.status.no_logo'),
@@ -108,8 +101,6 @@ class ShowPWASettingsController implements RequestHandlerInterface
         }
 
         return new JsonApiResponse([
-            'manifest'        => $manifest,
-            'sizes'           => IconSize::cases(),
             'status_messages' => $status_messages,
         ]);
     }

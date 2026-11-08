@@ -1,23 +1,6 @@
 fof-pwa:
   admin:
-    nav:
-      pwa_button: Progressive Web App
-      pwa_text: Configure Flarum to run as a Progressive Web App, installable on mobile devices.
     pwa:
-      about:
-        description_label: Description
-        description_text: You can set the description on the 'Basics' page in your admin dashboard.
-        long_name_label: Long name
-        long_name_text: The name of the web application displayed to the user.
-        heading: About
-        short_name_label: Short name
-        short_name_text: The name of the application displayed to the user when there is not enough space for the long name.
-      colors:
-        heading: Colors
-        background_color_label: Background color
-        background_color_text: This is used as a placeholder color for the splash screen displayed while your PWA is loading. It is not used once the app has loaded.
-        theme_color_label: Theme color
-        theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher as the color surrounding the site.
       maintenance:
         heading: Maintenance
         debug_label: Enable debug mode
@@ -32,22 +15,6 @@ fof-pwa:
         upload_successful: Your Firebase config has been uploaded successfully.
         upload_file: Upload file
       other:
-        heading: Other
-        display_label: Display mode
-        display_text: |
-          How the app opens when launched from its icon:
-
-          Standalone: A separate app window without the browser's address bar.
-          Minimal UI: Like Standalone, with basic navigation such as back and reload.
-          Full screen: Uses the entire screen without browser controls.
-          Browser: Opens in a normal browser tab or window.
-
-          Browsers may use a fallback if the selected mode is not supported.
-        display_options:
-          standalone: Standalone
-          minimal_ui: Minimal UI
-          fullscreen: Full screen
-          browser: Browser
         orientation_label: Orientation
         orientation_text: |
           Any: Let the app rotate with the device.
@@ -85,23 +52,13 @@ fof-pwa:
 
       heading: Progressive Web App Configuration
       text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, it gives users an 'Add to Home Screen' option for your site. We provide some status checks, but the best way to test this is to try installing it yourself (search the web for instructions on installing progressive web apps). Keep in mind that 'install this PWA' prompts are controlled by browsers and cannot be triggered by developers, admins, or programs. Consider including PWA installation instructions in your site's documentation.
-      status_check_heading: Status Check
-      logo_heading: Logos and Icons
-      logo_text: |
-        You must upload at least one logo for your progressive web app to be installable. Please note that all logos must be square; if they are not, they will be resized and possibly stretched.
-
-        Several size options are available below. We recommend uploading a logo for as many of them as possible, as this supports more devices.
-
-        You can upload one large logo to the inputs for smaller sizes. For instance, you can upload a 1000x1000px logo to ALL the file inputs below. However, if you upload a 50x50px logo to the 512x512 input, it will be stretched significantly.
-
-      logo_size_text: Upload a logo which will be scaled to {size} by {size} pixels.
-      submit_button: Save Settings
-      refreshed_message: PWA config refreshed successfully.
+      logo_heading: Icon, Splash Screen and Name
+      logo_text: Phones show the forum's app icon on the home screen, and it must be set for the forum to be installable. Upload it under App Icon on the <appearance>Appearance page</appearance>, which also sets the splash screen background, whether the forum opens as an app, and the primary colour the app uses for its theme colour. The app's name is the forum title, and the short name shown under the icon is set beside it, both on the <basics>Basics page</basics>.
     status:
       config_no_https: The URL in your config.php file isn't using HTTPS. HTTPS is required for Progressive Web Apps to work.
       possible_https_disabled: Your site might not be running on HTTPS. Clearing your cache (admin dashboard => tools button) might help. If it is, ignore this. If it isn't, keep in mind that HTTPS is required for Progressive Web Apps to work.
-      no_logo: You must upload at least one logo, with a size of at least 144x144px, for the PWA to be installable.
-      no_name: You must provide a full name for your app to work.
+      no_logo: Upload an app icon on the Appearance page for the PWA to be installable.
+      no_name: Set a forum title on the Basics page. The app uses it as its name.
       no_vapid_keys: No VAPID keys found. These are required for push notifications to be sent. You can reset VAPID keys below.
       key_gen_failed: "Generation of the keys needed for push notifications has failed. The full error message was: {error}"
       suggest_gmp: The gmp PHP extension doesn't seem to be enabled on your server. It's not strictly necessary, but it can improve performance and is recommended. Some shared hosts might not support it, though.
@@ -151,11 +108,6 @@ fof-pwa:
     keys_invalid: Push notifications could not be enabled because your browser provided invalid encryption keys. Please try enabling notifications again.
     endpoint_https_required: Push notifications could not be enabled because your browser provided an invalid push service URL "{url}". A valid HTTPS URL is required.
     endpoint_host_not_allowed: Push notifications could not be enabled because the push service host "{host}" used by your browser is not allowed. Please contact the forum administrator.
-
-  views:
-    offline:
-      header: Network connection error
-      text: This app requires a network connection; it cannot be used offline. Please check your connection.
 
 flarum-gdpr:
   lib:
