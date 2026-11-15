@@ -67,6 +67,9 @@ fof-pwa:
           landscape: Landscape
           landscape_primary: Landscape (primary)
           landscape_secondary: Landscape (secondary)
+        start_url_label: Start page
+        start_url_text: The page the installed app opens to, as a path after your forum's address, such as `all` for All Discussions. Leave it empty to open the home page. Devices pick up a change the next time the browser updates the installed app.
+        start_url_invalid: The start page must be a path on your forum, such as `all`. Full URLs and `..` are not allowed.
         push_notif_preference_default_to_email_label: Default push preferences to email
         push_notif_preference_default_to_email_text: If enabled, users will have push notifications enabled by default for all notification types where email notifications are enabled by default. If disabled, users will have push notifications disabled by default.
         window_controls_overlay_label: Enable Window Controls Overlay

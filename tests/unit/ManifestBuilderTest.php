@@ -19,6 +19,7 @@ use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Testing\unit\TestCase;
 use FoF\PWA\IconProvider;
 use FoF\PWA\ManifestBuilder;
+use FoF\PWA\StartUrl;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -46,6 +47,7 @@ class ManifestBuilderTest extends TestCase
         $this->assertSame([
             'name'        => 'Test forum',
             'description' => '',
+            'id'          => $basePath,
             'start_url'   => $basePath,
             'scope'       => $basePath,
             'theme_color' => '#123456',
@@ -118,5 +120,71 @@ class ManifestBuilderTest extends TestCase
         $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
 
         $this->assertSame('fullscreen', $manifest['display']);
+    }
+
+    #[Test]
+    #[DataProvider('startUrls')]
+    public function opens_the_configured_start_url_under_the_base_path(?string $startUrl, string $expected): void
+    {
+        $settings = Mockery::mock(SettingsRepositoryInterface::class);
+        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
+            'fof-pwa.startUrl' => $startUrl,
+        ][$key] ?? $default);
+
+        $url = Mockery::mock(UrlGenerator::class);
+        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator('https://example.com/community', new RouteCollection()));
+
+        $icons = Mockery::mock(IconProvider::class);
+        $icons->shouldReceive('get')->andReturn([]);
+
+        $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
+
+        $this->assertSame($expected, $manifest['start_url']);
+        $this->assertSame('/community/', $manifest['id']);
+        $this->assertSame('/community/', $manifest['scope']);
+    }
+
+    public static function startUrls(): array
+    {
+        return [
+            'missing'               => [null, '/community/'],
+            'empty'                 => ['', '/community/'],
+            'path'                  => ['all', '/community/all'],
+            'path with query'       => ['all?sort=newest', '/community/all?sort=newest'],
+            'invalid stored value'  => ['https://example.org/', '/community/'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('normalizedStartUrls')]
+    public function normalizes_start_urls_inside_the_forum(?string $value, ?string $expected): void
+    {
+        $this->assertSame($expected, StartUrl::normalize($value));
+    }
+
+    public static function normalizedStartUrls(): array
+    {
+        return [
+            'null'                    => [null, ''],
+            'empty'                   => ['', ''],
+            'spaces'                  => ['  ', ''],
+            'root'                    => ['/', ''],
+            'path'                    => ['all', 'all'],
+            'leading slash'           => ['/all', 'all'],
+            'nested path'             => ['t/general', 't/general'],
+            'query and fragment'      => ['all?sort=top#x', 'all?sort=top#x'],
+            'dots in a segment'       => ['d/1-v1..2', 'd/1-v1..2'],
+            'dots in the query'       => ['all?q=../x', 'all?q=../x'],
+            'full URL'                => ['https://example.org/all', null],
+            'other scheme'            => ['javascript:alert(1)', null],
+            'protocol-relative'       => ['//example.org/all', null],
+            'parent segment'          => ['../other', null],
+            'nested parent segment'   => ['t/../../other', null],
+            'encoded parent segment'  => ['%2e%2e/other', null],
+            'current segment'         => ['./all', null],
+            'backslash'               => ['\\example.org', null],
+            'whitespace inside'       => ['all discussions', null],
+            'control character'       => ["al\x01l", null],
+        ];
     }
 }

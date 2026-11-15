@@ -62,6 +62,13 @@ export default [
       },
     }))
     .setting(() => ({
+      setting: 'fof-pwa.startUrl',
+      label: app.translator.trans('fof-pwa.admin.pwa.other.start_url_label'),
+      help: app.translator.trans('fof-pwa.admin.pwa.other.start_url_text'),
+      type: 'text',
+      placeholder: 'all',
+    }))
+    .setting(() => ({
       setting: 'fof-pwa.orientation',
       label: app.translator.trans('fof-pwa.admin.pwa.other.orientation_label'),
       help: app.translator.trans('fof-pwa.admin.pwa.other.orientation_text'),

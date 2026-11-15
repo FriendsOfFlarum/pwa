@@ -66,6 +66,38 @@ class ManifestTest extends TestCase
         $this->assertSame('Test forum', $manifest['name']);
         $this->assertSame('standalone', $manifest['display']);
         $this->assertSame('any', $manifest['orientation']);
+        $this->assertSame('/', $manifest['start_url']);
+    }
+
+    #[Test]
+    public function saves_and_serves_a_start_url_inside_the_forum(): void
+    {
+        $response = $this->send($this->request('POST', '/api/settings', [
+            'authenticatedAs' => 1,
+            'json'            => ['fof-pwa.startUrl' => ' /all '],
+        ]));
+        $this->assertSame(204, $response->getStatusCode(), (string) $response->getBody());
+
+        $response = $this->send($this->request('GET', '/webmanifest'));
+        $manifest = json_decode((string) $response->getBody(), true);
+        $this->assertSame('/all', $manifest['start_url']);
+        $this->assertSame('/', $manifest['id']);
+        $this->assertSame('/', $manifest['scope']);
+    }
+
+    #[Test]
+    public function rejects_a_start_url_outside_the_forum(): void
+    {
+        foreach (['https://example.org/', '//example.org', '../other'] as $startUrl) {
+            $response = $this->send($this->request('POST', '/api/settings', [
+                'authenticatedAs' => 1,
+                'json'            => ['fof-pwa.startUrl' => $startUrl],
+            ]));
+            $this->assertSame(422, $response->getStatusCode(), $startUrl);
+        }
+
+        $response = $this->send($this->request('GET', '/webmanifest'));
+        $this->assertSame('/', json_decode((string) $response->getBody(), true)['start_url']);
     }
 
     #[Test]

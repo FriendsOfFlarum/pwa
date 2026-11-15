@@ -15,6 +15,7 @@ namespace FoF\PWA;
 use Flarum\Extend;
 use Flarum\Frontend\Document;
 use Flarum\Gdpr\Extend\UserData;
+use Flarum\Settings\Event\Saving as SettingsSaving;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
 use FoF\PWA\Data\PushSubscriptions;
@@ -72,6 +73,9 @@ return [
         ->default('fof-pwa.display', 'standalone')
         ->default('fof-pwa.orientation', 'any')
         ->default('fof-pwa.shareButtons', true),
+
+    (new Extend\Event())
+        ->listen(SettingsSaving::class, Listener\ValidateStartUrl::class),
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),

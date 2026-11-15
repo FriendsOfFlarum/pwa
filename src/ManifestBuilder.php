@@ -45,7 +45,10 @@ class ManifestBuilder
         $manifest = [
             'name'        => $this->settings->get('fof-pwa.longName') ?: $this->settings->get('forum_title'),
             'description' => $this->settings->get('forum_description', ''),
-            'start_url'   => $basePath,
+            // Browsers identify an installed app by its id, which defaults to the start URL:
+            // pinning it to the base path keeps existing installs when the start URL changes.
+            'id'          => $basePath,
+            'start_url'   => $basePath.(StartUrl::normalize($this->settings->get(StartUrl::SETTING)) ?? ''),
             'scope'       => $basePath,
             'theme_color' => $this->settings->get('fof-pwa.themeColor') ?: $this->settings->get('theme_primary_color'),
             'display'     => $this->settings->get('fof-pwa.display') ?: 'standalone',
