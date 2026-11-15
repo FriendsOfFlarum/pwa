@@ -26,7 +26,7 @@ class ValidateStartUrl
 
     public function handle(Saving $event): void
     {
-        if (! array_key_exists(StartUrl::SETTING, $event->settings)) {
+        if (!array_key_exists(StartUrl::SETTING, $event->settings)) {
             return;
         }
 
