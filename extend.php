@@ -13,7 +13,6 @@
 namespace FoF\PWA;
 
 use Flarum\Extend;
-use Flarum\Foundation\Event\ClearingCache;
 use Flarum\Gdpr\Extend\UserData;
 use Flarum\User\User;
 use FoF\PWA\Api\Controller as ApiController;
@@ -59,11 +58,6 @@ return [
         ->default('fof-pwa.userMaxSubscriptions', 20)
         ->default('fof-pwa.orientation', 'any')
         ->default('fof-pwa.shareButtons', true),
-
-    (new Extend\Event())
-        ->listen(ClearingCache::class, Listener\MoveIconToCore::class),
-
-    new MoveIconOnEnable(),
 
     (new Extend\Notification())
         ->driver('push', PushNotificationDriver::class),

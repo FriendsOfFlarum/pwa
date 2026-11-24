@@ -12,18 +12,16 @@
 
 namespace FoF\PWA\Tests\integration;
 
-use Flarum\Extension\ExtensionManager;
-use Flarum\Foundation\Event\ClearingCache;
+use Flarum\Extend;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Testing\integration\TestCase;
-use FoF\PWA\MoveIconOnEnable;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Filesystem\Cloud;
 use Illuminate\Contracts\Filesystem\Factory;
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use PHPUnit\Framework\Attributes\Test;
 
-class LegacyIconsTest extends TestCase
+class MoveIconToCoreTest extends TestCase
 {
     /** @var list<string> */
     private array $written = [];
@@ -47,21 +45,20 @@ class LegacyIconsTest extends TestCase
     }
 
     #[Test]
-    public function the_512_icon_becomes_the_app_icon_on_cache_clear(): void
+    public function the_512_icon_becomes_the_app_icon(): void
     {
         $this->setting('fof-pwa.icon_512_path', 'pwa-icon-512x512-test.png');
         $this->setting('fof-pwa.icon_196_path', 'pwa-icon-196x196-test.png');
         $this->icon('pwa-icon-512x512-test.png');
         $this->icon('pwa-icon-196x196-test.png');
 
-        $this->clearCache();
+        $this->migrate();
 
         $settings = $this->settings();
         $this->assertStringStartsWith('app-icon-', $settings->get('app_icon_path'));
         $this->assertTrue($this->assets()->exists($settings->get('app_icon_path')));
         $this->assertArrayHasKey('icon-maskable-512.png', json_decode($settings->get('app_icon_paths'), true));
-        $this->assertNull($settings->get('fof-pwa.icon_512_path'));
-        $this->assertNull($settings->get('fof-pwa.icon_196_path'));
+        $this->assertFalse($this->database()->table('settings')->where('key', 'like', 'fof-pwa.icon_%')->exists());
         $this->assertFalse($this->assets()->exists('pwa-icon-512x512-test.png'));
         $this->assertFalse($this->assets()->exists('pwa-icon-196x196-test.png'));
     }
@@ -75,44 +72,30 @@ class LegacyIconsTest extends TestCase
         $this->icon('pwa-icon-256x256-test.png', 256);
         $this->icon('pwa-icon-96x96-test.png', 96);
 
-        $this->clearCache();
+        $this->migrate();
 
         $settings = $this->settings();
         $this->assertNull($settings->get('app_icon_path'));
         $this->assertNull($settings->get('app_icon_paths'));
-        $this->assertNull($settings->get('fof-pwa.icon_512_path'));
-        $this->assertNull($settings->get('fof-pwa.icon_256_path'));
-        $this->assertNull($settings->get('fof-pwa.icon_96_path'));
+        $this->assertFalse($this->database()->table('settings')->where('key', 'fof-pwa.icon_512_path')->exists());
+        $this->assertFalse($this->database()->table('settings')->where('key', 'fof-pwa.icon_256_path')->exists());
+        $this->assertFalse($this->database()->table('settings')->where('key', 'fof-pwa.icon_96_path')->exists());
         $this->assertFalse($this->assets()->exists('pwa-icon-256x256-test.png'));
         $this->assertFalse($this->assets()->exists('pwa-icon-96x96-test.png'));
     }
 
     #[Test]
-    public function moving_again_changes_nothing(): void
+    public function running_again_changes_nothing(): void
     {
         $this->setting('fof-pwa.icon_512_path', 'pwa-icon-512x512-test.png');
         $this->icon('pwa-icon-512x512-test.png');
 
-        $this->clearCache();
+        $this->migrate();
         $appIcon = $this->settings()->get('app_icon_path');
-        $this->clearCache();
+        $this->migrate();
 
         $this->assertSame($appIcon, $this->settings()->get('app_icon_path'));
         $this->assertTrue($this->assets()->exists($appIcon));
-    }
-
-    #[Test]
-    public function enabling_the_extension_moves_the_icons(): void
-    {
-        $this->setting('fof-pwa.icon_512_path', 'pwa-icon-512x512-test.png');
-        $this->icon('pwa-icon-512x512-test.png');
-        $container = $this->app()->getContainer();
-
-        (new MoveIconOnEnable())->onEnable($container, $container->make(ExtensionManager::class)->getExtension('fof-pwa'));
-
-        $this->assertStringStartsWith('app-icon-', $this->settings()->get('app_icon_path'));
-        $this->assertNull($this->settings()->get('fof-pwa.icon_512_path'));
-        $this->assertFalse($this->assets()->exists('pwa-icon-512x512-test.png'));
     }
 
     #[Test]
@@ -123,37 +106,77 @@ class LegacyIconsTest extends TestCase
         $this->icon('app-icon-existing.png');
         $this->icon('pwa-icon-512x512-test.png');
 
-        $this->clearCache();
+        $this->migrate();
 
         $this->assertSame('app-icon-existing.png', $this->settings()->get('app_icon_path'));
-        $this->assertNull($this->settings()->get('fof-pwa.icon_512_path'));
+        $this->assertFalse($this->database()->table('settings')->where('key', 'fof-pwa.icon_512_path')->exists());
         $this->assertFalse($this->assets()->exists('pwa-icon-512x512-test.png'));
     }
 
     #[Test]
-    public function an_unreadable_icon_is_kept_for_another_attempt(): void
+    public function an_unreadable_icon_is_left_on_disk_for_the_admin(): void
     {
         $this->setting('fof-pwa.icon_512_path', 'pwa-icon-512x512-test.png');
+        $this->setting('fof-pwa.icon_196_path', 'pwa-icon-196x196-test.png');
         $this->assets()->put('pwa-icon-512x512-test.png', 'not an image');
         $this->written[] = 'pwa-icon-512x512-test.png';
+        $this->icon('pwa-icon-196x196-test.png', 196);
 
-        $this->clearCache();
+        $this->migrate();
 
         $this->assertNull($this->settings()->get('app_icon_path'));
-        $this->assertSame('pwa-icon-512x512-test.png', $this->settings()->get('fof-pwa.icon_512_path'));
+        $this->assertNull($this->settings()->get('app_icon_paths'));
+        $this->assertTrue($this->assets()->exists('pwa-icon-512x512-test.png'));
+        $this->assertFalse($this->assets()->exists('pwa-icon-196x196-test.png'));
+        $this->assertFalse($this->database()->table('settings')->where('key', 'like', 'fof-pwa.icon_%')->exists());
+    }
+
+    #[Test]
+    public function icons_renamed_after_the_settings_were_cached_are_moved(): void
+    {
+        // As askvortsov-pwa's keys are renamed by an earlier migration in the same process.
+        $this->settings()->all();
+        $this->database()->table('settings')->insert(['key' => 'fof-pwa.icon_512_path', 'value' => 'pwa-icon-512x512-test.png']);
+        $this->icon('pwa-icon-512x512-test.png');
+
+        $this->migrate();
+
+        $this->assertStringStartsWith('app-icon-', $this->settings()->get('app_icon_path'));
+        $this->assertFalse($this->assets()->exists('pwa-icon-512x512-test.png'));
+        $this->assertFalse($this->database()->table('settings')->where('key', 'fof-pwa.icon_512_path')->exists());
+    }
+
+    #[Test]
+    public function an_app_icon_set_by_a_theme_is_kept(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'pwa-theme-icon').'.png';
+        file_put_contents($file, (string) (new ImageManager(new Driver()))->create(512, 512)->fill('#336699')->toPng());
+        $this->extend((new Extend\Theme())->appIcon($file));
+        $this->setting('fof-pwa.icon_512_path', 'pwa-icon-512x512-test.png');
+        $this->icon('pwa-icon-512x512-test.png');
+
+        $this->migrate();
+
+        $this->assertNull($this->settings()->get('app_icon_path'));
+        $this->assertFalse($this->assets()->exists('pwa-icon-512x512-test.png'));
+
+        unlink($file);
     }
 
     #[Test]
     public function nothing_happens_without_old_icons(): void
     {
-        $this->clearCache();
+        $this->migrate();
 
         $this->assertNull($this->settings()->get('app_icon_path'));
     }
 
-    private function clearCache(): void
+    private function migrate(): void
     {
-        $this->app()->getContainer()->make(Dispatcher::class)->dispatch(new ClearingCache());
+        $this->app();
+
+        $migration = require __DIR__.'/../../migrations/2026_10_30_000001_move_icon_to_core.php';
+        $migration['up']($this->database()->getSchemaBuilder());
     }
 
     private function icon(string $path, int $size = 512): void
