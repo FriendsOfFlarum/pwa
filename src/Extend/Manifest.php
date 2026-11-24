@@ -19,7 +19,7 @@ use FoF\PWA\ManifestBuilder;
 use Illuminate\Contracts\Container\Container;
 
 /**
- * @deprecated Use Flarum\Extend\Theme::manifest(). Kept so existing integrations keep working.
+ * @deprecated Use Flarum\Extend\Theme::manifest().
  */
 class Manifest implements ExtenderInterface
 {

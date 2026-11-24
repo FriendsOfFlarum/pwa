@@ -13,6 +13,7 @@
 namespace FoF\PWA\Tests\integration;
 
 use Flarum\Extend;
+use Flarum\Forum\Branding\ThemeImages;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Testing\integration\TestCase;
 use Illuminate\Contracts\Filesystem\Cloud;
@@ -25,6 +26,9 @@ class MoveIconToCoreTest extends TestCase
 {
     /** @var list<string> */
     private array $written = [];
+
+    /** @var list<string> */
+    private array $localFiles = [];
 
     protected function setUp(): void
     {
@@ -40,6 +44,7 @@ class MoveIconToCoreTest extends TestCase
         $drawn = json_decode((string) $settings->get('app_icon_paths'), true) ?: [];
 
         $this->assets()->delete([...$this->written, ...array_values($drawn), ...array_filter([$settings->get('app_icon_path')])]);
+        array_map(unlink(...), array_filter($this->localFiles, file_exists(...)));
 
         parent::tearDown();
     }
@@ -149,18 +154,17 @@ class MoveIconToCoreTest extends TestCase
     #[Test]
     public function an_app_icon_set_by_a_theme_is_kept(): void
     {
-        $file = tempnam(sys_get_temp_dir(), 'pwa-theme-icon').'.png';
+        $this->localFiles[] = $file = sys_get_temp_dir().'/pwa-theme-icon-'.uniqid().'.png';
         file_put_contents($file, (string) (new ImageManager(new Driver()))->create(512, 512)->fill('#336699')->toPng());
         $this->extend((new Extend\Theme())->appIcon($file));
         $this->setting('fof-pwa.icon_512_path', 'pwa-icon-512x512-test.png');
         $this->icon('pwa-icon-512x512-test.png');
 
         $this->migrate();
+        array_push($this->written, ...array_values($this->app()->getContainer()->make(ThemeImages::class)->paths('app_icon')));
 
         $this->assertNull($this->settings()->get('app_icon_path'));
         $this->assertFalse($this->assets()->exists('pwa-icon-512x512-test.png'));
-
-        unlink($file);
     }
 
     #[Test]

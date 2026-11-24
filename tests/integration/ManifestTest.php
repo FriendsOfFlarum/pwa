@@ -110,7 +110,6 @@ class ManifestTest extends TestCase
         $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
         $this->assertSame(2, $calls);
 
-        // Building again does not accumulate manifest changes.
         $this->assertSame($manifest, $this->manifest());
         $this->assertSame(3, $calls);
     }

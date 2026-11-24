@@ -14,13 +14,15 @@ composer require fof/pwa
 
 ```sh
 composer update fof/pwa
+php flarum migrate
+php flarum cache:clear
 ```
 
 ### Flarum 2.1
 
 From Flarum 2.1, Flarum makes the forum installable itself: it has the app icon, the web app manifest, the service worker, the offline page and pull-to-refresh on iPhone and iPad. fof/pwa builds on them, adding push notifications, share buttons and its own manifest settings. Push notifications show the app icon, or the favicon without one.
 
-Upload the app icon under Appearance. When upgrading from an earlier version, the 512 by 512 pixel icon uploaded to fof/pwa becomes the app icon if the forum has none. Smaller icons aren't used, as they would look small on home screens, so a forum without a 512 pixel icon needs a new one uploaded. The old icons are deleted either way. This happens the next time the cache is cleared, or when the extension is enabled.
+Upload the app icon under Appearance. When upgrading from an earlier version, the 512 by 512 pixel icon uploaded to fof/pwa becomes the app icon if the forum has none. Smaller icons aren't used, as they would look small on home screens, so a forum without a 512 pixel icon needs a new one uploaded. The old icons are deleted, except a 512 pixel icon that can't be read: it stays in the assets directory, for an admin to upload. This happens when `php flarum migrate` runs, or when the extension is next enabled if it was disabled during the upgrade.
 
 The short name (Basics), the splash screen background colour and whether the forum opens as an app (Appearance) are also Flarum's own settings now. Upgrading moves fof/pwa's short name and background colour into them, unless they are already set or Flarum wouldn't accept them.
 

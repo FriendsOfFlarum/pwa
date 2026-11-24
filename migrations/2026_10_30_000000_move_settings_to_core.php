@@ -14,22 +14,12 @@ use Flarum\Forum\Branding\ShortName;
 use Flarum\Forum\Branding\SplashScreen;
 use Illuminate\Database\Schema\Builder;
 
-// Core's manifest now has a short name, a splash screen background colour and
-// decides whether the forum opens as an app. A core setting an admin already
-// filled in is kept. A value core would reject isn't moved, as the admin page
-// couldn't be saved with it: a short name that is too long, for which core
-// shortens the forum title, or a colour that isn't an opaque hex colour, for
-// which core uses the app icon's background.
+// The long name and theme colour are dropped: core takes them from the forum
+// title and primary colour.
 //
-// The long name and theme colour are dropped: core's manifest takes the name
-// from the forum title and the theme colour from the primary colour, which the
-// page's theme-color meta tag also uses, so the two can't disagree.
-//
-// fof/pwa opened the forum as an app unless an admin chose another display
-// mode, while core keeps upgraded forums in the browser. A forum that used
-// fof/pwa at its default goes on opening as an app. A first install has no
-// settings of its own yet, other than the push keys an earlier migration
-// makes, and no push subscriptions, so it leaves core's setting alone.
+// Core keeps upgraded forums in the browser, while fof/pwa opened a forum that
+// never chose a display mode as an app. The push keys alone don't tell an
+// upgrade apart: an earlier migration makes them on install.
 return [
     'up' => function (Builder $schema) {
         $connection = $schema->getConnection();
@@ -39,7 +29,7 @@ return [
             || $connection->table('push_subscriptions')->exists()
             || $connection->table('firebase_push_subscriptions')->exists();
 
-        if ($hadPwa && !(clone $settings)->where('key', 'fof-pwa.display')->exists()) {
+        if ($hadPwa && trim((string) (clone $settings)->where('key', 'fof-pwa.display')->value('value')) === '') {
             (clone $settings)->updateOrInsert(['key' => 'open_as_app'], ['value' => '1']);
         }
 

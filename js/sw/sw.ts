@@ -10,7 +10,7 @@ interface PushPayload {
   link?: string;
 }
 
-// Flarum shows the offline page now, so the copy fof/pwa kept goes.
+// A new worker doesn't remove the caches an earlier version filled.
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches

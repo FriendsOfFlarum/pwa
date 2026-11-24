@@ -136,6 +136,14 @@ class MoveSettingsToCoreTest extends TestCase
     }
 
     #[Test]
+    public function a_cleared_display_mode_counts_as_the_default(): void
+    {
+        $this->migrate(['open_as_app' => '0', 'fof-pwa.display' => '', 'fof-pwa.longName' => 'Acme']);
+
+        $this->assertSame('1', $this->value('open_as_app'));
+    }
+
+    #[Test]
     #[DataProvider('displayModes')]
     public function a_chosen_display_mode_leaves_open_as_app_alone(string $display): void
     {

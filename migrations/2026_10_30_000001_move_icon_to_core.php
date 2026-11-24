@@ -53,27 +53,19 @@ return [
 
                 resolve(StoredFiles::class)->replace('app_icon_path', (string) $icon, 'app-icon', 'png');
                 $appIcon->draw();
-
-                // The assets disk reports a failed write by returning false, which core doesn't check.
-                $drawn = json_decode((string) $settings()->where('key', 'app_icon_paths')->value('value'), true) ?: [];
-                $stored = [(string) $settings()->where('key', 'app_icon_path')->value('value'), ...array_values($drawn)];
-
-                if (!$drawn || in_array(false, array_map($assets->exists(...), $stored), true)) {
-                    throw new RuntimeException('the app icon could not be stored');
-                }
             } catch (Throwable $e) {
                 try {
                     $appIcon->delete();
                 } catch (Throwable) {
                 }
 
-                // The source stays on the assets disk for the admin to upload under Appearance.
                 resolve(LoggerInterface::class)->warning("[PWA] Could not make $source the app icon, upload it under Appearance: {$e->getMessage()}");
                 $source = null;
             }
         }
 
-        foreach ($source ? [$source, ...$paths] : $paths as $path) {
+        // The source goes last: on PostgreSQL a failure rolls the settings back, but not the files.
+        foreach ($source ? [...$paths, $source] : $paths as $path) {
             if ($assets->exists($path)) {
                 $assets->delete($path);
             }

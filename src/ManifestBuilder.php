@@ -14,12 +14,6 @@ namespace FoF\PWA;
 
 use Flarum\Settings\SettingsRepositoryInterface;
 
-/**
- * fof/pwa's settings, applied to core's web app manifest through
- * Extend\Theme::manifest(). Core fills in everything else: the name and short
- * name, description, theme colour, app icon, start URL and scope, and the
- * splash screen's background colour.
- */
 class ManifestBuilder
 {
     /** @var list<callable(array<string, mixed>): array<string, mixed>> */
