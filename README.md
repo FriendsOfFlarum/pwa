@@ -28,7 +28,7 @@ The short name (Basics), the splash screen background colour and whether the for
 
 fof/pwa's long name and theme colour settings are gone: the app takes its name from the forum title (Basics) and its theme colour from the primary colour (Appearance), which the browser already used for the forum's pages. Upgrading deletes the old values.
 
-Flarum keeps forums that upgrade from 2.0 opening in the browser. A forum that used fof/pwa without choosing a display mode opened as an app, so upgrading turns "Open as an app" on for it, which also turns on Flarum's splash screens. A forum where an admin chose a display mode, of any kind, keeps Flarum's setting: turn it on under Appearance to open as an app. Display modes other than opening as an app or in the browser are no longer available.
+Flarum keeps forums that upgrade from 2.0 opening in the browser. fof/pwa opened the forum as an app unless an admin chose the "browser" display mode, so upgrading turns "Open as an app" on for every other forum, which also turns on Flarum's splash screens. Forums that used "minimal-ui" or "fullscreen" open as a standalone app, as those display modes are no longer available.
 
 ## For Developers
 

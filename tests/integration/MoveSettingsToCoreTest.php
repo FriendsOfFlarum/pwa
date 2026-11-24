@@ -144,21 +144,31 @@ class MoveSettingsToCoreTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('displayModes')]
-    public function a_chosen_display_mode_leaves_open_as_app_alone(string $display): void
+    #[DataProvider('appDisplayModes')]
+    public function a_display_mode_that_opened_as_an_app_opens_as_an_app(string $display): void
     {
-        $this->migrate(['open_as_app' => '0', 'fof-pwa.display' => $display, 'fof-pwa.longName' => 'Acme']);
+        $this->migrate(['open_as_app' => '0', 'fof-pwa.display' => $display]);
 
-        $this->assertSame('0', $this->value('open_as_app'));
+        $this->assertSame('1', $this->value('open_as_app'));
         $this->assertNull($this->value('fof-pwa.display'));
     }
 
-    public static function displayModes(): array
+    public static function appDisplayModes(): array
     {
         return [
-            'browser'    => ['browser'],
             'standalone' => ['standalone'],
+            'minimal-ui' => ['minimal-ui'],
+            'fullscreen' => ['fullscreen'],
         ];
+    }
+
+    #[Test]
+    public function the_browser_display_mode_stays_in_the_browser(): void
+    {
+        $this->migrate(['open_as_app' => '0', 'fof-pwa.display' => 'browser']);
+
+        $this->assertSame('0', $this->value('open_as_app'));
+        $this->assertNull($this->value('fof-pwa.display'));
     }
 
     #[Test]

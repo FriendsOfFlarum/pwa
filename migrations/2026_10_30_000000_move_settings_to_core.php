@@ -17,8 +17,8 @@ use Illuminate\Database\Schema\Builder;
 // The long name and theme colour are dropped: core takes them from the forum
 // title and primary colour.
 //
-// Core keeps upgraded forums in the browser, while fof/pwa opened a forum that
-// never chose a display mode as an app. The push keys alone don't tell an
+// Core keeps upgraded forums in the browser, while fof/pwa opened them as an app
+// in every display mode but "browser". The push keys alone don't tell an
 // upgrade apart: an earlier migration makes them on install.
 return [
     'up' => function (Builder $schema) {
@@ -29,7 +29,7 @@ return [
             || $connection->table('push_subscriptions')->exists()
             || $connection->table('firebase_push_subscriptions')->exists();
 
-        if ($hadPwa && trim((string) (clone $settings)->where('key', 'fof-pwa.display')->value('value')) === '') {
+        if ($hadPwa && trim((string) (clone $settings)->where('key', 'fof-pwa.display')->value('value')) !== 'browser') {
             (clone $settings)->updateOrInsert(['key' => 'open_as_app'], ['value' => '1']);
         }
 
