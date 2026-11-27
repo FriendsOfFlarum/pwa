@@ -12,12 +12,8 @@
 
 namespace FoF\PWA\Tests\unit;
 
-use Flarum\Http\RouteCollection;
-use Flarum\Http\RouteCollectionUrlGenerator;
-use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Testing\unit\TestCase;
-use FoF\PWA\IconProvider;
 use FoF\PWA\ManifestBuilder;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -25,64 +21,43 @@ use PHPUnit\Framework\Attributes\Test;
 
 class ManifestBuilderTest extends TestCase
 {
+    private const array CORE = [
+        'name'        => 'Test forum',
+        'display'     => 'standalone',
+        'theme_color' => '#123456',
+        'icons'       => [['src' => 'icon-512.png', 'sizes' => '512x512', 'type' => 'image/png']],
+    ];
+
     #[Test]
-    #[DataProvider('forumUrls')]
-    public function builds_defaults_without_a_global_container(string $forumUrl, string $basePath): void
+    public function keeps_cores_manifest_without_settings(): void
     {
-        $settings = Mockery::mock(SettingsRepositoryInterface::class);
-        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
-            'forum_title'         => 'Test forum',
-            'theme_primary_color' => '#123456',
-        ][$key] ?? $default);
-
-        $url = Mockery::mock(UrlGenerator::class);
-        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator($forumUrl, new RouteCollection()));
-
-        $icons = Mockery::mock(IconProvider::class);
-        $icons->shouldReceive('get')->andReturn([]);
-
-        $builder = new ManifestBuilder($settings, $url, $icons);
-
-        $this->assertSame([
-            'name'        => 'Test forum',
-            'description' => '',
-            'start_url'   => $basePath,
-            'scope'       => $basePath,
-            'theme_color' => '#123456',
-            'display'     => 'standalone',
-            'orientation' => 'any',
-            'icons'       => [],
-        ], $builder->build());
+        $this->assertSame(self::CORE + ['orientation' => 'any'], $this->build([]));
     }
 
-    public static function forumUrls(): array
+    #[Test]
+    public function leaves_the_name_and_theme_colour_to_core(): void
     {
-        return [
-            'root'                    => ['https://example.com', '/'],
-            'root with slash'         => ['https://example.com/', '/'],
-            'subdirectory'            => ['https://example.com/community', '/community/'],
-            'subdirectory with slash' => ['https://example.com/community/', '/community/'],
-        ];
+        $manifest = $this->build([
+            'fof-pwa.longName'   => 'My app',
+            'fof-pwa.themeColor' => '#654321',
+        ]);
+
+        $this->assertSame(self::CORE['name'], $manifest['name']);
+        $this->assertSame(self::CORE['theme_color'], $manifest['theme_color']);
+        $this->assertSame(self::CORE['icons'], $manifest['icons']);
+    }
+
+    #[Test]
+    public function leaves_the_display_mode_to_core(): void
+    {
+        $this->assertSame('standalone', $this->build(['fof-pwa.display' => 'fullscreen'])['display']);
     }
 
     #[Test]
     #[DataProvider('orientations')]
     public function uses_the_configured_orientation(?string $orientation, string $expected): void
     {
-        $settings = Mockery::mock(SettingsRepositoryInterface::class);
-        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
-            'fof-pwa.orientation' => $orientation,
-        ][$key] ?? $default);
-
-        $url = Mockery::mock(UrlGenerator::class);
-        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator('https://example.com', new RouteCollection()));
-
-        $icons = Mockery::mock(IconProvider::class);
-        $icons->shouldReceive('get')->andReturn([]);
-
-        $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
-
-        $this->assertSame($expected, $manifest['orientation']);
+        $this->assertSame($expected, $this->build(['fof-pwa.orientation' => $orientation])['orientation']);
     }
 
     public static function orientations(): array
@@ -101,22 +76,16 @@ class ManifestBuilderTest extends TestCase
         ];
     }
 
-    #[Test]
-    public function uses_the_configured_display_mode(): void
+    /**
+     * @param array<string, mixed> $values
+     *
+     * @return array<string, mixed>
+     */
+    private function build(array $values): array
     {
         $settings = Mockery::mock(SettingsRepositoryInterface::class);
-        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => [
-            'fof-pwa.display' => 'fullscreen',
-        ][$key] ?? $default);
+        $settings->shouldReceive('get')->andReturnUsing(fn (string $key, mixed $default = null) => $values[$key] ?? $default);
 
-        $url = Mockery::mock(UrlGenerator::class);
-        $url->shouldReceive('to')->with('forum')->andReturn(new RouteCollectionUrlGenerator('https://example.com', new RouteCollection()));
-
-        $icons = Mockery::mock(IconProvider::class);
-        $icons->shouldReceive('get')->andReturn([]);
-
-        $manifest = (new ManifestBuilder($settings, $url, $icons))->build();
-
-        $this->assertSame('fullscreen', $manifest['display']);
+        return (new ManifestBuilder($settings))(self::CORE);
     }
 }

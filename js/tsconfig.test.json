@@ -7,6 +7,6 @@
     "lib": ["ES2022", "DOM", "WebWorker"],
     "types": ["jest"]
   },
-  "include": ["tests/**/*"],
+  "include": ["tests/**/*", "../vendor/flarum/core/js/dist-typings/@types/**/*"],
   "files": ["./node_modules/@flarum/jest-config/shims.d.ts"]
 }

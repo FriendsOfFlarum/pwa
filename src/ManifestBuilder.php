@@ -12,7 +12,6 @@
 
 namespace FoF\PWA;
 
-use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 
 class ManifestBuilder
@@ -21,9 +20,7 @@ class ManifestBuilder
     private array $callbacks = [];
 
     public function __construct(
-        private readonly SettingsRepositoryInterface $settings,
-        private readonly UrlGenerator $url,
-        private readonly IconProvider $icons
+        private readonly SettingsRepositoryInterface $settings
     ) {
     }
 
@@ -36,30 +33,13 @@ class ManifestBuilder
     }
 
     /**
+     * @param array<string, mixed> $manifest
+     *
      * @return array<string, mixed>
      */
-    public function build(): array
+    public function __invoke(array $manifest): array
     {
-        $basePath = rtrim(parse_url($this->url->to('forum')->base(), PHP_URL_PATH) ?? '/', '/').'/';
-
-        $manifest = [
-            'name'        => $this->settings->get('fof-pwa.longName') ?: $this->settings->get('forum_title'),
-            'description' => $this->settings->get('forum_description', ''),
-            'start_url'   => $basePath,
-            'scope'       => $basePath,
-            'theme_color' => $this->settings->get('fof-pwa.themeColor') ?: $this->settings->get('theme_primary_color'),
-            'display'     => $this->settings->get('fof-pwa.display') ?: 'standalone',
-            'orientation' => $this->settings->get('fof-pwa.orientation') ?: 'any',
-            'icons'       => $this->icons->get(),
-        ];
-
-        if ($backgroundColor = $this->settings->get('fof-pwa.backgroundColor')) {
-            $manifest['background_color'] = $backgroundColor;
-        }
-
-        if ($shortName = $this->settings->get('fof-pwa.shortName')) {
-            $manifest['short_name'] = $shortName;
-        }
+        $manifest['orientation'] = $this->settings->get('fof-pwa.orientation') ?: 'any';
 
         if ($this->settings->get('fof-pwa.windowControlsOverlay')) {
             $manifest['display_override'] = ['window-controls-overlay'];

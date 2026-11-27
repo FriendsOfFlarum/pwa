@@ -1,8 +1,7 @@
 import app from 'flarum/forum/app';
 import Button from 'flarum/common/components/Button';
-import { getServiceWorkerRegistration } from '../registerServiceWorker';
 import { syncPushSubscription } from './subscription';
-import { hasEnabledPushPreference, pushConfigured, supportsWebPush } from './utils';
+import { getServiceWorkerRegistration, hasEnabledPushPreference, pushConfigured, supportsWebPush } from './utils';
 import LinkButton from 'flarum/common/components/LinkButton';
 
 const OPT_IN_DISMISSED_KEY = 'fof-pwa.notif-alert.dismissed';

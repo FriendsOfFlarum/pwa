@@ -2,6 +2,16 @@ import app from 'flarum/forum/app';
 
 export const supportsWebPush = (): boolean => 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window;
 
+/**
+ * Flarum registers the forum's service worker, which runs fof/pwa's push
+ * handlers after its own.
+ */
+export function getServiceWorkerRegistration(): Promise<ServiceWorkerRegistration | undefined> {
+  if (!('serviceWorker' in navigator)) return Promise.resolve(undefined);
+
+  return navigator.serviceWorker.ready;
+}
+
 export const getVapidPublicKey = (): string => app.forum.attribute<string>('vapidPublicKey');
 
 export function getApplicationServerKey(subscription: PushSubscription): string | undefined {

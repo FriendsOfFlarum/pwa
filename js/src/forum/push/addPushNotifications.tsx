@@ -7,8 +7,7 @@ import Icon from 'flarum/common/components/Icon';
 import ItemList from 'flarum/common/utils/ItemList';
 import LinkButton from 'flarum/common/components/LinkButton';
 import { usingAppleWebview } from '../native/appleWebView';
-import { getServiceWorkerRegistration } from '../registerServiceWorker';
-import { supportsWebPush, pushConfigured } from './utils';
+import { getServiceWorkerRegistration, pushConfigured, supportsWebPush } from './utils';
 import { syncPushSubscription } from './subscription';
 
 export default function addPushNotifications(): void {

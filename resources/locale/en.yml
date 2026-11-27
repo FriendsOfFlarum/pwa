@@ -1,53 +1,37 @@
 fof-pwa:
   admin:
-    nav:
-      pwa_button: Progressive Web App
-      pwa_text: Configure Flarum to run as a Progressive Web App, installable on mobile devices.
+    tabs:
+      app: App
+      push: Push notifications
+    sections:
+      status:
+        label: Status
+        description: What the forum still needs to be installable as an app and to send push notifications.
+      home_screen:
+        label: Home screen
+        description: The app's icon, splash screen background and primary colour are set on the <appearance>Appearance page</appearance>, along with whether the forum opens as an app. Its name is the forum title, and its short name is set beside it on the <basics>Basics page</basics>. Browsers decide when to offer to install the app, so consider telling members how to add it to their home screen.
+      sharing:
+        label: Sharing
+      delivery:
+        label: Delivery
+      keys:
+        label: VAPID keys
+      troubleshooting:
+        label: Troubleshooting
     pwa:
-      about:
-        description_label: Description
-        description_text: You can set the description on the 'Basics' page in your admin dashboard.
-        long_name_label: Long name
-        long_name_text: The name of the web application displayed to the user.
-        heading: About
-        short_name_label: Short name
-        short_name_text: The name of the application displayed to the user when there is not enough space for the long name.
-      colors:
-        heading: Colors
-        background_color_label: Background color
-        background_color_text: This is used as a placeholder color for the splash screen displayed while your PWA is loading. It is not used once the app has loaded.
-        theme_color_label: Theme color
-        theme_color_text: This color is sometimes used by devices when displaying your app, for example on Android's task switcher as the color surrounding the site.
       maintenance:
-        heading: Maintenance
         debug_label: Enable debug mode
         debug_text: This will log info about notifications to `storage/logs`. It should generally be disabled to avoid filling up logs unnecessarily.
         reset_vapid_button: Reset VAPID keys
         reset_vapid_text: This will regenerate VAPID keys and delete any existing subscriptions using the current VAPID keys.
-        reset_vapid_confirm: Resetting VAPID keys will remove any subscriptions using the existing keys, so users won't receive any notifications until the next time they visit your site. This should only be done when setting up push notifications for the first time, or if push notifications aren't working at all and there's a warning about missing VAPID keys above.
-        reset_vapid_success: Successfully reset VAPID keys. {count} subscriptions were reset. Reload the page to see an updated status check report.
+        reset_vapid_confirm: Resetting VAPID keys will remove any subscriptions using the existing keys, so users won't receive any notifications until the next time they visit your site. This should only be done when setting up push notifications for the first time, or if push notifications aren't working at all and the Status section on the App tab warns about missing VAPID keys.
+        reset_vapid_success: Successfully reset VAPID keys. {count} subscriptions were reset. The status on the App tab checks again when you open it.
       firebase_config:
         heading: Firebase
         help_text: To add support for push notifications when publishing your app in the Apple App Store, you need to use Firebase to add push notifications to your application. Please generate your Firebase Service Config and upload it here. <a>See the documentation</a>.
         upload_successful: Your Firebase config has been uploaded successfully.
         upload_file: Upload file
       other:
-        heading: Other
-        display_label: Display mode
-        display_text: |
-          How the app opens when launched from its icon:
-
-          Standalone: A separate app window without the browser's address bar.
-          Minimal UI: Like Standalone, with basic navigation such as back and reload.
-          Full screen: Uses the entire screen without browser controls.
-          Browser: Opens in a normal browser tab or window.
-
-          Browsers may use a fallback if the selected mode is not supported.
-        display_options:
-          standalone: Standalone
-          minimal_ui: Minimal UI
-          fullscreen: Full screen
-          browser: Browser
         orientation_label: Orientation
         orientation_text: |
           Any: Let the app rotate with the device.
@@ -83,29 +67,16 @@ fof-pwa:
         share_buttons_label: Enable share buttons
         share_buttons_text: If enabled, a "Share" button will be added to discussions, posts, and users.
 
-      heading: Progressive Web App Configuration
-      text: Configure your Flarum site to run as a progressive web app! Please note that this doesn't automatically put your site in the app store. Instead, it gives users an 'Add to Home Screen' option for your site. We provide some status checks, but the best way to test this is to try installing it yourself (search the web for instructions on installing progressive web apps). Keep in mind that 'install this PWA' prompts are controlled by browsers and cannot be triggered by developers, admins, or programs. Consider including PWA installation instructions in your site's documentation.
-      status_check_heading: Status Check
-      logo_heading: Logos and Icons
-      logo_text: |
-        You must upload at least one logo for your progressive web app to be installable. Please note that all logos must be square; if they are not, they will be resized and possibly stretched.
-
-        Several size options are available below. We recommend uploading a logo for as many of them as possible, as this supports more devices.
-
-        You can upload one large logo to the inputs for smaller sizes. For instance, you can upload a 1000x1000px logo to ALL the file inputs below. However, if you upload a 50x50px logo to the 512x512 input, it will be stretched significantly.
-
-      logo_size_text: Upload a logo which will be scaled to {size} by {size} pixels.
-      submit_button: Save Settings
-      refreshed_message: PWA config refreshed successfully.
     status:
       config_no_https: The URL in your config.php file isn't using HTTPS. HTTPS is required for Progressive Web Apps to work.
       possible_https_disabled: Your site might not be running on HTTPS. Clearing your cache (admin dashboard => tools button) might help. If it is, ignore this. If it isn't, keep in mind that HTTPS is required for Progressive Web Apps to work.
-      no_logo: You must upload at least one logo, with a size of at least 144x144px, for the PWA to be installable.
-      no_name: You must provide a full name for your app to work.
-      no_vapid_keys: No VAPID keys found. These are required for push notifications to be sent. You can reset VAPID keys below.
+      no_logo: Upload an app icon on the Appearance page for the PWA to be installable.
+      no_name: Set a forum title on the Basics page. The app uses it as its name.
+      no_vapid_keys: No VAPID keys found. These are required for push notifications to be sent. You can reset them on the Push notifications tab.
       key_gen_failed: "Generation of the keys needed for push notifications has failed. The full error message was: {error}"
       suggest_gmp: The gmp PHP extension doesn't seem to be enabled on your server. It's not strictly necessary, but it can improve performance and is recommended. Some shared hosts might not support it, though.
       success: No potential issues found!
+      check_failed: The status checks couldn't be loaded. Reload the page to try again.
   forum:
     alerts:
       optin: This forum can send push notifications to this device. Would you like to enable them?
@@ -151,11 +122,6 @@ fof-pwa:
     keys_invalid: Push notifications could not be enabled because your browser provided invalid encryption keys. Please try enabling notifications again.
     endpoint_https_required: Push notifications could not be enabled because your browser provided an invalid push service URL "{url}". A valid HTTPS URL is required.
     endpoint_host_not_allowed: Push notifications could not be enabled because the push service host "{host}" used by your browser is not allowed. Please contact the forum administrator.
-
-  views:
-    offline:
-      header: Network connection error
-      text: This app requires a network connection; it cannot be used offline. Please check your connection.
 
 flarum-gdpr:
   lib:
